@@ -1,0 +1,13 @@
+{
+	"FileVersion": 3,
+	"EngineAssociation": "{B7B59894-4F55-1887-324D-FF92C111E7BE}",
+	"Category": "",
+	"Description": "",
+	"Modules": [
+		{
+			"Name": "Gaea",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		}
+	]
+}
