@@ -7,14 +7,6 @@
 #include "LuaState.h"
 #include "GaeaLuaSubsystem.generated.h"
 
-#ifndef LUA_MAIN_FILE
-#define LUA_MAIN_FILE "main"
-#endif
-
-#ifndef LUA_MAIN_FUNCTION
-#define LUA_MAIN_FUNCTION "main"
-#endif
-
 /**
  * 
  */
@@ -29,6 +21,10 @@ public:
 	void Deinitialize() override;
 
 	void Start();
+
+	static const char* MainFile;
+
+	static const char* MainFunction;
 
 private:
 	bool bHasInit;

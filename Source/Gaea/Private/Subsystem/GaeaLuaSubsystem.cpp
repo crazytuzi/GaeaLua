@@ -4,6 +4,10 @@
 #include "GaeaLuaSubsystem.h"
 #include "GaeaGameInstance.h"
 
+const char* UGaeaLuaSubsystem::MainFile = "main";
+
+const char* UGaeaLuaSubsystem::MainFunction = "main";
+
 static uint8* ReadFile(IPlatformFile& PlatformFile, const FString Path, uint32& Len)
 {
 	auto FileHandle = PlatformFile.OpenRead(*Path);
@@ -93,7 +97,7 @@ void UGaeaLuaSubsystem::Start()
 		return;
 	}
 
-	State.doFile(LUA_MAIN_FILE);
+	State.doFile(MainFile);
 
 	const auto GameInstance = Cast<UGaeaGameInstance>(GetGameInstance());
 
@@ -103,7 +107,7 @@ void UGaeaLuaSubsystem::Start()
 		return;
 	}
 
-	State.call(LUA_MAIN_FUNCTION, GameInstance);
+	State.call(MainFunction, GameInstance);
 
 	bHasStart = true;
 }
