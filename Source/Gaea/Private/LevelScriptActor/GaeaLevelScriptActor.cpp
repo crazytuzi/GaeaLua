@@ -4,6 +4,7 @@
 #include "GaeaLevelScriptActor.h"
 #include "GaeaFunctionLibrary.h"
 #include "GaeaLuaSubsystem.h"
+#include "GaeaUISubsystem.h"
 
 void AGaeaLevelScriptActor::BeginPlay()
 {
@@ -18,6 +19,19 @@ void AGaeaLevelScriptActor::BeginPlay()
 	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("AGaeaLevelScriptActor::BeginPlay => LuaSubsystem is nullptr"));
+	}
+
+	auto UISubsystem = UGaeaFunctionLibrary::GetSubsystem<UGaeaUISubsystem>(this);
+
+	if (UISubsystem != nullptr)
+	{
+		UISubsystem->Start();
+
+		UISubsystem->ShowUI("HUD");
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("AGaeaLevelScriptActor::BeginPlay => UISubsystem is nullptr"));
 	}
 }
 

@@ -31,4 +31,8 @@ public:
 
 		return nullptr;
 	}
+
+	UFUNCTION(BlueprintPure)
+	static UGameInstanceSubsystem* GetGameInstanceSubsystem(UObject* WorldContextObject,
+	                                                        TSubclassOf<UGameInstanceSubsystem> Class);
 };
