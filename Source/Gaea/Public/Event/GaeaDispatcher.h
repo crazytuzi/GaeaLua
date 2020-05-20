@@ -23,7 +23,7 @@ enum class EEventParamType : uint8
     EEventParamType_float,
     EEventParamType_FString,
     EEventParamType_RawPointer,
-    EEventParamType_UPointer
+    EEventParamType_UObject
 };
 
 
@@ -163,7 +163,7 @@ inline void FEventParam::SetEventParamImp<UObject*>(UObject* Value)
 {
     pointer = Value;
 
-    EventParamType = EEventParamType::EEventParamType_UPointer;
+    EventParamType = EEventParamType::EEventParamType_UObject;
 }
 
 USTRUCT()
