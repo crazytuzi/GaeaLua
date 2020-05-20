@@ -247,9 +247,6 @@ public:
     FEventDelegateCallBack CallBack;
 
     UFUNCTION()
-    void Remove(UObject* Caller, FName FunName);
-
-    UFUNCTION()
     void Dispatch(const FEventParamWrap& Param) const;
 };
 
@@ -270,9 +267,7 @@ public:
     UFUNCTION()
     UDelegateCallBack* GetDelegateCallBack(EGaeaEvent Event);
 
-    void Remove(EGaeaEvent Event, UObject* Caller, FName FunName);
-
-    void Clear(EGaeaEvent Event);
+    void Clear();
 
     void DispatchImp(EGaeaEvent Event, const FEventParamWrap& Param);
 

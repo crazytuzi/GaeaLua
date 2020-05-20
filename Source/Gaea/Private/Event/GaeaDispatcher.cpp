@@ -3,11 +3,6 @@
 
 #include "GaeaDispatcher.h"
 
-void UDelegateCallBack::Remove(UObject* Caller, const FName FunName)
-{
-    CallBack.Remove(Caller, FunName);
-}
-
 void UDelegateCallBack::Dispatch(const FEventParamWrap& Param) const
 {
     if (CallBack.IsBound())
@@ -45,19 +40,9 @@ UDelegateCallBack* UGaeaDispatcher::GetDelegateCallBack(const EGaeaEvent Event)
     return (CallBackPointer == nullptr) ? nullptr : *CallBackPointer;
 }
 
-void UGaeaDispatcher::Remove(const EGaeaEvent Event, UObject* Caller, const FName FunName)
+void UGaeaDispatcher::Clear()
 {
-    const auto CallBackPointer = DelegateMap.Find(Event);
-
-    if (CallBackPointer != nullptr)
-    {
-        (*CallBackPointer)->Remove(Caller, FunName);
-    }
-}
-
-void UGaeaDispatcher::Clear(const EGaeaEvent Event)
-{
-    DelegateMap.Remove(Event);
+    DelegateMap.Reset();
 }
 
 void UGaeaDispatcher::DispatchImp(const EGaeaEvent Event, const FEventParamWrap& Param)
