@@ -35,6 +35,9 @@ public:
     void bindFunction(NS_SLUA::lua_State *L, int p, UFunction *func);
     void bindFunction(NS_SLUA::lua_State *L, int p);
     void bindFunction(UFunction *func);
+#if GAEA_LUA
+	void bindFunctionWithParam(NS_SLUA::lua_State *L, UFunction *func);
+#endif
 	void dispose();
 
 #if WITH_EDITOR
@@ -48,6 +51,10 @@ public:
 #endif
 
 private:
+#if GAEA_LUA
+	NS_SLUA::LuaVar* LuaSelf;
+	NS_SLUA::LuaVar* LuaParam;
+#endif
     NS_SLUA::LuaVar* luafunction;
     UFunction* ufunction;
 #if WITH_EDITOR
@@ -103,6 +110,10 @@ namespace NS_SLUA {
 		static int setupMT(lua_State* L);
 		static int Bind(lua_State* L);
 		static int Clear(lua_State* L);
+#if GAEA_LUA
+		static int Add(lua_State* L);
+		static int Remove(lua_State* L);
+#endif
 		static int gc(lua_State* L);
 
 		template<class R, class ...ARGS>

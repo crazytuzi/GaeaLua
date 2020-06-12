@@ -25,6 +25,8 @@ public class slua_unreal : ModuleRules
         bEnableUndefinedIdentifierWarnings = false;
         
         bLegacyPublicIncludePaths = true;
+        
+        PublicDefinitions.Add("GAEA_LUA=1");
 
         var externalSource = Path.Combine(ModuleDirectory, "../../External");
         var externalLib = Path.Combine(ModuleDirectory, "../../Library");

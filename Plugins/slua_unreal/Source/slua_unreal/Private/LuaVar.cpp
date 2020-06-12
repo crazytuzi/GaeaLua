@@ -587,6 +587,132 @@ namespace NS_SLUA {
         return 0;
     }
 
+#if GAEA_LUA
+	bool LuaVar::callByUFunction(UFunction* func, uint8* parms, LuaVar* pSelf, FOutParmRec* OutParms, LuaVar* pParam)
+	{
+		if (!func) return false;
+
+		if (!isValid())
+		{
+			Log::Error("State of lua function is invalid");
+
+			return false;
+		}
+
+		const auto bHasReturnParam = func->ReturnValueOffset != MAX_uint16;
+
+		if (func->ParmsSize == 0 && !bHasReturnParam)
+		{
+			auto NArg = 0;
+
+			if (pSelf)
+			{
+				pSelf->push();
+
+				NArg++;
+			}
+
+			if (pParam)
+			{
+				pParam->push();
+
+				NArg++;
+			}
+
+			const auto L = getState();
+
+			const auto n = docall(NArg);
+
+			lua_pop(L, n);
+
+			return true;
+		}
+
+		// push self if valid
+		auto n = 0;
+
+		if (pSelf)
+		{
+			pSelf->push();
+
+			n++;
+		}
+
+		// push arguments to lua state
+		for (TFieldIterator<UProperty> It(func); It && (It->PropertyFlags & CPF_Parm); ++It)
+		{
+			const auto Prop = *It;
+
+			const uint64 PropFlag = Prop->GetPropertyFlags();
+
+			if ((PropFlag & CPF_ReturnParm) || IsRealOutParam(PropFlag))
+				continue;
+
+			pushArgByParms(Prop, parms + Prop->GetOffset_ForInternal());
+
+			n++;
+		}
+
+		if (pParam)
+		{
+			pParam->push();
+
+			n++;
+		}
+
+		const auto L = getState();
+
+		const auto RetCount = docall(n);
+
+		auto Remain = RetCount;
+
+		// if lua return value
+		// we only handle first lua return value
+		if (Remain > 0 && bHasReturnParam)
+		{
+			const auto Prop = func->GetReturnProperty();
+
+			const auto CheckDer = Prop ? LuaObject::getChecker(Prop) : nullptr;
+
+			if (CheckDer)
+			{
+				(*CheckDer)(L, Prop, parms + Prop->GetOffset_ForInternal(), lua_absindex(L, -Remain));
+			}
+
+			Remain--;
+		}
+
+		// fill lua return value to blueprint stack if argument is out param
+		for (TFieldIterator<UProperty> It(func); Remain > 0 && It && (It->PropertyFlags & CPF_Parm); ++It)
+		{
+			const auto Prop = *It;
+
+			const uint64 PropFlag = Prop->GetPropertyFlags();
+
+			if (IsRealOutParam(PropFlag))
+			{
+				const auto CheckDer = Prop ? LuaObject::getChecker(Prop) : nullptr;
+
+				const auto OutPamams = OutParms ? OutParms->PropAddr : parms + Prop->GetOffset_ForInternal();
+
+				if (CheckDer)
+				{
+					(*CheckDer)(L, Prop, OutPamams, lua_absindex(L, -Remain));
+				}
+
+				if (OutParms) OutParms = OutParms->NextOutParm;
+
+				Remain--;
+			}
+		}
+
+		// pop returned value
+
+		lua_pop(L, RetCount);
+
+		return true;
+	}
+#else
     bool LuaVar::callByUFunction(UFunction* func,uint8* parms, LuaVar* pSelf, FOutParmRec* OutParms) {
         
         if(!func) return false;
@@ -659,6 +785,7 @@ namespace NS_SLUA {
         lua_pop(L, retCount);
 		return true;
     }
+#endif
 
     // clone luavar
     void LuaVar::varClone(lua_var& tv,const lua_var& ov) const {

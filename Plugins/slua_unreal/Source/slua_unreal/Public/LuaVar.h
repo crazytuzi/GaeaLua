@@ -239,7 +239,11 @@ namespace NS_SLUA {
         }
 
         bool toProperty(UProperty* p,uint8* ptr);
+#if GAEA_LUA
+        bool callByUFunction(UFunction* ufunc, uint8* parms, LuaVar* pSelf = nullptr, FOutParmRec* OutParms = nullptr, LuaVar* pParam = nullptr);
+#else
         bool callByUFunction(UFunction* ufunc,uint8* parms,LuaVar* pSelf = nullptr,FOutParmRec* OutParms = nullptr);
+#endif
 
 		// get associate state
 		lua_State* getState() const;

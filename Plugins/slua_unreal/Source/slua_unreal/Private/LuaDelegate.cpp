@@ -24,6 +24,10 @@ ULuaDelegate::ULuaDelegate(const FObjectInitializer& ObjectInitializer)
 
 ULuaDelegate::~ULuaDelegate() {
     SafeDelete(luafunction);
+#if GAEA_LUA
+	SafeDelete(LuaSelf);
+	SafeDelete(LuaParam);
+#endif
 }
 
 void ULuaDelegate::EventTrigger()
@@ -33,7 +37,13 @@ void ULuaDelegate::EventTrigger()
 
 void ULuaDelegate::ProcessEvent( UFunction* f, void* Parms ) {
     ensure(luafunction!=nullptr && ufunction!=nullptr);
+#if GAEA_LUA
+	NS_SLUA::LuaVar* SelfTab = (LuaSelf && LuaSelf->isTable() ? LuaSelf : nullptr);
+	NS_SLUA::LuaVar* ParamTab = (LuaParam && LuaParam->isTable() ? LuaParam : nullptr);
+	luafunction->callByUFunction(ufunction, reinterpret_cast<uint8*>(Parms), SelfTab, nullptr, ParamTab);
+#else
     luafunction->callByUFunction(ufunction,reinterpret_cast<uint8*>(Parms));
+#endif
 }
 
 void ULuaDelegate::bindFunction(NS_SLUA::lua_State* L,int p,UFunction* ufunc) {
@@ -52,6 +62,25 @@ void ULuaDelegate::bindFunction(UFunction *ufunc) {
     ensure(ufunc);
     ufunction = ufunc;
 }
+
+#if GAEA_LUA
+void ULuaDelegate::bindFunctionWithParam(NS_SLUA::lua_State* L, UFunction* func)
+{
+	ensure(func);
+
+	static auto P_Func = 2, P_SelfTab = 3, P_Param = 4;
+
+	luaL_checktype(L, P_Func, LUA_TFUNCTION);
+
+	luafunction = new NS_SLUA::LuaVar(L, P_Func, NS_SLUA::LuaVar::LV_FUNCTION);
+
+	LuaSelf = new NS_SLUA::LuaVar(L, P_SelfTab);
+
+	LuaParam = new NS_SLUA::LuaVar(L, P_Param);
+
+	ufunction = func;
+}
+#endif
 
 void ULuaDelegate::dispose()
 {
@@ -88,7 +117,11 @@ namespace NS_SLUA {
 #if WITH_EDITOR
 		obj->setPropName(UD->pName);
 #endif
+#if GAEA_LUA
+    	obj->bindFunctionWithParam(L, UD->ufunc);
+#else
         obj->bindFunction(L,2,UD->ufunc);
+#endif
 
         // add event listener
         FScriptDelegate Delegate;
@@ -194,7 +227,11 @@ namespace NS_SLUA {
 #if WITH_EDITOR
 		obj->setPropName(UD->pName);
 #endif
+#ifdef GAEA_LUA
+    	obj->bindFunctionWithParam(L, UD->ufunc);
+#else
 		obj->bindFunction(L, 2, UD->ufunc);
+#endif
 
 		UD->delegate->BindUFunction(obj, TEXT("EventTrigger"));
 
@@ -211,6 +248,18 @@ namespace NS_SLUA {
 		if(UD) clear(L,UD);
 		return 0;
 	}
+
+#if GAEA_LUA
+	int LuaDelegate::Add(lua_State* L)
+    {
+    	return Bind(L);
+    }
+
+	int LuaDelegate::Remove(lua_State* L)
+    {
+    	return Clear(L);
+    }
+#endif
 
 	int LuaDelegate::gc(lua_State* L)
 	{
