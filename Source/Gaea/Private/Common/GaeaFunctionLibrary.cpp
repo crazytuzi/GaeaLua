@@ -26,3 +26,12 @@ UGaeaDispatcher* UGaeaFunctionLibrary::GetGlobalDispatcher(const UObject* WorldC
         return nullptr;
     }
 }
+
+bool UGaeaFunctionLibrary::WithInEditor(const UObject* WorldContextObject)
+{
+#if WITH_EDITOR
+    return true;
+#else
+    return false;
+#endif
+}

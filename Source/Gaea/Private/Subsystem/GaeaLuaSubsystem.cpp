@@ -3,6 +3,7 @@
 
 #include "GaeaLuaSubsystem.h"
 #include "GaeaGameInstance.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 const char* UGaeaLuaSubsystem::MainFile = "main";
 
@@ -10,110 +11,121 @@ const char* UGaeaLuaSubsystem::MainFunction = "main";
 
 static uint8* ReadFile(IPlatformFile& PlatformFile, const FString Path, uint32& Len)
 {
-	auto FileHandle = PlatformFile.OpenRead(*Path);
+    auto FileHandle = PlatformFile.OpenRead(*Path);
 
-	if (FileHandle)
-	{
-		Len = static_cast<uint32>(FileHandle->Size());
+    if (FileHandle)
+    {
+        Len = static_cast<uint32>(FileHandle->Size());
 
-		auto* Buf = new uint8[Len];
+        auto* Buf = new uint8[Len];
 
-		FileHandle->Read(Buf, Len);
+        FileHandle->Read(Buf, Len);
 
-		delete FileHandle;
+        delete FileHandle;
 
-		return Buf;
-	}
+        return Buf;
+    }
 
-	return nullptr;
+    return nullptr;
 }
 
 uint8* LoadFile(const char* Fn, uint32& Len, FString& FilePath)
 {
-	auto& PlatformFile = FPlatformFileManager::Get().GetPlatformFile();
+    auto& PlatformFile = FPlatformFileManager::Get().GetPlatformFile();
 
-	auto Path = FPaths::ProjectContentDir();
+    auto Path = FPaths::ProjectContentDir();
 
-	Path += "/Lua/";
+    Path += "/Lua/";
 
-	Path += UTF8_TO_TCHAR(Fn);
+    Path += UTF8_TO_TCHAR(Fn);
 
-	static TArray<FString> LuaExtensions = {UTF8_TO_TCHAR(".lua"),UTF8_TO_TCHAR(".luac")};
+    static TArray<FString> LuaExtensions = {UTF8_TO_TCHAR(".lua"),UTF8_TO_TCHAR(".luac")};
 
-	for (auto Elem = LuaExtensions.CreateConstIterator(); Elem; ++Elem)
-	{
-		const auto FullPath = Path + *Elem;
+    for (auto Elem = LuaExtensions.CreateConstIterator(); Elem; ++Elem)
+    {
+        const auto FullPath = Path + *Elem;
 
-		const auto Buf = ReadFile(PlatformFile, FullPath, Len);
+        const auto Buf = ReadFile(PlatformFile, FullPath, Len);
 
-		if (Buf != nullptr)
-		{
-			FilePath = FullPath;
+        if (Buf != nullptr)
+        {
+            FilePath = FullPath;
 
-			return Buf;
-		}
-	}
+            return Buf;
+        }
+    }
 
-	return nullptr;
+    return nullptr;
 }
 
 void UGaeaLuaSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
-	Super::Initialize(Collection);
+    Super::Initialize(Collection);
 
-	bHasInit = State.init();
+    bHasInit = State.init();
 
-	bHasStart = false;
+    bHasStart = false;
 
-	State.setLoadFileDelegate(&LoadFile);
+    State.setLoadFileDelegate(&LoadFile);
 
-	RegisterGlobalMethod();
+    RegisterGlobalMethod();
 
-	RegisterExtensionMethod();
+    RegisterExtensionMethod();
 }
 
 void UGaeaLuaSubsystem::Deinitialize()
 {
-	State.close();
+    State.close();
 
-	bHasInit = false;
+    bHasInit = false;
 
-	bHasStart = false;
+    bHasStart = false;
 
-	Super::Deinitialize();
+    Super::Deinitialize();
 }
 
 void UGaeaLuaSubsystem::Start()
 {
-	if (!bHasInit)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("UGaeaLuaSubsystem::Start => Lua has not been init!"));
-		return;
-	}
+    if (!bHasInit)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("UGaeaLuaSubsystem::Start => Lua has not been init!"));
+        return;
+    }
 
-	if (bHasStart)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("UGaeaLuaSubsystem::Start => Lua already has been started!"));
-		return;
-	}
+    if (bHasStart)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("UGaeaLuaSubsystem::Start => Lua already has been started!"));
+        return;
+    }
 
-	State.doFile(MainFile);
+    State.doFile(MainFile);
 
-	const auto GameInstance = Cast<UGaeaGameInstance>(GetGameInstance());
+    const auto GameInstance = Cast<UGaeaGameInstance>(GetGameInstance());
 
-	if (GameInstance == nullptr)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("UGaeaLuaSubsystem::Start => GameInstance is nullptr!"));
-		return;
-	}
+    if (GameInstance == nullptr)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("UGaeaLuaSubsystem::Start => GameInstance is nullptr!"));
+        return;
+    }
 
-	State.call(MainFunction, GameInstance);
+    State.call(MainFunction, GameInstance);
 
-	bHasStart = true;
+    bHasStart = true;
 }
 
 void UGaeaLuaSubsystem::RegisterGlobalMethod()
 {
+    using namespace slua;
+
+    auto L = State.getLuaState();
+
+    if (L == nullptr)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("UGaeaLuaSubsystem::RegisterGlobalMethod => L is nullptr!"));
+        return;
+    }
+
+    DefGlobalMethod(IsUValid, &UKismetSystemLibrary::IsValid);
 }
 
 void UGaeaLuaSubsystem::RegisterExtensionMethod()

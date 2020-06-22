@@ -1,1 +1,1 @@
-require "Common/Class"
+require "Common/Functions"

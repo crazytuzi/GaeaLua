@@ -40,18 +40,15 @@ function _G.Class(classname, super)
         -- 调用初始化方法
         do
             local create
-
-            create = {
-                function(c, ...)
-                    if c.super then
-                        create(c.super, ...)
-                    end
-
-                    if c.__init then
-                        c.__init(obj, ...)
-                    end
+            create = function(c, ...)
+                if c.super then
+                    create(c.super, ...)
                 end
-            }
+
+                if c.__init then
+                    c.__init(obj, ...)
+                end
+            end
 
             create(class_type, ...)
         end

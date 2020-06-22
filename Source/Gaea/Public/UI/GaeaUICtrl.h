@@ -35,6 +35,7 @@ public:
 
 	FName GetUIName() const;
 
+	UFUNCTION()
 	UUserWidget* GetWidget() const;
 
 	bool IsShow() const;
@@ -44,6 +45,7 @@ public:
 private:
 	FName Name;
 
+	UPROPERTY()
 	UUserWidget* Widget;
 
 	EGaeaUIState State;

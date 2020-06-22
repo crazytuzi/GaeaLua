@@ -206,7 +206,7 @@ TSubclassOf<UUserWidget> UGaeaUISubsystem::GetUIClass(const FName UIName)
 
     if (!PlatformFile.FileExists(*UIFullPath))
     {
-        UE_LOG(LogTemp, Warning, TEXT("UGaeaUISubsystem::GetUIClass => %s is not existed"), *UIFullPath);
+        UE_LOG(LogTemp, Warning, TEXT("UGaeaUISubsystem::GetUIClass => %s is not exists"), *UIFullPath);
         return nullptr;
     }
 
