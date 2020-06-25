@@ -1,8 +1,14 @@
 CtrlBase = _G.Class("CtrlBase", AbstractCtrl)
 
+function CtrlBase:__init()
+    self.uiName = self._class_type.__cname
+
+    _G.UIManager:GetInstance().Register(self)
+end
+
 function CtrlBase:InitCtrl(UICtrl)
     if not _G.IsUValid(UICtrl) then
-        Logger.warn("CtrlBase:InitCtrlBase => UICtrl is nil")
+        Logger.warn("CtrlBase:InitCtrl => UICtrl is nil")
         return
     end
 

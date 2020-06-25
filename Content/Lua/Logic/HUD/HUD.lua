@@ -1,7 +1,6 @@
 HUD = _G.Class("HUD", CtrlBase)
 
 function HUD:__init()
-    self.uiName = "HUD"
 end
 
 function HUD:OnInit()

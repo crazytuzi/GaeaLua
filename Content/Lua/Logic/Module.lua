@@ -1,1 +1,1 @@
-require "Logic/RegisterCtrl"
+require "Logic/HUD/HUD"
