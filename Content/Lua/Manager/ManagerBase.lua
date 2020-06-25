@@ -1,7 +1,7 @@
 ManagerBase = _G.Class("ManagerBase", Singleton)
 
-function ManagerBase:__init()
-    _G.ManagerCenter:GetInstance().Register(self)
+function ManagerBase:__init(Manager)
+    _G.ManagerCenter:GetInstance().Register(Manager)
 end
 
 function ManagerBase:Init()

@@ -10,9 +10,9 @@ function Singleton:__delete()
     rawset(self._class_type, "Instance", nil)
 end
 
-function Singleton:GetInstance()
+function Singleton:GetInstance(...)
     if rawget(self, "Instance") == nil then
-        rawset(self, "Instance", self.New())
+        rawset(self, "Instance", self.New(...))
     end
 
     assert(self.Instance ~= nil)

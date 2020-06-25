@@ -121,3 +121,5 @@ function UIManager:IsShowUI(UIName)
 
     return self._uiManager:IsShowUI(UIName)
 end
+
+return UIManager:GetInstance(UIManager)
