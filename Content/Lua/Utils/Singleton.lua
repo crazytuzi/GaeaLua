@@ -1,16 +1,16 @@
-Singleton = _G.Class("Singleton")
+local Singleton = _G.Class("Singleton")
 
-function Singleton:__init()
+local function __init(self)
     assert(rawget(self._class_type, "Instance") == nil, self._class_type.__cname .. " to create singleton twice!")
 
     rawset(self._class_type, "Instance", self)
 end
 
-function Singleton:__delete()
+local function __delete(self)
     rawset(self._class_type, "Instance", nil)
 end
 
-function Singleton:GetInstance(...)
+local function GetInstance(self, ...)
     if rawget(self, "Instance") == nil then
         rawset(self, "Instance", self.New(...))
     end
@@ -20,6 +20,8 @@ function Singleton:GetInstance(...)
     return self.Instance
 end
 
-function Singleton:Delete()
-    self.Instance = nil
-end
+Singleton.__init = __init
+Singleton.__delete = __delete
+Singleton.GetInstance = GetInstance
+
+return Singleton

@@ -1,7 +1,7 @@
-function _G.CallbackError(e)
+function _G.CallBackError(e)
     if _G.IsStringNullOrEmpty(e) then
         e = "None"
     end
 
-    Logger.warn("CallbackError => " .. e .. "\n" .. debug.traceback())
+    _G.Logger.warn("CallBackError => " .. e .. "\n" .. debug.traceback())
 end

@@ -1,1 +1,1 @@
-require "Logger/Logger"
+_G.Logger = require "Logger/Logger"

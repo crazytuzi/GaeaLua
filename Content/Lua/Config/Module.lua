@@ -1,1 +1,1 @@
-require "Config/Config"
+_G.Config = require "Config/Config"

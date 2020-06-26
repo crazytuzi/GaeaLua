@@ -1,1 +1,3 @@
-_G.Config = {}
+local Config = {}
+
+return Config

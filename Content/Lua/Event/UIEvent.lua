@@ -18,7 +18,7 @@ _G.setmetatable(
 )
 
 return {
-    -- EventStart --
+    -- EventBegin --
     EVENT_UI_ON_INIT,
     EVENT_UI_ON_DISPOSE,
     EVENT_UI_TEST_EVENT

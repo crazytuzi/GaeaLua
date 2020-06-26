@@ -1,31 +1,37 @@
-HUD = _G.Class("HUD", CtrlBase)
+local HUD = _G.Class("HUD", _G.CtrlBase)
 
-function HUD:__init()
+local function __init()
 end
 
-function HUD:OnInit()
+local function OnInit()
 end
 
-function HUD:InitEvent()
-    self:RegisterEvent(self.View.btn_remove, _G.EWidgetEvent.Button.OnClicked, self.Remove, self)
-
-    self:RegisterEvent(self.View.btn_event, _G.EWidgetEvent.Button.OnClicked, self.SendEvent, self)
-
-    self:RegisterEvent(_G.Dispatcher, _G.Events.EVENT_UI_TEST_EVENT, self.ReceiveEvent, self)
-end
-
-function HUD:OnStart()
-end
-
-function HUD:OnDispose()
-end
-
-function HUD:SendEvent()
+local function SendEvent()
     _G.Dispatcher:Dispatch(_G.Events.EVENT_UI_TEST_EVENT, {_G.EEventParamType.EEventParamType_int32, 250})
 end
 
-function HUD:ReceiveEvent(Param)
-    Logger.log("HUD:ReceiveEvent => Param:" .. Param)
+local function ReceiveEvent(Param)
+    _G.Logger.log("HUD:ReceiveEvent => Param:" .. Param)
 end
+
+local function InitEvent(self)
+    self:RegisterEvent(self.View.btn_remove, _G.EWidgetEvent.Button.OnClicked, self.Remove, self)
+
+    self:RegisterEvent(self.View.btn_event, _G.EWidgetEvent.Button.OnClicked, SendEvent)
+
+    self:RegisterEvent(_G.Dispatcher, _G.Events.EVENT_UI_TEST_EVENT, ReceiveEvent)
+end
+
+local function OnStart()
+end
+
+local function OnDispose()
+end
+
+HUD.__init = __init
+HUD.OnInit = OnInit
+HUD.InitEvent = InitEvent
+HUD.OnStart = OnStart
+HUD.OnDispose = OnDispose
 
 return HUD.New()

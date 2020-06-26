@@ -1,40 +1,35 @@
-UIManager = _G.Class("UIManager", ManagerBase)
+local UIManager = _G.Class("UIManager", _G.ManagerBase)
 
 local _Ctrls = {}
 
-function UIManager.__init()
+local function GetCtrl(UIName)
+    if _G.IsStringNullOrEmpty(UIName) then
+        _G._Logger.warn("UIManager:GetCtrl --> UIName is nil")
+        return nil
+    end
+
+    return _Ctrls[UIName]
 end
 
-function UIManager.Register(Ctrl)
+local function __init()
+end
+
+local function Register(Ctrl)
     if Ctrl == nil then
-        Logger.warn("Register => ctrl is nil")
+        _G._Logger.warn("Register => ctrl is nil")
         return
     end
 
     if _G.IsStringNullOrEmpty(Ctrl.uiName) then
-        Logger.warn("Register => uiName is nil")
+        _G._Logger.warn("Register => uiName is nil")
         return
     end
 
     _Ctrls[Ctrl.uiName] = Ctrl
 end
 
-function UIManager:OnInit()
-    self._uiManager =
-        _G.UGaeaFunctionLibrary.GetGameInstanceSubsystem(_G.GetContextObject(), _G.import("GaeaUISubsystem"))
-
-    if not _G.IsUValid(self._uiManager) then
-        Logger.warn("UIManager:OnInit => uiMgr is not valid")
-        return
-    end
-
-    self.OnUIInit_Delegate = _G.Dispatcher:Add(_G.Events.EVENT_UI_ON_INIT, self.OnUIInit, self)
-
-    self.OnUIDispose_Delegate = _G.Dispatcher:Add(_G.Events.EVENT_UI_ON_DISPOSE, self.OnUIDispose, self)
-end
-
-function UIManager:OnUIInit(UIName)
-    local Ctrl = self.GetCtrl(UIName)
+local function OnUIInit(self, UIName)
+    local Ctrl = GetCtrl(UIName)
 
     if Ctrl == nil then
         return
@@ -45,12 +40,12 @@ function UIManager:OnUIInit(UIName)
     if _G.IsUValid(UICtrl) then
         Ctrl:Init(UICtrl)
     else
-        Logger.warn("UIManager:OnUIInit => UICtrl is not valid UIName " .. UIName)
+        _G._Logger.warn("UIManager:OnUIInit => UICtrl is not valid UIName " .. UIName)
     end
 end
 
-function UIManager:OnUIDispose(UIName)
-    local Ctrl = self.GetCtrl(UIName)
+local function OnUIDispose(UIName)
+    local Ctrl = GetCtrl(UIName)
 
     if Ctrl == nil then
         return
@@ -59,7 +54,21 @@ function UIManager:OnUIDispose(UIName)
     Ctrl:Delete()
 end
 
-function UIManager:OnReset()
+local function OnInit(self)
+    self._uiManager =
+        _G.UGaeaFunctionLibrary.GetGameInstanceSubsystem(_G.GetContextObject(), _G.import("GaeaUISubsystem"))
+
+    if not _G.IsUValid(self._uiManager) then
+        _G._Logger.warn("UIManager:OnInit => uiMgr is not valid")
+        return
+    end
+
+    self.OnUIInit_Delegate = _G.Dispatcher:Add(_G.Events.EVENT_UI_ON_INIT, OnUIInit, self)
+
+    self.OnUIDispose_Delegate = _G.Dispatcher:Add(_G.Events.EVENT_UI_ON_DISPOSE, OnUIDispose)
+end
+
+local function OnReset(self)
     _Ctrls = {}
 
     _G.Dispatcher:Remove(_G.Events.EVENT_UI_ON_INIT, self.OnUIInit_Delegate)
@@ -71,55 +80,54 @@ function UIManager:OnReset()
     self.OnUIDispose_Delegate = nil
 end
 
-function UIManager.GetCtrl(UIName)
+local function Show(self, UIName)
     if _G.IsStringNullOrEmpty(UIName) then
-        Logger.warn("UIManager:GetCtrl --> UIName is nil")
-        return nil
-    end
-
-    return _Ctrls[UIName]
-end
-
-function UIManager:Remove(UIName)
-    if _G.IsStringNullOrEmpty(UIName) then
-        Logger.warn("UIManager:RemoveUI => UIName is nil")
+        _G._Logger.warn("UIManager:Show => UIName is nil")
         return
     end
 
     if not _G.IsUValid(self._uiManager) then
-        Logger.warn("UIManager:RemoveUI --> self._uiManager is nil")
-        return
-    end
-
-    self._uiManager:RemoveUI(UIName)
-end
-
-function UIManager:Show(UIName)
-    if _G.IsStringNullOrEmpty(UIName) then
-        Logger.warn("UIManager:Show => UIName is nil")
-        return
-    end
-
-    if not _G.IsUValid(self._uiManager) then
-        Logger.warn("UIManager:ShowUI => self._uiManager is nil")
+        _G._Logger.warn("UIManager:ShowUI => self._uiManager is nil")
         return
     end
 
     self._uiManager:ShowUI(UIName)
 end
 
-function UIManager:IsShowUI(UIName)
+local function Remove(self, UIName)
     if _G.IsStringNullOrEmpty(UIName) then
-        Logger.warn("UIManager:IsShowUI => UIName is nil")
+        _G._Logger.warn("UIManager:RemoveUI => UIName is nil")
         return
     end
 
     if not _G.IsUValid(self._uiManager) then
-        Logger.warn("UIManager:IsShowUI => self._uiManager is nil")
+        _G._Logger.warn("UIManager:RemoveUI --> self._uiManager is nil")
+        return
+    end
+
+    self._uiManager:RemoveUI(UIName)
+end
+
+local function IsShowUI(self, UIName)
+    if _G.IsStringNullOrEmpty(UIName) then
+        _G._Logger.warn("UIManager:IsShowUI => UIName is nil")
+        return
+    end
+
+    if not _G.IsUValid(self._uiManager) then
+        _G._Logger.warn("UIManager:IsShowUI => self._uiManager is nil")
         return
     end
 
     return self._uiManager:IsShowUI(UIName)
 end
+
+UIManager.__init = __init
+UIManager.Register = Register
+UIManager.OnInit = OnInit
+UIManager.OnReset = OnReset
+UIManager.Show = Show
+UIManager.Remove = Remove
+UIManager.IsShowUI = IsShowUI
 
 return UIManager:GetInstance(UIManager)

@@ -1,6 +1,6 @@
-ViewBase = _G.Class("ViewBase")
+local ViewBase = _G.Class("ViewBase")
 
-function ViewBase:__init(Widget)
+local function __init(self, Widget)
     self._uiRoot = Widget
 
     self._widgetCache = {}
@@ -8,7 +8,7 @@ function ViewBase:__init(Widget)
     self:OnInit()
 end
 
-function ViewBase:__delete()
+local function __delete(self)
     self:OnDispose()
 
     self._widgetCache = {}
@@ -16,54 +16,56 @@ function ViewBase:__delete()
     self._uiRoot = nil
 end
 
-function ViewBase:Init()
+local function __index(t, k)
+    local value = ViewBase[k]
+
+    if value then
+        return value
+    end
+
+    local CacheTable = rawget(t, "_widgetCache")
+
+    if not CacheTable then
+        _G._Logger.warn("ViewBase.__index => CacheTable is not valid")
+        return nil
+    end
+
+    value = CacheTable[k]
+
+    if not value then
+        local root = rawget(t, "_uiRoot")
+
+        if not _G.IsUValid(root) then
+            _G._Logger.warn("ViewBase.__index => uiRoot not valid")
+            return nil
+        end
+
+        value = root:FindWidget(k .. "_lua")
+
+        CacheTable[k] = value
+    end
+
+    return value
+end
+
+local function Init(self)
     setmetatable(
         self,
         {
-            __index = function(t, k)
-                local value = ViewBase[k]
-
-                if value then
-                    return value
-                end
-
-                local CacheTable = rawget(t, "_widgetCache")
-
-                if not CacheTable then
-                    Logger.warn("ViewBase.__index => CacheTable is not valid")
-                    return nil
-                end
-
-                value = CacheTable[k]
-
-                if not value then
-                    local root = rawget(t, "_uiRoot")
-
-                    if not _G.IsUValid(root) then
-                        Logger.warn("ViewBase.__index => uiRoot not valid")
-                        return nil
-                    end
-
-                    value = root:FindWidget(k .. "_lua")
-
-                    CacheTable[k] = value
-                end
-
-                return value
-            end
+            __index = __index
         }
     )
 end
 
-function ViewBase:OnInit()
+local function OnInit()
     -- You need to override this function
 end
 
-function ViewBase:OnDispose()
+local function OnDispose()
     -- You can override this function
 end
 
-function ViewBase:FindWidget(WidgetName)
+local function FindWidget(self, WidgetName)
     if not _G.IsUValid(self._uiRoot) then
         return nil
     end
@@ -71,6 +73,16 @@ function ViewBase:FindWidget(WidgetName)
     return self._uiRoot:FindWidget(WidgetName)
 end
 
-function ViewBase:IsValid()
+local function IsValid(self)
     return _G.IsUValid(self._uiRoot)
 end
+
+ViewBase.__init = __init
+ViewBase.__delete = __delete
+ViewBase.Init = Init
+ViewBase.OnInit = OnInit
+ViewBase.OnDispose = OnDispose
+ViewBase.FindWidget = FindWidget
+ViewBase.IsValid = IsValid
+
+return ViewBase

@@ -1,9 +1,9 @@
 require("LuaPanda").start("127.0.0.1", 8818)
 
-local GaeaGameInstance = nil
+local _GameInstance = nil
 
-local function InitGaeaGameInstance(GameInstance)
-    GaeaGameInstance = GameInstance
+local function InitGameInstance(GameInstance)
+    _GameInstance = GameInstance
 end
 
 local function ProtectGlobalTable()
@@ -42,11 +42,11 @@ end
 local function StartGame()
     ProtectGlobalTable()
 
-    _G.ManagerCenter:GetInstance().Init()
+    _G.ManagerCenter.Init()
 end
 
 function _G.main(GameInstance)
-    InitGaeaGameInstance(GameInstance)
+    InitGameInstance(GameInstance)
 
     InitGame()
 
@@ -54,5 +54,5 @@ function _G.main(GameInstance)
 end
 
 function _G.GetContextObject()
-    return GaeaGameInstance
+    return _GameInstance
 end

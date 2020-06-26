@@ -17,7 +17,7 @@ local function EventParamToTable(EventParam)
         local Fun = UGaeaEventFunctionLibrary[FunName]
 
         if not _G.IsCallable(Fun) then
-            Logger.warn("EventParamToTable => Fun is not found")
+            _G.Logger.warn("EventParamToTable => Fun is not found")
         else
             local Param = Fun(Element)
 
@@ -30,7 +30,7 @@ end
 
 local LuaDispatcherWarp = _G.Class("LuaDispatcherWarp")
 
-function LuaDispatcherWarp:__init(LuaFun, SelfTable, ParamTable)
+local function __initWarp(self, LuaFun, SelfTable, ParamTable)
     self._luaFun = LuaFun
 
     self._selfTable = SelfTable
@@ -38,11 +38,11 @@ function LuaDispatcherWarp:__init(LuaFun, SelfTable, ParamTable)
     self._paramTable = ParamTable
 end
 
-function LuaDispatcherWarp:DelegateTrigger(EventParam)
+local function DelegateTrigger(self, EventParam)
     local Param = EventParamToTable(EventParam)
 
     if not _G.IsCallable(self._luaFun) then
-        Logger.warn("LuaDispatcherInfo.DelegateTrigger => _luaFun is not found")
+        _G.Logger.warn("LuaDispatcherInfo.DelegateTrigger => _luaFun is not found")
     else
         if self._selfTable then
             table.insert(Param, 1, self._selfTable)
@@ -50,24 +50,27 @@ function LuaDispatcherWarp:DelegateTrigger(EventParam)
 
         table.insert(Param, self._paramTable)
 
-        xpcall(self._luaFun, _G.CallbackError, table.unpack(Param))
+        xpcall(self._luaFun, _G.CallBackError, table.unpack(Param))
     end
 end
 
+LuaDispatcherWarp.__init = __initWarp
+LuaDispatcherWarp.DelegateTrigger = DelegateTrigger
+
 local LuaDispatcher = _G.Class("LuaDispatcher")
 
-function LuaDispatcher:__init(Dispatcher)
+local function __init(self, Dispatcher)
     self.RawDispatcher = Dispatcher
 end
 
-function LuaDispatcher:Add(EventId, LuaFun, SelfTable, ParamTable)
+local function Add(self, EventId, LuaFun, SelfTable, ParamTable)
     if type(EventId) ~= "number" then
-        Logger.warn("LuaDispatcher:Dispatch => EventId is illegal")
+        _G.Logger.warn("LuaDispatcher:Dispatch => EventId is illegal")
         return
     end
 
     if not _G.IsUValid(self.RawDispatcher) then
-        Logger.warn("LuaDispatcher:Add => RawDispatcher is nil")
+        _G.Logger.warn("LuaDispatcher:Add => RawDispatcher is nil")
         return nil
     end
 
@@ -79,45 +82,45 @@ function LuaDispatcher:Add(EventId, LuaFun, SelfTable, ParamTable)
         Delegate = self.RawDispatcher:GetDelegateCallBack(EventId)
 
         if not _G.IsUValid(Delegate) then
-            Logger.warn("LuaDispatcher:Add --> GetDelegateByEvent failed")
+            _G.Logger.warn("LuaDispatcher:Add --> GetDelegateByEvent failed")
             return nil
         end
     end
 
     local Info = LuaDispatcherWarp.New(LuaFun, SelfTable, ParamTable)
 
-    return EventHelper.Add(Delegate, "callback", Info.DelegateTrigger, Info)
+    return _G.EventHelper.Add(Delegate, "callback", Info.DelegateTrigger, Info)
 end
 
-function LuaDispatcher:Remove(EventId, LuaDelegate)
+local function Remove(self, EventId, LuaDelegate)
     if type(EventId) ~= "number" then
-        Logger.warn("LuaDispatcher:Remove => EventId is illegal")
+        _G.Logger.warn("LuaDispatcher:Remove => EventId is illegal")
         return
     end
 
     if not _G.IsUValid(self.RawDispatcher) then
-        Logger.warn("LuaDispatcher:Remove => RawDispatcher is nil")
+        _G.Logger.warn("LuaDispatcher:Remove => RawDispatcher is nil")
         return
     end
 
     local Delegate = self.RawDispatcher:GetDelegateCallBack(EventId)
 
     if not _G.IsUValid(Delegate) then
-        Logger.warn("LuaDispatcher:Remove => GetDelegateByEvent failed")
+        _G.Logger.warn("LuaDispatcher:Remove => GetDelegateByEvent failed")
         return
     end
 
-    return EventHelper.Remove(Delegate, "callback", LuaDelegate)
+    return _G.EventHelper.Remove(Delegate, "callback", LuaDelegate)
 end
 
-function LuaDispatcher:Dispatch(EventId, ...)
+local function Dispatch(self, EventId, ...)
     if type(EventId) ~= "number" then
-        Logger.warn("LuaDispatcher:Dispatch => EventId is illegal")
+        _G.Logger.warn("LuaDispatcher:Dispatch => EventId is illegal")
         return
     end
 
     if not _G.IsUValid(self.RawDispatcher) then
-        Logger.warn("LuaDispatcher:Dispatch => RawDispatcher is nil")
+        _G.Logger.warn("LuaDispatcher:Dispatch => RawDispatcher is nil")
         return
     end
 
@@ -133,7 +136,7 @@ function LuaDispatcher:Dispatch(EventId, ...)
         local ParamValue = Element[2]
 
         if ParamType == nil or ParamValue == nil then
-            Logger.warn("LuaDispatcher:Dispatch => ParamType or ParamValue is nil")
+            _G.Logger.warn("LuaDispatcher:Dispatch => ParamType or ParamValue is nil")
             return
         end
 
@@ -142,7 +145,7 @@ function LuaDispatcher:Dispatch(EventId, ...)
         local Fun = UGaeaEventFunctionLibrary[FunName]
 
         if not _G.IsCallable(Fun) then
-            Logger.warn("LuaDispatcher:Dispatch => Fun is not found")
+            _G.Logger.warn("LuaDispatcher:Dispatch => Fun is not found")
         else
             local Param = _G.FEventParam()
 
@@ -155,4 +158,9 @@ function LuaDispatcher:Dispatch(EventId, ...)
     self.RawDispatcher:DispatchImp(EventId, EventParamTArray)
 end
 
-_G.Dispatcher = LuaDispatcher.New(_G.UGaeaFunctionLibrary.GetGlobalDispatcher(_G.GetContextObject()))
+LuaDispatcher.__init = __init
+LuaDispatcher.Add = Add
+LuaDispatcher.Remove = Remove
+LuaDispatcher.Dispatch = Dispatch
+
+return LuaDispatcher.New(_G.UGaeaFunctionLibrary.GetGlobalDispatcher(_G.GetContextObject()))

@@ -1,16 +1,16 @@
-ManagerBase = _G.Class("ManagerBase", Singleton)
+local ManagerBase = _G.Class("ManagerBase", _G.Singleton)
 
-function ManagerBase:__init(Manager)
-    _G.ManagerCenter:GetInstance().Register(Manager)
+local function __init(_, Manager)
+    _G.ManagerCenter.Register(Manager)
 end
 
-function ManagerBase:Init()
+local function Init(self)
     self:OnInit()
 
     self._hasInit = true
 end
 
-function ManagerBase:Reset()
+local function Reset(self)
     if not self._hasInit then
         return
     end
@@ -20,8 +20,16 @@ function ManagerBase:Reset()
     self:OnReset()
 end
 
-function ManagerBase:OnInit()
+local function OnInit()
 end
 
-function ManagerBase:OnReset()
+local function OnReset()
 end
+
+ManagerBase.__init = __init
+ManagerBase.Init = Init
+ManagerBase.Reset = Reset
+ManagerBase.OnInit = OnInit
+ManagerBase.OnReset = OnReset
+
+return ManagerBase

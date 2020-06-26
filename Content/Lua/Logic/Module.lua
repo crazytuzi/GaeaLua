@@ -1,1 +1,1 @@
-require "Logic/HUD/HUD"
+_G.HUD = require "Logic/HUD/HUD"

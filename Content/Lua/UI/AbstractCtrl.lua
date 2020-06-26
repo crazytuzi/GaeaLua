@@ -1,6 +1,6 @@
-AbstractCtrl = _G.Class("AbstractCtrl")
+local AbstractCtrl = _G.Class("AbstractCtrl")
 
-function AbstractCtrl:__delete()
+local function __delete(self)
     self:UnRegisterEvents()
 
     self:OnDispose()
@@ -12,15 +12,15 @@ function AbstractCtrl:__delete()
     self.bIsOpening = false
 end
 
-function AbstractCtrl:Init(Widget)
+local function Init(self, Widget)
     if not _G.IsUValid(Widget) then
-        Logger.warn("AbstractCtrl:InitCtrl => Widget is not valid")
+        _G._Logger.warn("AbstractCtrl:InitCtrl => Widget is not valid")
         return
     end
 
     self._eventDelegates = {}
 
-    self.View = ViewBase.New(Widget)
+    self.View = _G.ViewBase.New(Widget)
 
     self.View:Init()
 
@@ -33,37 +33,37 @@ function AbstractCtrl:Init(Widget)
     self:OnStart()
 end
 
-function AbstractCtrl:OnInit()
+local function OnInit()
     -- You can override this function
 end
 
 -- Called multiple times, when ui being init
-function AbstractCtrl:InitEvent()
+local function InitEvent()
     -- You can override this function
 end
 
-function AbstractCtrl:OnStart()
+local function OnStart()
     -- You can override this function
 end
 
-function AbstractCtrl:IsOpening()
+local function IsOpening(self)
     if not self.bIsOpening then
         return false
     end
 
     if self.View == nil or not self.View:IsValid() then
-        Logger.warn("AbstractCtrl:IsOpening => View uiRoot is not valid")
+        _G._Logger.warn("AbstractCtrl:IsOpening => View uiRoot is not valid")
         return false
     end
 
     return true
 end
 
-function AbstractCtrl:OnDispose()
+local function OnDispose()
     -- You can override this function
 end
 
-function AbstractCtrl:RegisterEvent(EventTarget, EventName, LuaFun, SelfTable, ...)
+local function RegisterEvent(self, EventTarget, EventName, LuaFun, SelfTable, ...)
     local EventDelegate
 
     if type(EventTarget) == "table" then
@@ -71,7 +71,7 @@ function AbstractCtrl:RegisterEvent(EventTarget, EventName, LuaFun, SelfTable, .
             EventDelegate = EventTarget:Add(EventName, LuaFun, SelfTable)
         end
     else
-        EventDelegate = EventHelper.Add(EventTarget, EventName, LuaFun, SelfTable, ...)
+        EventDelegate = _G.EventHelper.Add(EventTarget, EventName, LuaFun, SelfTable, ...)
     end
 
     if EventDelegate == nil then
@@ -83,16 +83,28 @@ function AbstractCtrl:RegisterEvent(EventTarget, EventName, LuaFun, SelfTable, .
     table.insert(self._eventDelegates, Info)
 end
 
-function AbstractCtrl:UnRegisterEvents()
+local function UnRegisterEvents(self)
     for _, Delegate in ipairs(self._eventDelegates) do
         if type(Delegate.EventTarget) == "table" then
             if Delegate.EventTarget.super == _G.LuaDispatcher then
                 Delegate.EventTarget:Remove(Delegate.EventName, Delegate.EventDelegate)
             end
         else
-            EventHelper.Remove(Delegate.EventTarget, Delegate.EventName, Delegate.EventDelegate)
+            _G.EventHelper.Remove(Delegate.EventTarget, Delegate.EventName, Delegate.EventDelegate)
         end
     end
 
     self._eventDelegates = {}
 end
+
+AbstractCtrl.__delete = __delete
+AbstractCtrl.Init = Init
+AbstractCtrl.OnInit = OnInit
+AbstractCtrl.InitEvent = InitEvent
+AbstractCtrl.OnStart = OnStart
+AbstractCtrl.IsOpening = IsOpening
+AbstractCtrl.OnDispose = OnDispose
+AbstractCtrl.RegisterEvent = RegisterEvent
+AbstractCtrl.UnRegisterEvents = UnRegisterEvents
+
+return AbstractCtrl

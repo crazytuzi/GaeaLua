@@ -1,16 +1,16 @@
-local Base = AbstractCtrl
+local Base = _G.AbstractCtrl
 
-CtrlBase = _G.Class("CtrlBase", Base)
+local CtrlBase = _G.Class("CtrlBase", Base)
 
-function CtrlBase:__init()
+local function __init(self)
     self.uiName = self._class_type.__cname
 
-    _G.UIManager:GetInstance().Register(self)
+    _G.UIManager.Register(self)
 end
 
-function CtrlBase:Init(UICtrl)
+local function Init(self, UICtrl)
     if not _G.IsUValid(UICtrl) then
-        Logger.warn("CtrlBase:InitCtrl => UICtrl is nil")
+        _G._Logger.warn("CtrlBase:InitCtrl => UICtrl is nil")
         return
     end
 
@@ -21,14 +21,21 @@ function CtrlBase:Init(UICtrl)
     Base.Init(self, Widget)
 end
 
-function CtrlBase:Show()
+local function Show(self)
     if not _G.IsStringNullOrEmpty(self.uiName) then
-        UIManager:GetInstance():Show(self.uiName)
+        _G.UIManager:Show(self.uiName)
     end
 end
 
-function CtrlBase:Remove()
+local function Remove(self)
     if not _G.IsStringNullOrEmpty(self.uiName) then
-        UIManager:GetInstance():Remove(self.uiName)
+        _G.UIManager:Remove(self.uiName)
     end
 end
+
+CtrlBase.__init = __init
+CtrlBase.Init = Init
+CtrlBase.Show = Show
+CtrlBase.Remove = Remove
+
+return CtrlBase

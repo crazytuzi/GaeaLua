@@ -3,7 +3,7 @@
 -- @pattern：分隔符，可以为模式匹配
 -- @init：起始位置
 -- @plain：为true禁用pattern模式匹配；为false则开启模式匹配
-function string.split(split_string, pattern, search_pos_begin, plain)
+local function split(split_string, pattern, search_pos_begin, plain)
     assert(type(split_string) == "string")
 
     assert(type(pattern) == "string" and #pattern > 0)
@@ -42,7 +42,7 @@ end
 
 -- 是否包含
 -- 注意：plain为true时，关闭模式匹配机制，此时函数仅做直接的 “查找子串”的操作
-function string.contains(target_string, pattern, plain)
+local function contains(target_string, pattern, plain)
     plain = plain or true
 
     local find_pos_begin, _ = string.find(target_string, pattern, 1, plain)
@@ -51,7 +51,7 @@ function string.contains(target_string, pattern, plain)
 end
 
 -- 以某个字符串开始
-function string.startswith(target_string, start_pattern, plain)
+local function startswith(target_string, start_pattern, plain)
     plain = plain or true
 
     local find_pos_begin, _ = string.find(target_string, start_pattern, 1, plain)
@@ -60,10 +60,15 @@ function string.startswith(target_string, start_pattern, plain)
 end
 
 -- 以某个字符串结尾
-function string.endswith(target_string, start_pattern, plain)
+local function endswith(target_string, start_pattern, plain)
     plain = plain or true
 
     local _, find_pos_end = string.find(target_string, start_pattern, -(#start_pattern), plain)
 
     return find_pos_end == #target_string
 end
+
+string.split = split
+string.contains = contains
+string.startswith = startswith
+string.endswith = endswith
