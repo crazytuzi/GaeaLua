@@ -43,7 +43,7 @@ function UIManager:OnUIInit(UIName)
     local UICtrl = self._uiManager:GetUICtrl(UIName)
 
     if _G.IsUValid(UICtrl) then
-        Ctrl:InitCtrl(UICtrl)
+        Ctrl:Init(UICtrl)
     else
         Logger.warn("UIManager:OnUIInit => UICtrl is not valid UIName " .. UIName)
     end
