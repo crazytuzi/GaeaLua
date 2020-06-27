@@ -1,1 +1,2 @@
-_G.HUD = require "Logic/HUD/HUD"
+require "Logic/HUD/HUDCtrl"
+require "Logic/Test/TestCtrl"

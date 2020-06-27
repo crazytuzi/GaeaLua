@@ -3,9 +3,13 @@ local Base = _G.AbstractCtrl
 local CtrlBase = _G.Class("CtrlBase", Base)
 
 local function __init(self)
-    self.uiName = self._class_type.__cname
+    self.uiName = string.split(self._class_type.__cname, "Ctrl")[1]
 
     _G.UIManager.Register(self)
+end
+
+local function __delete(self)
+    self.uiData = {}
 end
 
 local function Init(self, UICtrl)
@@ -34,6 +38,7 @@ local function Remove(self)
 end
 
 CtrlBase.__init = __init
+CtrlBase.__delete = __delete
 CtrlBase.Init = Init
 CtrlBase.Show = Show
 CtrlBase.Remove = Remove
