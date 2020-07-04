@@ -4,14 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/CanvasPanel.h"
 #include "GaeaUIRoot.generated.h"
-
-class UUserWidget;
-class UCanvasPanel;
 
 UENUM()
 enum class EGaeaUILayer : uint8
 {
+	Bottom,
 	HUD,
 	Common,
 	Tip,
@@ -38,8 +37,10 @@ public:
 	static const uint32 ZOrderRatio;
 
 private:
+	UPROPERTY()
 	UCanvasPanel* RootCanvas;
-
+	
+	UPROPERTY()
 	TMap<EGaeaUILayer, UCanvasPanel*> CanvasPanels;
 
 	bool InitCanvasPanels();

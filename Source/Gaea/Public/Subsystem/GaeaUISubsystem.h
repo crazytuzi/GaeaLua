@@ -5,10 +5,9 @@
 #include "CoreMinimal.h"
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "GaeaUIRoot.h"
+#include "GaeaUICtrl.h"
+#include "Blueprint/UserWidget.h"
 #include "GaeaUISubsystem.generated.h"
-
-class UUserWidget;
-class UGaeaUICtrl;
 
 /**
  * 
@@ -46,7 +45,8 @@ public:
 private:
 	UPROPERTY()
 	UGaeaUIRoot* Root;
-
+	
+	UPROPERTY()
 	TMap<FName, UGaeaUICtrl*> UICtrlMap;
 
 	TMap<FName, const TSubclassOf<UUserWidget>> UIClassMap;

@@ -117,7 +117,7 @@ void UGaeaLuaSubsystem::RegisterGlobalMethod()
 {
     using namespace slua;
 
-    auto L = State.getLuaState();
+    const auto L = State.getLuaState();
 
     if (L == nullptr)
     {

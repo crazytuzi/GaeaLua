@@ -47,7 +47,7 @@ local function Remove(UObject, EventName, LuaDelegate)
         return
     end
 
-    if not _G.IsUValid(LuaDelegate) then
+    if not LuaDelegate then
         _G.Logger.warn("EventHelper.Remove => LuaDelegate is not illegal")
         return
     end

@@ -4,9 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
+#include "Blueprint/UserWidget.h"
 #include "GaeaUICtrl.generated.h"
-
-class UUserWidget;
 
 enum class EGaeaUIState
 {

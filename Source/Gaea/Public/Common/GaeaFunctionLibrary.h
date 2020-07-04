@@ -56,5 +56,5 @@ public:
     }
 
     UFUNCTION()
-    static bool WithInEditor(const UObject* WorldContextObject);
+    static bool WithInEditor();
 };

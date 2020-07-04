@@ -27,7 +27,7 @@ UGaeaDispatcher* UGaeaFunctionLibrary::GetGlobalDispatcher(const UObject* WorldC
     }
 }
 
-bool UGaeaFunctionLibrary::WithInEditor(const UObject* WorldContextObject)
+bool UGaeaFunctionLibrary::WithInEditor()
 {
 #if WITH_EDITOR
     return true;
