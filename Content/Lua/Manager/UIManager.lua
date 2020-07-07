@@ -54,12 +54,12 @@ local function OnUIDispose(UIName)
     Ctrl:Delete()
 end
 
-local function OnInit(self)
+local function OnStartUp(self)
     self._uiManager =
         _G.UGaeaFunctionLibrary.GetGameInstanceSubsystem(_G.GetContextObject(), _G.import("GaeaUISubsystem"))
 
     if not _G.IsUValid(self._uiManager) then
-        _G._Logger.warn("UIManager:OnInit => uiMgr is not valid")
+        _G._Logger.warn("UIManager:OnStartUp => uiMgr is not valid")
         return
     end
 
@@ -68,7 +68,7 @@ local function OnInit(self)
     self.OnUIDispose_Delegate = _G.Dispatcher:Add(_G.Events.EVENT_UI_ON_DISPOSE, OnUIDispose)
 end
 
-local function OnReset(self)
+local function OnShutDown(self)
     _Ctrls = {}
 
     _G.Dispatcher:Remove(_G.Events.EVENT_UI_ON_INIT, self.OnUIInit_Delegate)
@@ -124,8 +124,8 @@ end
 
 UIManager.__init = __init
 UIManager.Register = Register
-UIManager.OnInit = OnInit
-UIManager.OnReset = OnReset
+UIManager.OnStartUp = OnStartUp
+UIManager.OnShutDown = OnShutDown
 UIManager.Show = Show
 UIManager.Remove = Remove
 UIManager.IsShowUI = IsShowUI

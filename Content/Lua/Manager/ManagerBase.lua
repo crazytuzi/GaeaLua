@@ -4,32 +4,32 @@ local function __init(_, Manager)
     _G.ManagerCenter.Register(Manager)
 end
 
-local function Init(self)
-    self:OnInit()
+local function StartUp(self)
+    self:OnStartUp()
 
     self._hasInit = true
 end
 
-local function Reset(self)
+local function ShutDown(self)
     if not self._hasInit then
         return
     end
 
     self._hasInit = false
 
-    self:OnReset()
+    self:OnShutDown()
 end
 
-local function OnInit()
+local function OnStartUp()
 end
 
-local function OnReset()
+local function OnShutDown()
 end
 
 ManagerBase.__init = __init
-ManagerBase.Init = Init
-ManagerBase.Reset = Reset
-ManagerBase.OnInit = OnInit
-ManagerBase.OnReset = OnReset
+ManagerBase.StartUp = StartUp
+ManagerBase.ShutDown = ShutDown
+ManagerBase.OnStartUp = OnStartUp
+ManagerBase.OnShutDown = OnShutDown
 
 return ManagerBase

@@ -42,7 +42,7 @@ end
 local function StartGame()
     ProtectGlobalTable()
 
-    _G.ManagerCenter.Init()
+    _G.ManagerCenter.StartUp()
 end
 
 function _G.main(GameInstance)

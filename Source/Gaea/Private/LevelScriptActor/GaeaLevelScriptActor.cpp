@@ -37,5 +37,5 @@ void AGaeaLevelScriptActor::BeginPlay()
 
 void AGaeaLevelScriptActor::Destroyed()
 {
-	Destroy();
+	Super::Destroyed();
 }
