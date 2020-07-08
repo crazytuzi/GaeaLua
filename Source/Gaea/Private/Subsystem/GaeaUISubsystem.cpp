@@ -1,12 +1,12 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "GaeaUISubsystem.h"
-#include "UserWidget.h"
-#include "GaeaUIRoot.h"
-#include "GaeaUICtrl.h"
-#include "GaeaFunctionLibrary.h"
-#include "GaeaEventSubsystem.h"
+#include "Subsystem/GaeaUISubsystem.h"
+#include "Blueprint/UserWidget.h"
+#include "UI/GaeaUIRoot.h"
+#include "UI/GaeaUICtrl.h"
+#include "Common/GaeaFunctionLibrary.h"
+#include "Subsystem/GaeaEventSubsystem.h"
 
 const char* UGaeaUISubsystem::RootName = "GaeaUIRoot";
 

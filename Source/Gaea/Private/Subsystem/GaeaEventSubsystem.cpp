@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "GaeaEventSubsystem.h"
+#include "Subsystem/GaeaEventSubsystem.h"
 #include "Engine/World.h"
 
 void UGaeaEventSubsystem::Initialize(FSubsystemCollectionBase& Collection)

@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "GaeaLuaSubsystem.h"
+#include "Subsystem/GaeaLuaSubsystem.h"
 #include "GaeaGameInstance.h"
 #include "Kismet/KismetSystemLibrary.h"
 

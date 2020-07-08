@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "GaeaEventFunctionLibrary.h"
+#include "Event/GaeaEventFunctionLibrary.h"
 
 #define EVENTPARAM_STR(Str) #Str
 

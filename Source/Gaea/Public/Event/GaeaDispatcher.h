@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "ObjectMacros.h"
+#include "UObject/ObjectMacros.h"
 #include "UObject/NoExportTypes.h"
 #include "GaeaEvent.h"
 #include "GaeaDispatcher.generated.h"

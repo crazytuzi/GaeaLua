@@ -1,10 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "GaeaUIRoot.h"
-#include "WidgetTree.h"
-#include "CanvasPanel.h"
-#include "CanvasPanelSlot.h"
+#include "UI/GaeaUIRoot.h"
+#include "Blueprint/WidgetTree.h"
+#include "Components/CanvasPanel.h"
+#include "Components/CanvasPanelSlot.h"
 
 const char* UGaeaUIRoot::RootCanvasName = "GaeaUIRootCanvas";
 

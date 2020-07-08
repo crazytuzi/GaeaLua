@@ -4,8 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Subsystems/GameInstanceSubsystem.h"
-#include "GaeaUIRoot.h"
-#include "GaeaUICtrl.h"
+#include "UI/GaeaUIRoot.h"
+#include "UI/GaeaUICtrl.h"
 #include "Blueprint/UserWidget.h"
 #include "GaeaUISubsystem.generated.h"
 

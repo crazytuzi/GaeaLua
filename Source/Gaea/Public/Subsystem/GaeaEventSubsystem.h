@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Subsystems/GameInstanceSubsystem.h"
-#include "GaeaDispatcher.h"
+#include "Event/GaeaDispatcher.h"
 #include "GaeaEventSubsystem.generated.h"
 
 /**

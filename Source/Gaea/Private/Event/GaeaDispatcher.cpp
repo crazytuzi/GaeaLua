@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "GaeaDispatcher.h"
+#include "Event/GaeaDispatcher.h"
 
 void UDelegateCallBack::Dispatch(const FEventParamWrap& Param) const
 {
