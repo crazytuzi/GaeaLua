@@ -24,8 +24,13 @@ local function warn(message)
     screen(message, 10, _G.FLinearColor(1.0, 0.0, 0.0, 1.0))
 end
 
+local function dump(t, dump_metatable, max_level)
+    table.dump(t, dump_metatable, max_level)
+end
+
 Logger.log = log
 Logger.warn = warn
 Logger.screen = screen
+Logger.dump = dump
 
 return Logger
