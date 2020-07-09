@@ -54,7 +54,4 @@ public:
             UE_LOG(LogTemp, Warning, TEXT("UGaeaFunctionLibrary::Dispatch => GlobalDispatcher is nullptr"));
         }
     }
-
-    UFUNCTION()
-    static bool WithInEditor();
 };

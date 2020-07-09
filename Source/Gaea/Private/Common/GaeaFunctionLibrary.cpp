@@ -2,7 +2,7 @@
 
 
 #include "Common/GaeaFunctionLibrary.h"
-#include "SubsystemBlueprintLibrary.h"
+#include "Subsystems/SubsystemBlueprintLibrary.h"
 #include "Subsystem/GaeaEventSubsystem.h"
 
 UGameInstanceSubsystem* UGaeaFunctionLibrary::GetGameInstanceSubsystem(UObject* WorldContextObject,
@@ -27,11 +27,4 @@ UGaeaDispatcher* UGaeaFunctionLibrary::GetGlobalDispatcher(const UObject* WorldC
     }
 }
 
-bool UGaeaFunctionLibrary::WithInEditor()
-{
-#if WITH_EDITOR
-    return true;
-#else
-    return false;
-#endif
-}
+

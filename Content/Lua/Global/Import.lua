@@ -6,6 +6,7 @@ _G.UKismetSystemLibrary = import("KismetSystemLibrary")
 
 -- Import From Project --
 _G.UGaeaFunctionLibrary = import("GaeaFunctionLibrary")
+_G.UGaeaUIFunctionLibrary = import("GaeaUIFunctionLibrary")
 _G.FEventParam = import("EventParam")
 _G.UGaeaEventFunctionLibrary = import("GaeaEventFunctionLibrary")
 -- Import From Project --
