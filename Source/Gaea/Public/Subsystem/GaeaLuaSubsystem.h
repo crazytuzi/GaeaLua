@@ -22,6 +22,8 @@ public:
 
 	void Start();
 
+	slua::LuaVar GetVar(const char* Key);
+
 	static const char* MainFile;
 
 	static const char* MainFunction;

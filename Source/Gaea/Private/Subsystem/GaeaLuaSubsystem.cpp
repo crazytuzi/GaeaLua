@@ -113,6 +113,17 @@ void UGaeaLuaSubsystem::Start()
     bHasStart = true;
 }
 
+slua::LuaVar UGaeaLuaSubsystem::GetVar(const char* Key)
+{
+    if (!HasReady())
+    {
+        UE_LOG(LogTemp, Warning, TEXT("UGaeaLuaSubsystem::GetVar => Lua has not been ready!"));
+        return slua::LuaVar();
+    }
+
+    return State.get(Key);
+}
+
 void UGaeaLuaSubsystem::RegisterGlobalMethod()
 {
     using namespace slua;
