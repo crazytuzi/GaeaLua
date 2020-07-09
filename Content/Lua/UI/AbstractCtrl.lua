@@ -9,7 +9,7 @@ local function __delete(self)
         self.View:Delete()
     end
 
-    self.bIsOpening = false
+    self.bIsVisible = false
 end
 
 local function Init(self, Widget)
@@ -24,7 +24,7 @@ local function Init(self, Widget)
 
     self.View:Init()
 
-    self.bIsOpening = true
+    self:SetVisibility(true)
 
     self:OnInit()
 
@@ -46,17 +46,25 @@ local function OnStart()
     -- You can override this function
 end
 
-local function IsOpening(self)
-    if not self.bIsOpening then
+local function IsVisible(self)
+    if not self.bIsVisible then
         return false
     end
 
     if self.View == nil or not self.View:IsValid() then
-        _G._Logger.warn("AbstractCtrl:IsOpening => View uiRoot is not valid")
+        _G._Logger.warn("AbstractCtrl:IsVisible => View uiRoot is not valid")
         return false
     end
 
     return true
+end
+
+local function SetVisibility(self, bIsVisible)
+    self.bIsVisible = bIsVisible or false
+
+    bIsVisible = (self.bIsVisible and _G.ESlateVisibility.Visible) or _G.ESlateVisibility.Collapsed
+
+    self.View:SetVisibility(bIsVisible)
 end
 
 local function OnDispose()
@@ -102,7 +110,8 @@ AbstractCtrl.Init = Init
 AbstractCtrl.OnInit = OnInit
 AbstractCtrl.InitEvent = InitEvent
 AbstractCtrl.OnStart = OnStart
-AbstractCtrl.IsOpening = IsOpening
+AbstractCtrl.IsVisible = IsVisible
+AbstractCtrl.SetVisibility = SetVisibility
 AbstractCtrl.OnDispose = OnDispose
 AbstractCtrl.RegisterEvent = RegisterEvent
 AbstractCtrl.UnRegisterEvents = UnRegisterEvents

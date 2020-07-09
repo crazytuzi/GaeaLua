@@ -73,6 +73,12 @@ local function FindWidget(self, WidgetName)
     return self._uiRoot:FindWidget(WidgetName)
 end
 
+local function SetVisibility(self, bIsVisible)
+    if self:IsValid() then
+        self._uiRoot:SetVisibility(bIsVisible)
+    end
+end
+
 local function IsValid(self)
     return _G.IsUValid(self._uiRoot)
 end
@@ -83,6 +89,7 @@ ViewBase.Init = Init
 ViewBase.OnInit = OnInit
 ViewBase.OnDispose = OnDispose
 ViewBase.FindWidget = FindWidget
+ViewBase.SetVisibility = SetVisibility
 ViewBase.IsValid = IsValid
 
 return ViewBase
