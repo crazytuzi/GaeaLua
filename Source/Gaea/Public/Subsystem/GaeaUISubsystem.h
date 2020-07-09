@@ -15,48 +15,52 @@
 UCLASS()
 class GAEA_API UGaeaUISubsystem : public UGameInstanceSubsystem
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
 public:
-	void Initialize(FSubsystemCollectionBase& Collection) override;
+    void Initialize(FSubsystemCollectionBase& Collection) override;
 
-	void Deinitialize() override;
+    void Deinitialize() override;
 
-	void Start();
+    void Start();
 
-	UFUNCTION(BlueprintCallable, Category = "GaeaUI")
-	void ShowUI(FName UIName);
+    UFUNCTION(BlueprintCallable, Category = "GaeaUI")
+    void ShowUI(FName UIName);
 
-	UFUNCTION(BlueprintCallable, Category = "GaeaUI")
-	void HideUI(FName UIName);
+    UFUNCTION(BlueprintCallable, Category = "GaeaUI")
+    void HideUI(FName UIName);
 
-	UFUNCTION(BlueprintCallable, Category = "GaeaUI")
-	void RemoveUI(FName UIName);
+    UFUNCTION(BlueprintCallable, Category = "GaeaUI")
+    void RemoveUI(FName UIName);
 
-	UFUNCTION()
-	bool IsShowUI(FName UIName) const;
-
-	static const char* RootName;
-
-	static const char* UINamePrefix;
-
-	static const char* UIPath;
+    UFUNCTION()
+    bool IsShowUI(FName UIName) const;
 
 private:
-	UPROPERTY()
-	UGaeaUIRoot* Root;
-	
-	UPROPERTY()
-	TMap<FName, UGaeaUICtrl*> UICtrlMap;
+    UPROPERTY()
+    UGaeaUIRoot* Root;
 
-	TMap<FName, const TSubclassOf<UUserWidget>> UIClassMap;
+    UPROPERTY()
+    TMap<FName, UGaeaUICtrl*> UICtrlMap;
 
-	UGaeaUICtrl* NewUICtrl(const FName& UIName);
+    TMap<FName, const TSubclassOf<UUserWidget>> UIClassMap;
 
-	UFUNCTION()
-	UGaeaUICtrl* GetUICtrl(const FName& UIName) const;
+    static const char* RootName;
 
-	TSubclassOf<UUserWidget> GetUIClass(FName UIName);
+    static const char* UINamePrefix;
 
-	static EGaeaUILayer GetLayerByUIName(FName UIName);
+    static const char* UIPath;
+
+    static const char* UIConfig;
+
+    static const char* UILayer;
+
+    UGaeaUICtrl* NewUICtrl(const FName& UIName);
+
+    UFUNCTION()
+    UGaeaUICtrl* GetUICtrl(const FName& UIName) const;
+
+    TSubclassOf<UUserWidget> GetUIClass(FName UIName);
+
+    EGaeaUILayer GetLayer(FName UIName);
 };

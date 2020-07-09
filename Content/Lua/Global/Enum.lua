@@ -6,6 +6,7 @@ _G.ESlateVisibility = import("ESlateVisibility")
 
 -- Import From Project --
 _G.EEventParamType = import("EEventParamType")
+_G.EGaeaUILayer = import("EGaeaUILayer")
 -- Import From Project --
 
 -- Enums only used in Lua --

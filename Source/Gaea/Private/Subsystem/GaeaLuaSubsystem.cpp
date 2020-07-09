@@ -9,6 +9,8 @@ const char* UGaeaLuaSubsystem::MainFile = "main";
 
 const char* UGaeaLuaSubsystem::MainFunction = "main";
 
+const char* UGaeaLuaSubsystem::Config = "Config";
+
 static uint8* ReadFile(IPlatformFile& PlatformFile, const FString Path, uint32& Len)
 {
     auto FileHandle = PlatformFile.OpenRead(*Path);

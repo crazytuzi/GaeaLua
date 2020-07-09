@@ -7,12 +7,17 @@
 #include "UI/GaeaUICtrl.h"
 #include "Common/GaeaFunctionLibrary.h"
 #include "Subsystem/GaeaEventSubsystem.h"
+#include "Subsystem/GaeaLuaSubsystem.h"
 
 const char* UGaeaUISubsystem::RootName = "GaeaUIRoot";
 
 const char* UGaeaUISubsystem::UINamePrefix = "WBP_UI";
 
 const char* UGaeaUISubsystem::UIPath = "UI/";
+
+const char* UGaeaUISubsystem::UIConfig = "UIConfig";
+
+const char* UGaeaUISubsystem::UILayer = "UILayer";
 
 void UGaeaUISubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
@@ -70,7 +75,7 @@ void UGaeaUISubsystem::ShowUI(const FName UIName)
         return;
     }
 
-    Root->AddChildToRoot(GetLayerByUIName(UIName), UICtrl->GetWidget());
+    Root->AddChildToRoot(GetLayer(UIName), UICtrl->GetWidget());
 
     UICtrlMap.Add(UIName, UICtrl);
 
@@ -223,8 +228,24 @@ TSubclassOf<UUserWidget> UGaeaUISubsystem::GetUIClass(const FName UIName)
     return WidgetClass;
 }
 
-EGaeaUILayer UGaeaUISubsystem::GetLayerByUIName(const FName UIName)
+EGaeaUILayer UGaeaUISubsystem::GetLayer(const FName UIName)
 {
-    // @TODO
-    return EGaeaUILayer::HUD;
+    const auto LuaSubsystem = UGaeaFunctionLibrary::GetSubsystem<UGaeaLuaSubsystem>(this);
+
+    if (LuaSubsystem == nullptr)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("UGaeaUISubsystem::GetLayer => LuaSubsystem is nullptr"));
+        return EGaeaUILayer::Common;
+    }
+
+    const auto Config = UGaeaLuaSubsystem::Config + FString(".") + UIConfig + "." + UIName.ToString() + "." + UILayer;
+
+    auto const Layer = LuaSubsystem->GetVar(TCHAR_TO_ANSI(*Config));
+
+    if (Layer.isInt())
+    {
+        return static_cast<EGaeaUILayer>(Layer.asInt());
+    }
+
+    return EGaeaUILayer::Common;
 }

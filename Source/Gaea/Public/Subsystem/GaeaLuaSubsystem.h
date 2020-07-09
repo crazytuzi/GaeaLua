@@ -13,34 +13,36 @@
 UCLASS()
 class GAEA_API UGaeaLuaSubsystem : public UGameInstanceSubsystem
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
 public:
-	void Initialize(FSubsystemCollectionBase& Collection) override;
+    void Initialize(FSubsystemCollectionBase& Collection) override;
 
-	void Deinitialize() override;
+    void Deinitialize() override;
 
-	void Start();
+    void Start();
 
-	slua::LuaVar GetVar(const char* Key);
+    slua::LuaVar GetVar(const char* Key);
 
-	static const char* MainFile;
-
-	static const char* MainFunction;
+    static const char* Config;
 
 private:
-	bool bHasInit;
+    bool bHasInit;
 
-	bool bHasStart;
+    bool bHasStart;
 
-	NS_SLUA::LuaState State;
+    NS_SLUA::LuaState State;
 
-	void RegisterGlobalMethod();
+    static const char* MainFile;
 
-	void RegisterExtensionMethod();
+    static const char* MainFunction;
 
-	FORCEINLINE bool HasReady() const
-	{
-		return bHasInit && bHasStart;
-	}
+    void RegisterGlobalMethod();
+
+    void RegisterExtensionMethod();
+
+    FORCEINLINE bool HasReady() const
+    {
+        return bHasInit && bHasStart;
+    }
 };

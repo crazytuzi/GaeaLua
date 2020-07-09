@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GaeaDispatcher.h"
-#include "ObjectMacros.h"
+#include "UObject/ObjectMacros.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "GaeaEventFunctionLibrary.generated.h"
 
