@@ -1,8 +1,5 @@
 local HUDCtrl = _G.Class("HUDCtrl", _G.CtrlBase)
 
-local function __init()
-end
-
 local function OnInit()
 end
 
@@ -20,7 +17,6 @@ end
 local function OnDispose()
 end
 
-HUDCtrl.__init = __init
 HUDCtrl.OnInit = OnInit
 HUDCtrl.InitEvent = InitEvent
 HUDCtrl.OnStart = OnStart

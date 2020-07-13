@@ -11,9 +11,6 @@ local function GetCtrl(UIName)
     return _Ctrls[UIName]
 end
 
-local function __init()
-end
-
 local function Register(Ctrl)
     if Ctrl == nil then
         _G._Logger.warn("Register => ctrl is nil")
@@ -122,7 +119,6 @@ local function IsShowUI(self, UIName)
     return self._uiManager:IsShowUI(UIName)
 end
 
-UIManager.__init = __init
 UIManager.Register = Register
 UIManager.OnStartUp = OnStartUp
 UIManager.OnShutDown = OnShutDown

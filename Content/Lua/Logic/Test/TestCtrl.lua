@@ -6,9 +6,6 @@ local TestCtrl2 = require "Logic/Test/TestCtrl2"
 
 local TestCtrl3 = require "Logic/Test/TestCtrl3"
 
-local function __init()
-end
-
 local function OnInit(self)
     self:RegisterSubCtrl(self.View.UITest1, TestCtrl1)
 
@@ -50,7 +47,6 @@ end
 local function OnDispose()
 end
 
-TestCtrl.__init = __init
 TestCtrl.OnInit = OnInit
 TestCtrl.InitEvent = InitEvent
 TestCtrl.OnStart = OnStart

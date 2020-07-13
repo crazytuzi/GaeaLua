@@ -2,9 +2,6 @@ local ManagerCenter = _G.Class("ManagerCenter", _G.Singleton)
 
 local _Managers = {}
 
-local function __init()
-end
-
 local function Register(Manager)
     table.insert(_Managers, Manager)
 end
@@ -22,7 +19,6 @@ local function ShutDown()
     end
 end
 
-ManagerCenter.__init = __init
 ManagerCenter.Register = Register
 ManagerCenter.StartUp = StartUp
 ManagerCenter.ShutDown = ShutDown

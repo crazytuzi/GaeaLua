@@ -1,8 +1,5 @@
 local Test3Ctrl = _G.Class("TestCtrl", _G.SubCtrlBase)
 
-local function __init()
-end
-
 local function OnInit()
     _G.Logger.log("Test3Ctrl => OnInit")
 end
@@ -29,7 +26,6 @@ local function OnDispose()
     _G.Logger.log("Test3Ctrl => OnDispose")
 end
 
-Test3Ctrl.__init = __init
 Test3Ctrl.OnInit = OnInit
 Test3Ctrl.OnStart = OnStart
 Test3Ctrl.InitEvent = InitEvent
