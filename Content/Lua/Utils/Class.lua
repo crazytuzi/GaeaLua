@@ -10,7 +10,7 @@ _G.ClassType = {
     instance = 2
 }
 
-function _G.Class(classname, super)
+function _G.Class(classname, ...)
     assert(type(classname) == "string" and #classname > 0)
 
     -- 生成一个类类型
@@ -22,7 +22,8 @@ function _G.Class(classname, super)
     class_type.__cname = classname
     class_type.__ctype = _G.ClassType.class
 
-    class_type.super = super
+    class_type.super = table.pack(...)
+
     class_type.New = function(...)
         -- 生成一个类对象
         local obj = {}
@@ -39,10 +40,19 @@ function _G.Class(classname, super)
 
         -- 调用初始化方法
         do
-            local create
-            create = function(c, ...)
+            local tb = {}
+
+            local _create
+
+            _create = function(c, ...)
                 if c.super then
-                    create(c.super, ...)
+                    for _, v in ipairs(c.super) do
+                        if tb[v] == nil then
+                            _create(v, ...)
+
+                            tb[v] = true
+                        end
+                    end
                 end
 
                 if c.__init then
@@ -50,20 +60,48 @@ function _G.Class(classname, super)
                 end
             end
 
-            create(class_type, ...)
+            _create(class_type, ...)
+
+            tb = nil
+        end
+
+        local _delete
+
+        _delete = function(class, tb)
+            local now = class
+
+            tb = tb or {}
+
+            while now do
+                if tb[now] then
+                    break
+                end
+
+                if now.__delete then
+                    now.__delete(obj)
+
+                    tb[now] = true
+                end
+
+                if now.super then
+                    for i = #now.super, 1, -1 do
+                        local v = now.super[i]
+
+                        if v and tb[v] == nil then
+                            _delete(v, tb)
+
+                            tb[v] = true
+                        end
+                    end
+                end
+
+                now = now.super
+            end
         end
 
         -- 注册一个delete方法
         obj.Delete = function(self)
-            local now_super = self._class_type
-
-            while now_super do
-                if now_super.__delete then
-                    now_super.__delete(self)
-                end
-
-                now_super = now_super.super
-            end
+            _delete(self._class_type)
         end
 
         return obj
@@ -83,14 +121,18 @@ function _G.Class(classname, super)
         }
     )
 
-    if super then
+    if class_type.super then
         setmetatable(
             vtbl,
             {
                 __index = function(_, k)
-                    local ret = _class[super][k]
+                    for _, v in ipairs(class_type.super) do
+                        if _class[v][k] then
+                            return _class[v][k]
+                        end
+                    end
 
-                    return ret
+                    return nil
                 end
             }
         )
