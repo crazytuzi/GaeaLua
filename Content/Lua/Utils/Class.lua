@@ -26,7 +26,7 @@ function _G.Class(classname, ...)
 
     class_type.IsA = function(BaseClass)
         for _, v in ipairs(class_type.super) do
-            if v == BaseClass then
+            if v == BaseClass or v.IsA(BaseClass) then
                 return true
             end
         end
