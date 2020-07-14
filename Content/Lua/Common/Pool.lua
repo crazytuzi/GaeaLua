@@ -3,7 +3,7 @@ local Pool = _G.Class("Pool")
 local PoolItem = _G.Class("PoolItem")
 
 local function __init(self, ClassType, Capacity)
-    if ClassType == nil or ClassType.super ~= PoolItem then
+    if ClassType == nil or not ClassType.IsA(PoolItem) then
         _G.Logger.warn("Pool.__init => ClassType is not valid")
         return
     end

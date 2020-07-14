@@ -75,7 +75,7 @@ local function RegisterEvent(self, EventTarget, EventName, LuaFun, SelfTable, ..
     local EventDelegate
 
     if type(EventTarget) == "table" then
-        if EventTarget.super == _G.LuaDispatcher then
+        if EventTarget == _G.Dispatcher then
             EventDelegate = EventTarget:Add(EventName, LuaFun, SelfTable)
         end
     else
@@ -94,7 +94,7 @@ end
 local function UnRegisterEvents(self)
     for _, Delegate in ipairs(self._eventDelegates) do
         if type(Delegate.EventTarget) == "table" then
-            if Delegate.EventTarget.super == _G.LuaDispatcher then
+            if Delegate.EventTarget == _G.Dispatcher then
                 Delegate.EventTarget:Remove(Delegate.EventName, Delegate.EventDelegate)
             end
         else

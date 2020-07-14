@@ -24,6 +24,16 @@ function _G.Class(classname, ...)
 
     class_type.super = table.pack(...)
 
+    class_type.IsA = function(BaseClass)
+        for _, v in ipairs(class_type.super) do
+            if v == BaseClass then
+                return true
+            end
+        end
+
+        return false
+    end
+
     class_type.New = function(...)
         -- 生成一个类对象
         local obj = {}
@@ -102,6 +112,11 @@ function _G.Class(classname, ...)
         -- 注册一个delete方法
         obj.Delete = function(self)
             _delete(self._class_type)
+        end
+
+        -- 注册一个IsA方法
+        obj.IsA = function(self, ClassType)
+            return self._class_type.IsA(ClassType)
         end
 
         return obj
