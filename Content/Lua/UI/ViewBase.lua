@@ -79,6 +79,16 @@ local function SetVisibility(self, bIsVisible)
     end
 end
 
+local function RemoveFromParent(self)
+    if self:IsValid() then
+        self._uiRoot:RemoveFromParent()
+    end
+end
+
+local function GetRoot(self)
+    return self._uiRoot
+end
+
 local function IsValid(self)
     return _G.IsUValid(self._uiRoot)
 end
@@ -90,6 +100,8 @@ ViewBase.OnInit = OnInit
 ViewBase.OnDispose = OnDispose
 ViewBase.FindWidget = FindWidget
 ViewBase.SetVisibility = SetVisibility
+ViewBase.RemoveFromParent = RemoveFromParent
+ViewBase.GetRoot = GetRoot
 ViewBase.IsValid = IsValid
 
 return ViewBase

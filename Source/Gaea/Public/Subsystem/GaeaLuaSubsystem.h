@@ -39,7 +39,7 @@ private:
 
     void RegisterGlobalMethod();
 
-    void RegisterExtensionMethod();
+    static void RegisterExtensionMethod();
 
     FORCEINLINE bool HasReady() const
     {

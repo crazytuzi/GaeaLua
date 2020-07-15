@@ -143,4 +143,17 @@ void UGaeaLuaSubsystem::RegisterGlobalMethod()
 
 void UGaeaLuaSubsystem::RegisterExtensionMethod()
 {
+    using namespace slua;
+
+    REG_EXTENSION_METHOD_IMP(
+        UObject,
+        "IsA",
+        {
+        CheckUD(UObject, L, 1);
+
+        UClass* Class = LuaObject::checkValueOpt<UClass*>(L, 2, nullptr);
+
+        return LuaObject::push(L, UD->IsA(Class));
+        }
+    );
 }

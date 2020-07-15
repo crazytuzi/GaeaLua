@@ -6,6 +6,8 @@ local TestCtrl2 = require "Logic/Test/TestCtrl2"
 
 local TestCtrl3 = require "Logic/Test/TestCtrl3"
 
+local TestPanelItem = require "Logic/Test/TestPanelItem"
+
 local function OnInit(self)
     self:RegisterSubCtrl(self.View.UITest1, TestCtrl1)
 
@@ -41,10 +43,62 @@ local function InitEvent(self)
 end
 
 local function OnStart(self)
-    self:Show(TestCtrl1)
+    self.View.btn_subctrl1:SetVisibility(_G.ESlateVisibility.Collapsed)
+
+    self.View.btn_subctrl2:SetVisibility(_G.ESlateVisibility.Collapsed)
+
+    self.View.btn_subctrl3:SetVisibility(_G.ESlateVisibility.Collapsed)
+
+    self.data.PanelView = _G.PanelViewBase.New(self.View.vb, TestPanelItem, _G.Resources.UIPanelItemBase, 10)
+
+    self.data.PanelView:SetData {
+        {
+            Text = "Test1",
+            Image = _G.Resources.YuigahamaYui
+        },
+        {
+            Text = "Test2",
+            Image = _G.Resources.YukinoshitaYukino
+        },
+        {
+            Text = "Test3",
+            Image = _G.Resources.YuigahamaYui
+        }
+    }
+
+    self.data.PanelView:SetData {
+        {
+            Text = "Test4",
+            Image = _G.Resources.YuigahamaYui
+        },
+        {
+            Text = "Test5",
+            Image = _G.Resources.YukinoshitaYukino
+        },
+        {
+            Text = "Test6",
+            Image = _G.Resources.YuigahamaYui
+        },
+        {
+            Text = "Test7",
+            Image = _G.Resources.YukinoshitaYukino
+        }
+    }
+
+    self.data.PanelView:SetData {
+        {
+            Text = "Test8",
+            Image = _G.Resources.YuigahamaYui
+        },
+        {
+            Text = "Test9",
+            Image = _G.Resources.YukinoshitaYukino
+        }
+    }
 end
 
-local function OnDispose()
+local function OnDispose(self)
+    self.data.PanelView:Delete()
 end
 
 TestCtrl.OnInit = OnInit

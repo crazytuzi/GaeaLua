@@ -1,9 +1,17 @@
 local AbstractCtrl = _G.Class("AbstractCtrl")
 
+local function __init(self)
+    self.data = {}
+
+    self._eventDelegates = {}
+end
+
 local function __delete(self)
     self:UnRegisterEvents()
 
     self:OnDispose()
+
+    self.data = {}
 
     if self.View ~= nil then
         self.View:Delete()
@@ -17,8 +25,6 @@ local function Init(self, Widget)
         _G._Logger.warn("AbstractCtrl:InitCtrl => Widget is not valid")
         return
     end
-
-    self._eventDelegates = {}
 
     self.View = _G.ViewBase.New(Widget)
 
@@ -57,6 +63,10 @@ local function IsVisible(self)
     end
 
     return true
+end
+
+local function GetRoot(self)
+    return self.View:GetRoot()
 end
 
 local function SetVisibility(self, bIsVisible)
@@ -105,12 +115,14 @@ local function UnRegisterEvents(self)
     self._eventDelegates = {}
 end
 
+AbstractCtrl.__init = __init
 AbstractCtrl.__delete = __delete
 AbstractCtrl.Init = Init
 AbstractCtrl.OnInit = OnInit
 AbstractCtrl.InitEvent = InitEvent
 AbstractCtrl.OnStart = OnStart
 AbstractCtrl.IsVisible = IsVisible
+AbstractCtrl.GetRoot = GetRoot
 AbstractCtrl.SetVisibility = SetVisibility
 AbstractCtrl.OnDispose = OnDispose
 AbstractCtrl.RegisterEvent = RegisterEvent

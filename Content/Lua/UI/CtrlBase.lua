@@ -14,8 +14,6 @@ local function __delete(self)
     end
 
     self._subCtrls = {}
-
-    self.uiData = {}
 end
 
 local function Init(self, UICtrl)
@@ -23,8 +21,6 @@ local function Init(self, UICtrl)
         _G._Logger.warn("CtrlBase:InitCtrl => UICtrl is nil")
         return
     end
-
-    self.uiData = {}
 
     self._subCtrls = {}
 
