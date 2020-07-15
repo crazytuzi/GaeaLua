@@ -4,7 +4,7 @@ local function OnInit()
 end
 
 local function OnTestBtnClick()
-    _G.UIManager:Show("Test")
+    _G.UIManager:Show("GM")
 end
 
 local function InitEvent(self)

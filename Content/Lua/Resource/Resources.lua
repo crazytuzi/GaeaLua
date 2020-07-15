@@ -121,6 +121,7 @@ GenerateResourceType(Image, _G.import("Texture2D"))
 -- Start for Path
 
 UMG.UIPanelItemBase = "/Game/UI/Test/UIPanelItemBase.UIPanelItemBase"
+UMG.UIGMItem = "/Game/UI/GM/UIGMItem.UIGMItem"
 
 Image.YuigahamaYui = "/Game/UI/Test/YuigahamaYui"
 Image.YukinoshitaYukino = "/Game/UI/Test/YukinoshitaYukino"

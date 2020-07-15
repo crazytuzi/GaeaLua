@@ -5,6 +5,9 @@ local Config = {
         },
         Test = {
             UILayer = _G.EGaeaUILayer.Common
+        },
+        GM = {
+            UILayer = _G.EGaeaUILayer.Common
         }
     }
 }
