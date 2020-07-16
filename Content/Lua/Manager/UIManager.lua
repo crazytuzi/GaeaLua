@@ -34,7 +34,7 @@ local function OnUIInit(self, UIName)
 
     local UICtrl = self._uiManager:GetUICtrl(UIName)
 
-    if _G.IsUValid(UICtrl) then
+    if _G.IsValid(UICtrl) then
         Ctrl:Init(UICtrl)
     else
         _G._Logger.warn("UIManager:OnUIInit => UICtrl is not valid UIName " .. UIName)
@@ -55,7 +55,7 @@ local function OnStartUp(self)
     self._uiManager =
         _G.UGaeaFunctionLibrary.GetGameInstanceSubsystem(_G.GetContextObject(), _G.import("GaeaUISubsystem"))
 
-    if not _G.IsUValid(self._uiManager) then
+    if not _G.IsValid(self._uiManager) then
         _G._Logger.warn("UIManager:OnStartUp => uiMgr is not valid")
         return
     end
@@ -83,7 +83,7 @@ local function Show(self, UIName)
         return
     end
 
-    if not _G.IsUValid(self._uiManager) then
+    if not _G.IsValid(self._uiManager) then
         _G._Logger.warn("UIManager:ShowUI => self._uiManager is nil")
         return
     end
@@ -97,7 +97,7 @@ local function Remove(self, UIName)
         return
     end
 
-    if not _G.IsUValid(self._uiManager) then
+    if not _G.IsValid(self._uiManager) then
         _G._Logger.warn("UIManager:RemoveUI --> self._uiManager is nil")
         return
     end
@@ -111,7 +111,7 @@ local function IsShowUI(self, UIName)
         return
     end
 
-    if not _G.IsUValid(self._uiManager) then
+    if not _G.IsValid(self._uiManager) then
         _G._Logger.warn("UIManager:IsShowUI => self._uiManager is nil")
         return
     end

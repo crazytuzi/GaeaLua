@@ -69,19 +69,19 @@ local function Add(self, EventId, LuaFun, SelfTable, ParamTable)
         return
     end
 
-    if not _G.IsUValid(self.RawDispatcher) then
+    if not _G.IsValid(self.RawDispatcher) then
         _G.Logger.warn("LuaDispatcher:Add => RawDispatcher is nil")
         return nil
     end
 
     local Delegate = self.RawDispatcher:GetDelegateCallBack(EventId)
 
-    if not _G.IsUValid(Delegate) then
+    if not _G.IsValid(Delegate) then
         self.RawDispatcher:CreateDelegateCallBack(EventId)
 
         Delegate = self.RawDispatcher:GetDelegateCallBack(EventId)
 
-        if not _G.IsUValid(Delegate) then
+        if not _G.IsValid(Delegate) then
             _G.Logger.warn("LuaDispatcher:Add --> GetDelegateByEvent failed")
             return nil
         end
@@ -98,14 +98,14 @@ local function Remove(self, EventId, LuaDelegate)
         return
     end
 
-    if not _G.IsUValid(self.RawDispatcher) then
+    if not _G.IsValid(self.RawDispatcher) then
         _G.Logger.warn("LuaDispatcher:Remove => RawDispatcher is nil")
         return
     end
 
     local Delegate = self.RawDispatcher:GetDelegateCallBack(EventId)
 
-    if not _G.IsUValid(Delegate) then
+    if not _G.IsValid(Delegate) then
         _G.Logger.warn("LuaDispatcher:Remove => GetDelegateByEvent failed")
         return
     end
@@ -119,7 +119,7 @@ local function Dispatch(self, EventId, ...)
         return
     end
 
-    if not _G.IsUValid(self.RawDispatcher) then
+    if not _G.IsValid(self.RawDispatcher) then
         _G.Logger.warn("LuaDispatcher:Dispatch => RawDispatcher is nil")
         return
     end

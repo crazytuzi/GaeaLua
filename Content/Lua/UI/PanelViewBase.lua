@@ -1,7 +1,7 @@
 local PanelViewBase = _G.Class("PanelViewBase")
 
 local function __init(self, Root, ClassType, Path, Capacity)
-    if not _G.IsUValid(Root) then
+    if not _G.IsValid(Root) then
         _G.Logger.warn("PanelViewBase.__init => Root is not valid")
         return
     end
@@ -21,7 +21,7 @@ local function __init(self, Root, ClassType, Path, Capacity)
 end
 
 local function GetNewWidget(self)
-    if not _G.IsUValid(self._root) then
+    if not _G.IsValid(self._root) then
         return nil
     end
 
@@ -53,7 +53,7 @@ local function SetData(self, Data)
 
                 local Widget = GetNewWidget(self)
 
-                if _G.IsUValid(Widget) then
+                if _G.IsValid(Widget) then
                     Item:Init(Widget)
                 end
             end
@@ -96,7 +96,7 @@ local function __delete(self)
         v:Delete()
     end
 
-    if _G.IsUValid(self._root) then
+    if _G.IsValid(self._root) then
         self._root:ClearChildren()
     end
 

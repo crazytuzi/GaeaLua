@@ -21,7 +21,7 @@ local function __delete(self)
 end
 
 local function Init(self, Widget)
-    if not _G.IsUValid(Widget) then
+    if not _G.IsValid(Widget) then
         _G._Logger.warn("AbstractCtrl:InitCtrl => Widget is not valid")
         return
     end

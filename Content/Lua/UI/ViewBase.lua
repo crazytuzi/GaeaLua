@@ -35,7 +35,7 @@ local function __index(t, k)
     if not value then
         local root = rawget(t, "_uiRoot")
 
-        if not _G.IsUValid(root) then
+        if not _G.IsValid(root) then
             _G._Logger.warn("ViewBase.__index => uiRoot not valid")
             return nil
         end
@@ -66,7 +66,7 @@ local function OnDispose()
 end
 
 local function FindWidget(self, WidgetName)
-    if not _G.IsUValid(self._uiRoot) then
+    if not _G.IsValid(self._uiRoot) then
         return nil
     end
 
@@ -90,7 +90,7 @@ local function GetRoot(self)
 end
 
 local function IsValid(self)
-    return _G.IsUValid(self._uiRoot)
+    return _G.IsValid(self._uiRoot)
 end
 
 ViewBase.__init = __init

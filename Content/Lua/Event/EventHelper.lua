@@ -1,7 +1,7 @@
 local EventHelper = _G.Class("EventHelper")
 
 local function Add(UObject, EventName, LuaFun, SelfTable, ParamTable)
-    if not _G.IsUValid(UObject) then
+    if not _G.IsValid(UObject) then
         _G.Logger.warn("EventHelper.Add => UObject is not valid")
         return nil
     end
@@ -18,7 +18,7 @@ local function Add(UObject, EventName, LuaFun, SelfTable, ParamTable)
 
     local Event = UObject[EventName]
 
-    if Event == nil then
+    if not _G.IsValid(Event) then
         _G.Logger.warn("EventHelper.Add => Event is nil")
         return nil
     end
@@ -37,7 +37,7 @@ local function Add(UObject, EventName, LuaFun, SelfTable, ParamTable)
 end
 
 local function Remove(UObject, EventName, LuaDelegate)
-    if not _G.IsUValid(UObject) then
+    if not _G.IsValid(UObject) then
         _G.Logger.warn("EventHelper.Remove => UObject is not valid")
         return
     end
@@ -54,7 +54,7 @@ local function Remove(UObject, EventName, LuaDelegate)
 
     local Event = UObject[EventName]
 
-    if Event == nil then
+    if not _G.IsValid(Event) then
         _G.Logger.warn("EventHelper.Remove => Event is nil")
         return
     end
@@ -63,7 +63,7 @@ local function Remove(UObject, EventName, LuaDelegate)
 end
 
 local function Clear(UObject, EventName)
-    if not _G.IsUValid(UObject) then
+    if not _G.IsValid(UObject) then
         _G.Logger.warn("EventHelper.Clear => UObject is not valid")
         return
     end
@@ -75,7 +75,7 @@ local function Clear(UObject, EventName)
 
     local Event = UObject[EventName]
 
-    if Event == nil then
+    if not _G.IsValid(Event) then
         _G.Logger.warn("EventHelper.Clear => Event is nil")
         return
     end

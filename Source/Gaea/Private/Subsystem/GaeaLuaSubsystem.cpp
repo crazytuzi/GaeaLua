@@ -137,8 +137,6 @@ void UGaeaLuaSubsystem::RegisterGlobalMethod()
         UE_LOG(LogTemp, Warning, TEXT("UGaeaLuaSubsystem::RegisterGlobalMethod => L is nullptr!"));
         return;
     }
-
-    DefGlobalMethod(IsUValid, &UKismetSystemLibrary::IsValid);
 }
 
 void UGaeaLuaSubsystem::RegisterExtensionMethod()

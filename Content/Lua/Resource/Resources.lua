@@ -51,7 +51,7 @@ local function LoadObject(self, Path)
 
     local Object = _G.slua.loadObject(Path)
 
-    if not _G.IsUValid(Object) then
+    if not _G.IsValid(Object) then
         _G.Logger.warn("ResourceLoader.LoadObject => Object is not valid")
         return nil
     end
