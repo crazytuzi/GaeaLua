@@ -86,17 +86,17 @@ void UGaeaLuaSubsystem::Deinitialize()
     Super::Deinitialize();
 }
 
-void UGaeaLuaSubsystem::Start()
+void UGaeaLuaSubsystem::StartUp()
 {
     if (!bHasInit)
     {
-        UE_LOG(LogTemp, Warning, TEXT("UGaeaLuaSubsystem::Start => Lua has not been init!"));
+        UE_LOG(LogTemp, Warning, TEXT("UGaeaLuaSubsystem::StartUp => Lua has not been init!"));
         return;
     }
 
     if (bHasStart)
     {
-        UE_LOG(LogTemp, Warning, TEXT("UGaeaLuaSubsystem::Start => Lua already has been started!"));
+        UE_LOG(LogTemp, Warning, TEXT("UGaeaLuaSubsystem::StartUp => Lua already has been started!"));
         return;
     }
 
@@ -106,13 +106,17 @@ void UGaeaLuaSubsystem::Start()
 
     if (GameInstance == nullptr)
     {
-        UE_LOG(LogTemp, Warning, TEXT("UGaeaLuaSubsystem::Start => GameInstance is nullptr!"));
+        UE_LOG(LogTemp, Warning, TEXT("UGaeaLuaSubsystem::StartUp => GameInstance is nullptr!"));
         return;
     }
 
     State.call(MainFunction, GameInstance);
 
     bHasStart = true;
+}
+
+void UGaeaLuaSubsystem::ShutDown()
+{
 }
 
 slua::LuaVar UGaeaLuaSubsystem::GetVar(const char* Key)

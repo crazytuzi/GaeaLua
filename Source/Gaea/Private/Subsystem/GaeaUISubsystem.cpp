@@ -29,11 +29,11 @@ void UGaeaUISubsystem::Deinitialize()
     Super::Deinitialize();
 }
 
-void UGaeaUISubsystem::Start()
+void UGaeaUISubsystem::StartUp()
 {
     if (Root != nullptr)
     {
-        UE_LOG(LogTemp, Warning, TEXT("UGaeaUISubsystem::Start => Root is already exist"));
+        UE_LOG(LogTemp, Warning, TEXT("UGaeaUISubsystem::StartUp => Root is already exist"));
         return;
     }
 
@@ -41,11 +41,15 @@ void UGaeaUISubsystem::Start()
 
     if (Root == nullptr)
     {
-        UE_LOG(LogTemp, Warning, TEXT("UGaeaUISubsystem::Start => Root is nullptr"));
+        UE_LOG(LogTemp, Warning, TEXT("UGaeaUISubsystem::StartUp => Root is nullptr"));
         return;
     }
 
     Root->AddToViewport();
+}
+
+void UGaeaUISubsystem::ShutDown()
+{
 }
 
 void UGaeaUISubsystem::ShowUI(const FName UIName)

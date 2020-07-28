@@ -14,7 +14,7 @@ void AGaeaLevelScriptActor::BeginPlay()
 
 	if (LuaSubsystem != nullptr)
 	{
-		LuaSubsystem->Start();
+		LuaSubsystem->StartUp();
 	}
 	else
 	{
@@ -25,7 +25,7 @@ void AGaeaLevelScriptActor::BeginPlay()
 
 	if (UISubsystem != nullptr)
 	{
-		UISubsystem->Start();
+		UISubsystem->StartUp();
 
 		UISubsystem->ShowUI("HUD");
 	}

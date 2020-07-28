@@ -20,7 +20,9 @@ public:
 
     void Deinitialize() override;
 
-    void Start();
+    void StartUp();
+
+    void ShutDown();
 
     slua::LuaVar GetVar(const char* Key);
 

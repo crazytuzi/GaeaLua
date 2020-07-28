@@ -22,7 +22,9 @@ public:
 
     void Deinitialize() override;
 
-    void Start();
+    void StartUp();
+
+    void ShutDown();
 
     UFUNCTION(BlueprintCallable, Category = "GaeaUI")
     void ShowUI(FName UIName);
