@@ -47,7 +47,7 @@ public:
 
         if (GlobalDispatcher != nullptr)
         {
-            GlobalDispatcher->Dispatch(Event, Args);
+            GlobalDispatcher->Dispatch(Event, Args...);
         }
         else
         {
