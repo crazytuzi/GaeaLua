@@ -39,6 +39,8 @@ private:
 
     static const char* MainFunction;
 
+    static const char* TickFunction;
+
     void RegisterGlobalMethod();
 
     static void RegisterExtensionMethod();

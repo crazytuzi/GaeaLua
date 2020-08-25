@@ -53,6 +53,10 @@ function _G.main(GameInstance)
     StartGame()
 end
 
+function _G.Tick(DeltaTime)
+    _G.Emitter.Emit(_G.EmitterEvent.Tick, DeltaTime)
+end
+
 function _G.GetContextObject()
     return _GameInstance
 end

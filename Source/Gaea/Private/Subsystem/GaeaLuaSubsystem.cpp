@@ -9,6 +9,8 @@ const char* UGaeaLuaSubsystem::MainFile = "main";
 
 const char* UGaeaLuaSubsystem::MainFunction = "main";
 
+const char* UGaeaLuaSubsystem::TickFunction = "Tick";
+
 const char* UGaeaLuaSubsystem::Config = "Config";
 
 static uint8* ReadFile(IPlatformFile& PlatformFile, const FString Path, uint32& Len)
@@ -113,6 +115,8 @@ void UGaeaLuaSubsystem::StartUp()
     State.call(MainFunction, GameInstance);
 
     bHasStart = true;
+
+    State.setTickFunction(GetVar(TickFunction));
 }
 
 void UGaeaLuaSubsystem::ShutDown()
