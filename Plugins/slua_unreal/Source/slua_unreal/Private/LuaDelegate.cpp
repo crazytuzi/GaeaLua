@@ -274,6 +274,10 @@ namespace NS_SLUA {
 
 		RegMetaMethod(L, Bind);
 		RegMetaMethod(L, Clear);
+#if GAEA_LUA
+    	RegMetaMethod(L, Add);
+    	RegMetaMethod(L, Remove);
+#endif
 		return 0;
 	}
 
