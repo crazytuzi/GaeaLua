@@ -28,6 +28,19 @@ public:
 
     static const char* Config;
 
+    template <typename T, typename ...ARGS>
+    slua::LuaVar Call(const char* Key, ARGS&& ...Args)
+    {
+        if (!HasReady())
+        {
+            UE_LOG(LogTemp, Error, TEXT("UGaeaLuaSubsystem::Call => State is not ready"));
+
+            return slua::LuaVar();
+        }
+
+        return State.call(Key, Args...);
+    }
+
 private:
     bool bHasInit;
 
