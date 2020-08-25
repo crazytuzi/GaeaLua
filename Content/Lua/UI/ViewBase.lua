@@ -1,21 +1,5 @@
 local ViewBase = _G.Class("ViewBase")
 
-local function __init(self, Widget)
-    self._uiRoot = Widget
-
-    self._widgetCache = {}
-
-    self:OnInit()
-end
-
-local function __delete(self)
-    self:OnDispose()
-
-    self._widgetCache = {}
-
-    self._uiRoot = nil
-end
-
 local function __index(t, k)
     local value = ViewBase[k]
 
@@ -48,13 +32,29 @@ local function __index(t, k)
     return value
 end
 
-local function Init(self)
+local function __init(self, Widget)
+    self._uiRoot = Widget
+
+    self._widgetCache = {}
+
+    self:OnInit()
+end
+
+local function __create(self)
     setmetatable(
         self,
         {
             __index = __index
         }
     )
+end
+
+local function __delete(self)
+    self:OnDispose()
+
+    self._widgetCache = {}
+
+    self._uiRoot = nil
 end
 
 local function OnInit()
@@ -94,8 +94,8 @@ local function IsValid(self)
 end
 
 ViewBase.__init = __init
+ViewBase.__create = __create
 ViewBase.__delete = __delete
-ViewBase.Init = Init
 ViewBase.OnInit = OnInit
 ViewBase.OnDispose = OnDispose
 ViewBase.FindWidget = FindWidget

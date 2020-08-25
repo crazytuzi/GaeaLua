@@ -18,6 +18,7 @@ function _G.Class(classname, ...)
 
     -- 在创建对象的时候自动调用
     class_type.__init = false
+    class_type.__create = false
     class_type.__delete = false
     class_type.__cname = classname
     class_type.__ctype = _G.ClassType.class
@@ -52,6 +53,32 @@ function _G.Class(classname, ...)
         do
             local tb = {}
 
+            local _init
+
+            _init = function(c, ...)
+                if c.super then
+                    for _, v in ipairs(c.super) do
+                        if tb[v] == nil then
+                            _init(v, ...)
+
+                            tb[v] = true
+                        end
+                    end
+                end
+
+                if c.__init then
+                    c.__init(obj, ...)
+                end
+            end
+
+            _init(class_type, ...)
+
+            tb = nil
+        end
+
+        do
+            local tb = {}
+
             local _create
 
             _create = function(c, ...)
@@ -65,8 +92,8 @@ function _G.Class(classname, ...)
                     end
                 end
 
-                if c.__init then
-                    c.__init(obj, ...)
+                if c.__create then
+                    c.__create(obj, ...)
                 end
             end
 

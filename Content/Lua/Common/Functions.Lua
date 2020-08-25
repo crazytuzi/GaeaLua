@@ -13,3 +13,29 @@ function _G.IsValid(Object)
 
     return _G.slua.isValid(Object)
 end
+
+function _G.SetCanvasSlotPosition(Slot, Position)
+    local CanvasSlot = _G.UWidgetLayoutLibrary.SlotAsCanvasSlot(Slot)
+
+    if _G.IsValid(CanvasSlot) then
+        CanvasSlot:SetPosition(Position)
+    else
+        _G.Logger.warn("SetCanvasSlotPosition => CanvasSlot is not valid")
+    end
+end
+
+function _G.SetWidgetVisibility(Widget, IsVisible)
+    if _G.IsValid(Widget) then
+        IsVisible = IsVisible or false
+
+        IsVisible = (IsVisible and _G.ESlateVisibility.Visible) or _G.ESlateVisibility.Collapsed
+
+        local Visibility = Widget:GetVisibility()
+
+        if IsVisible ~= Visibility then
+            Widget:SetVisibility(IsVisible)
+        end
+    else
+        _G.Logger.warn("SetWidgetVisibility => Widget is not valid")
+    end
+end

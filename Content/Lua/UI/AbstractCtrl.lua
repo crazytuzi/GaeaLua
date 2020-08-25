@@ -28,8 +28,6 @@ local function Init(self, Widget)
 
     self.View = _G.ViewBase.New(Widget)
 
-    self.View:Init()
-
     self:SetVisibility(true)
 
     self:OnInit()

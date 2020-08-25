@@ -1,15 +1,7 @@
+local UIConfig = require "Config/UIConfig"
+
 local Config = {
-    UIConfig = {
-        HUD = {
-            UILayer = _G.EGaeaUILayer.HUD
-        },
-        Test = {
-            UILayer = _G.EGaeaUILayer.Common
-        },
-        GM = {
-            UILayer = _G.EGaeaUILayer.Common
-        }
-    }
+    UIConfig = UIConfig
 }
 
 return Config
