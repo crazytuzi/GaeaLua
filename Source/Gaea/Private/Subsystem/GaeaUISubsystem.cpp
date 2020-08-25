@@ -33,8 +33,7 @@ void UGaeaUISubsystem::StartUp()
 {
     if (Root != nullptr)
     {
-        UE_LOG(LogTemp, Warning, TEXT("UGaeaUISubsystem::StartUp => Root is already exist"));
-        return;
+        ShutDown();
     }
 
     Root = CreateWidget<UGaeaUIRoot>(GetWorld(), UGaeaUIRoot::StaticClass(), RootName);
@@ -50,6 +49,28 @@ void UGaeaUISubsystem::StartUp()
 
 void UGaeaUISubsystem::ShutDown()
 {
+    if (Root == nullptr)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("UGaeaUISubsystem::ShutDown => Root is nullptr"));
+        return;
+    }
+
+    TArray<FName> Keys;
+
+    UICtrlMap.GetKeys(Keys);
+
+    for (const auto& Key : Keys)
+    {
+        RemoveUI(Key);
+    }
+
+    UICtrlMap.Empty();
+
+    UIClassMap.Empty();
+
+    Root->MarkPendingKill();
+
+    Root = nullptr;
 }
 
 void UGaeaUISubsystem::ShowUI(const FName UIName)
