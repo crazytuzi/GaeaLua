@@ -14,6 +14,10 @@ class AGaeaHUD : public AHUD
 public:
 	AGaeaHUD();
 
+	virtual void BeginPlay() override;
+
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
 	/** Primary draw call for the HUD */
 	virtual void DrawHUD() override;
 

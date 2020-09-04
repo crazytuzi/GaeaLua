@@ -8,34 +8,24 @@
 
 void AGaeaLevelScriptActor::BeginPlay()
 {
-	Super::BeginPlay();
+    Super::BeginPlay();
 
-	auto LuaSubsystem = UGaeaFunctionLibrary::GetSubsystem<UGaeaLuaSubsystem>(this);
+    auto LuaSubsystem = UGaeaFunctionLibrary::GetSubsystem<UGaeaLuaSubsystem>(this);
 
-	if (LuaSubsystem != nullptr)
-	{
-		LuaSubsystem->StartUp();
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("AGaeaLevelScriptActor::BeginPlay => LuaSubsystem is nullptr"));
-	}
-
-	auto UISubsystem = UGaeaFunctionLibrary::GetSubsystem<UGaeaUISubsystem>(this);
-
-	if (UISubsystem != nullptr)
-	{
-		UISubsystem->StartUp();
-
-		UISubsystem->ShowUI("HUD");
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("AGaeaLevelScriptActor::BeginPlay => UISubsystem is nullptr"));
-	}
+    if (LuaSubsystem != nullptr)
+    {
+        if (!LuaSubsystem->HasReady())
+        {
+            LuaSubsystem->StartUp();
+        }
+    }
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("AGaeaLevelScriptActor::BeginPlay => LuaSubsystem is nullptr"));
+    }
 }
 
 void AGaeaLevelScriptActor::Destroyed()
 {
-	Super::Destroyed();
+    Super::Destroyed();
 }

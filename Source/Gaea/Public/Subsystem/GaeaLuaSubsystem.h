@@ -28,7 +28,7 @@ public:
 
     static const char* Config;
 
-    template <typename T, typename ...ARGS>
+    template <typename ...ARGS>
     slua::LuaVar Call(const char* Key, ARGS&& ...Args)
     {
         if (!HasReady())
@@ -39,6 +39,11 @@ public:
         }
 
         return State.call(Key, Args...);
+    }
+
+    FORCEINLINE bool HasReady() const
+    {
+        return bHasInit && bHasStart;
     }
 
 private:
@@ -57,9 +62,4 @@ private:
     void RegisterGlobalMethod();
 
     static void RegisterExtensionMethod();
-
-    FORCEINLINE bool HasReady() const
-    {
-        return bHasInit && bHasStart;
-    }
 };

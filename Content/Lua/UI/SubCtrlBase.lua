@@ -3,15 +3,12 @@ local Base = _G.AbstractCtrl
 local SubCtrlBase = _G.Class("SubCtrlBase", Base)
 
 local function __init(self, Widget)
-    self.uiData = {}
-
     Base.Init(self, Widget)
 
     self:SetVisibility(false)
 end
 
-local function __delete(self)
-    self.uiData = {}
+local function __delete()
 end
 
 local function Show(self)

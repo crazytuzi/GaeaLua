@@ -33,7 +33,8 @@ void UGaeaUISubsystem::StartUp()
 {
     if (Root != nullptr)
     {
-        ShutDown();
+        UE_LOG(LogTemp, Warning, TEXT("UGaeaUISubsystem::StartUp => Root is already exist"));
+        return;
     }
 
     Root = CreateWidget<UGaeaUIRoot>(GetWorld(), UGaeaUIRoot::StaticClass(), RootName);

@@ -39,3 +39,15 @@ function _G.SetWidgetVisibility(Widget, IsVisible)
         _G.Logger.warn("SetWidgetVisibility => Widget is not valid")
     end
 end
+
+function _G.GetLocalPlayerController()
+    return _G.UGameplayStatics.GetPlayerController(_G.GetContextObject(), 0)
+end
+
+function _G.GetLocalPlayerPawn()
+    return _G.UGameplayStatics.GetPlayerPawn(_G.GetContextObject(), 0)
+end
+
+function _G.GetPlayerCharacter()
+    return _G.UGameplayStatics.GetPlayerCharacter(_G.GetContextObject(), 0)
+end
