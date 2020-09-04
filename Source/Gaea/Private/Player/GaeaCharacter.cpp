@@ -1,7 +1,7 @@
 // Copyright 1998-2019 Epic Games, Inc. All Rights Reserved.
 
-#include "GaeaCharacter.h"
-#include "GaeaProjectile.h"
+#include "Player/GaeaCharacter.h"
+#include "Weapon/GaeaProjectile.h"
 #include "Animation/AnimInstance.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
