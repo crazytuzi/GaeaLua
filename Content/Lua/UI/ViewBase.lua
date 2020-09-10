@@ -10,7 +10,7 @@ local function __index(t, k)
     local CacheTable = rawget(t, "_widgetCache")
 
     if not CacheTable then
-        _G._Logger.warn("ViewBase.__index => CacheTable is not valid")
+        _G.Logger.warn("ViewBase.__index => CacheTable is not valid")
         return nil
     end
 
@@ -20,11 +20,15 @@ local function __index(t, k)
         local root = rawget(t, "_uiRoot")
 
         if not _G.IsValid(root) then
-            _G._Logger.warn("ViewBase.__index => uiRoot not valid")
+            _G.Logger.warn("ViewBase.__index => uiRoot not valid")
             return nil
         end
 
         value = root:FindWidget(k .. "_lua")
+
+        if _G.IsValid(value) and value:IsA(_G.UUserWidget) then
+            value = _G.ViewBase.New(value)
+        end
 
         CacheTable[k] = value
     end
@@ -51,6 +55,12 @@ end
 
 local function __delete(self)
     self:OnDispose()
+
+    for _, value in pairs(self._widgetCache) do
+        if value and _G.IsCallable(value.IsA) and value:IsA(_G.UUserWidget) then
+            value:Delete()
+        end
+    end
 
     self._widgetCache = {}
 

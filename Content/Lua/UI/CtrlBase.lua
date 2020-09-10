@@ -18,7 +18,7 @@ end
 
 local function Init(self, UICtrl)
     if not _G.IsValid(UICtrl) then
-        _G._Logger.warn("CtrlBase:InitCtrl => UICtrl is nil")
+        _G.Logger.warn("CtrlBase:InitCtrl => UICtrl is nil")
         return
     end
 

@@ -21,12 +21,16 @@ local function __delete(self)
 end
 
 local function Init(self, Widget)
-    if not _G.IsValid(Widget) then
-        _G._Logger.warn("AbstractCtrl:InitCtrl => Widget is not valid")
+    if not Widget then
+        _G.Logger.warn("AbstractCtrl:InitCtrl => Widget is not valid")
         return
     end
 
-    self.View = _G.ViewBase.New(Widget)
+    if _G.IsValid(Widget) and Widget:IsA(_G.UUserWidget) then
+        self.View = _G.ViewBase.New(Widget)
+    else
+        self.View = Widget
+    end
 
     self:SetVisibility(true)
 
@@ -56,7 +60,7 @@ local function IsVisible(self)
     end
 
     if self.View == nil or not self.View:IsValid() then
-        _G._Logger.warn("AbstractCtrl:IsVisible => View uiRoot is not valid")
+        _G.Logger.warn("AbstractCtrl:IsVisible => View uiRoot is not valid")
         return false
     end
 

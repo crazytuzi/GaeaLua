@@ -4,7 +4,7 @@ local _Ctrls = {}
 
 local function GetCtrl(UIName)
     if _G.IsStringNullOrEmpty(UIName) then
-        _G._Logger.warn("UIManager:GetCtrl --> UIName is nil")
+        _G.Logger.warn("UIManager:GetCtrl --> UIName is nil")
         return nil
     end
 
@@ -13,12 +13,12 @@ end
 
 local function Register(Ctrl)
     if Ctrl == nil then
-        _G._Logger.warn("Register => ctrl is nil")
+        _G.Logger.warn("Register => ctrl is nil")
         return
     end
 
     if _G.IsStringNullOrEmpty(Ctrl.uiName) then
-        _G._Logger.warn("Register => uiName is nil")
+        _G.Logger.warn("Register => uiName is nil")
         return
     end
 
@@ -37,7 +37,7 @@ local function OnUIInit(self, UIName)
     if _G.IsValid(UICtrl) then
         Ctrl:Init(UICtrl)
     else
-        _G._Logger.warn("UIManager:OnUIInit => UICtrl is not valid UIName " .. UIName)
+        _G.Logger.warn("UIManager:OnUIInit => UICtrl is not valid UIName " .. UIName)
     end
 end
 
@@ -56,7 +56,7 @@ local function OnStartUp(self)
         _G.UGaeaFunctionLibrary.GetGameInstanceSubsystem(_G.GetContextObject(), _G.import("GaeaUISubsystem"))
 
     if not _G.IsValid(self._uiManager) then
-        _G._Logger.warn("UIManager:OnStartUp => uiMgr is not valid")
+        _G.Logger.warn("UIManager:OnStartUp => uiMgr is not valid")
         return
     end
 
@@ -79,12 +79,12 @@ end
 
 local function Show(self, UIName)
     if _G.IsStringNullOrEmpty(UIName) then
-        _G._Logger.warn("UIManager:Show => UIName is nil")
+        _G.Logger.warn("UIManager:Show => UIName is nil")
         return
     end
 
     if not _G.IsValid(self._uiManager) then
-        _G._Logger.warn("UIManager:ShowUI => self._uiManager is nil")
+        _G.Logger.warn("UIManager:ShowUI => self._uiManager is nil")
         return
     end
 
@@ -93,12 +93,12 @@ end
 
 local function Remove(self, UIName)
     if _G.IsStringNullOrEmpty(UIName) then
-        _G._Logger.warn("UIManager:RemoveUI => UIName is nil")
+        _G.Logger.warn("UIManager:RemoveUI => UIName is nil")
         return
     end
 
     if not _G.IsValid(self._uiManager) then
-        _G._Logger.warn("UIManager:RemoveUI --> self._uiManager is nil")
+        _G.Logger.warn("UIManager:RemoveUI --> self._uiManager is nil")
         return
     end
 
@@ -107,12 +107,12 @@ end
 
 local function IsShowUI(self, UIName)
     if _G.IsStringNullOrEmpty(UIName) then
-        _G._Logger.warn("UIManager:IsShowUI => UIName is nil")
+        _G.Logger.warn("UIManager:IsShowUI => UIName is nil")
         return
     end
 
     if not _G.IsValid(self._uiManager) then
-        _G._Logger.warn("UIManager:IsShowUI => self._uiManager is nil")
+        _G.Logger.warn("UIManager:IsShowUI => self._uiManager is nil")
         return
     end
 
