@@ -2,7 +2,7 @@ local assert = assert
 local setmetatable = setmetatable
 
 -- 保存类类型的虚表
-local _class = {}
+local __class = {}
 
 -- 自定义类型
 _G.ClassType = {
@@ -22,11 +22,10 @@ function _G.Class(classname, ...)
     class_type.__delete = false
     class_type.__cname = classname
     class_type.__ctype = _G.ClassType.class
-
-    class_type.super = table.pack(...)
+    class_type.__super = table.pack(...)
 
     class_type.IsA = function(BaseClass)
-        for _, v in ipairs(class_type.super) do
+        for _, v in ipairs(class_type.__super) do
             if v == BaseClass or v.IsA(BaseClass) then
                 return true
             end
@@ -35,17 +34,95 @@ function _G.Class(classname, ...)
         return false
     end
 
+    class_type.Super = {}
+
+    if class_type.__super.n > 0 then
+        setmetatable(
+            class_type.Super,
+            {
+                __index = function(_, k)
+                    for _, v in ipairs(class_type.__super) do
+                        if #v.__super == 0 then
+                            return __class[v][k]
+                        else
+                            for _, vv in ipairs(v.__super) do
+                                if __class[vv][k] then
+                                    return __class[vv][k]
+                                end
+                            end
+                        end
+                    end
+
+                    return nil
+                end
+            }
+        )
+    end
+
     class_type.New = function(...)
         -- 生成一个类对象
         local obj = {}
-        obj._class_type = class_type
+
+        obj.__initing = true
+        obj.__class_type = class_type
         obj.__ctype = _G.ClassType.instance
+
+        obj.Super = {}
+
+        if obj.__class_type.__super.n > 0 then
+            setmetatable(
+                obj.Super,
+                {
+                    __index = function(_, k)
+                        local value = nil
+
+                        if obj.__initing then
+                            for _, v in ipairs(class_type.__super) do
+                                if __class[v][k] then
+                                    value = {__class[v][k]}
+
+                                    break
+                                end
+                            end
+                        else
+                            value = {obj.__class_type.Super[k]}
+                        end
+
+                        if value and #value > 0 then
+                            setmetatable(
+                                value,
+                                {
+                                    __call = function(_, ...)
+                                        local param = table.pack(...)
+
+                                        if param[1] == obj.Super then
+                                            table.remove(param, 1)
+
+                                            local _, result =
+                                                xpcall(value[1], _G.CallBackError, obj, table.unpack(param))
+
+                                            return result
+                                        else
+                                            local _, result = xpcall(value[1], _G.CallBackError, ...)
+
+                                            return result
+                                        end
+                                    end
+                                }
+                            )
+                        end
+
+                        return value
+                    end
+                }
+            )
+        end
 
         -- 在初始化之前注册基类方法
         setmetatable(
             obj,
             {
-                __index = _class[class_type]
+                __index = __class[class_type]
             }
         )
 
@@ -56,8 +133,8 @@ function _G.Class(classname, ...)
             local _init
 
             _init = function(c, ...)
-                if c.super then
-                    for _, v in ipairs(c.super) do
+                if c.__super then
+                    for _, v in ipairs(c.__super) do
                         if tb[v] == nil then
                             _init(v, ...)
 
@@ -82,8 +159,8 @@ function _G.Class(classname, ...)
             local _create
 
             _create = function(c, ...)
-                if c.super then
-                    for _, v in ipairs(c.super) do
+                if c.__super then
+                    for _, v in ipairs(c.__super) do
                         if tb[v] == nil then
                             _create(v, ...)
 
@@ -120,9 +197,9 @@ function _G.Class(classname, ...)
                     tb[now] = true
                 end
 
-                if now.super then
-                    for i = #now.super, 1, -1 do
-                        local v = now.super[i]
+                if now.__super then
+                    for i = #now.__super, 1, -1 do
+                        local v = now.__super[i]
 
                         if v and tb[v] == nil then
                             _delete(v, tb)
@@ -132,26 +209,28 @@ function _G.Class(classname, ...)
                     end
                 end
 
-                now = now.super
+                now = now.__super
             end
         end
 
         -- 注册一个delete方法
         obj.Delete = function(self)
-            _delete(self._class_type)
+            _delete(self.__class_type)
         end
 
         -- 注册一个IsA方法
         obj.IsA = function(self, ClassType)
-            return self._class_type.IsA(ClassType)
+            return self.__class_type.IsA(ClassType)
         end
+
+        obj.__initing = nil
 
         return obj
     end
 
     local vtbl = {}
 
-    _class[class_type] = vtbl
+    __class[class_type] = vtbl
 
     setmetatable(
         class_type,
@@ -163,14 +242,14 @@ function _G.Class(classname, ...)
         }
     )
 
-    if class_type.super then
+    if class_type.__super.n > 0 then
         setmetatable(
             vtbl,
             {
                 __index = function(_, k)
-                    for _, v in ipairs(class_type.super) do
-                        if _class[v][k] then
-                            return _class[v][k]
+                    for _, v in ipairs(class_type.__super) do
+                        if __class[v][k] then
+                            return __class[v][k]
                         end
                     end
 

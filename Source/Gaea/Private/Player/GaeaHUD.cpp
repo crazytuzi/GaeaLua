@@ -19,6 +19,8 @@ AGaeaHUD::AGaeaHUD()
 
 void AGaeaHUD::BeginPlay()
 {
+	Super::BeginPlay();
+
 	if (!UKismetSystemLibrary::IsDedicatedServer(this))
 	{
 		const auto World = GetWorld();
@@ -30,6 +32,8 @@ void AGaeaHUD::BeginPlay()
 			if (UISubsystem != nullptr)
 			{
 				UISubsystem->StartUp();
+
+				UISubsystem->ShowUI("HUD");
 			}
 			else
 			{
@@ -37,21 +41,19 @@ void AGaeaHUD::BeginPlay()
 			}
 		}
 	}
-
-	Super::BeginPlay();
 }
 
 void AGaeaHUD::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
+	const auto World = GetWorld();
+	
 	Super::EndPlay(EndPlayReason);
 
 	if (!UKismetSystemLibrary::IsDedicatedServer(this))
 	{
-		const auto World = GetWorld();
-
 		if (World != nullptr && World->PersistentLevel == GetLevel())
 		{
-			auto UISubsystem = UGaeaFunctionLibrary::GetSubsystem<UGaeaUISubsystem>(this);
+			auto UISubsystem = UGaeaFunctionLibrary::GetSubsystem<UGaeaUISubsystem>(World);
 
 			if (UISubsystem != nullptr)
 			{

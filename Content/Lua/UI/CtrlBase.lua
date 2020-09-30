@@ -1,9 +1,7 @@
-local Base = _G.AbstractCtrl
-
-local CtrlBase = _G.Class("CtrlBase", Base)
+local CtrlBase = _G.Class("CtrlBase", _G.AbstractCtrl)
 
 local function __init(self)
-    self.uiName = string.split(self._class_type.__cname, "Ctrl")[1]
+    self.uiName = string.split(self.__class_type.__cname, "Ctrl")[1]
 
     _G.UIManager.Register(self)
 end
@@ -26,7 +24,7 @@ local function Init(self, UICtrl)
 
     local Widget = UICtrl:GetWidget()
 
-    Base.Init(self, Widget)
+    self.Super:Init(Widget)
 end
 
 local function RegisterSubCtrl(self, Widget, SubCtrlClass)
@@ -35,18 +33,18 @@ local function RegisterSubCtrl(self, Widget, SubCtrlClass)
     table.insert(self._subCtrls, 1, SubCtrl)
 end
 
-local function Show(self, SubCtrlClass)
+local function Show(self, SubCtrlClass, ...)
     for _, SubCtrl in pairs(self._subCtrls) do
-        if SubCtrl._class_type == SubCtrlClass and not SubCtrl:IsVisible() then
-            SubCtrl:Show()
+        if SubCtrl.__class_type == SubCtrlClass and not SubCtrl:IsVisible() then
+            SubCtrl:Show(...)
         end
     end
 end
 
-local function Hide(self, SubCtrlClass)
+local function Hide(self, SubCtrlClass, ...)
     for _, SubCtrl in pairs(self._subCtrls) do
-        if SubCtrl._class_type == SubCtrlClass and SubCtrl:IsVisible() then
-            SubCtrl:Hide()
+        if SubCtrl.__class_type == SubCtrlClass and SubCtrl:IsVisible() then
+            SubCtrl:Hide(...)
         end
     end
 end

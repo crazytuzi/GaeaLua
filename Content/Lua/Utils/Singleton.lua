@@ -1,13 +1,13 @@
 local Singleton = _G.Class("Singleton")
 
 local function __init(self)
-    assert(rawget(self._class_type, "Instance") == nil, self._class_type.__cname .. " to create singleton twice!")
+    assert(rawget(self.__class_type, "Instance") == nil, self.__class_type.__cname .. " to create singleton twice!")
 
-    rawset(self._class_type, "Instance", self)
+    rawset(self.__class_type, "Instance", self)
 end
 
 local function __delete(self)
-    rawset(self._class_type, "Instance", nil)
+    rawset(self.__class_type, "Instance", nil)
 end
 
 local function GetInstance(self, ...)

@@ -1,9 +1,7 @@
-local Base = _G.AbstractCtrl
-
-local SubCtrlBase = _G.Class("SubCtrlBase", Base)
+local SubCtrlBase = _G.Class("SubCtrlBase", _G.AbstractCtrl)
 
 local function __init(self, Widget)
-    Base.Init(self, Widget)
+    self.Super:Init(Widget)
 
     self:SetVisibility(false)
 end

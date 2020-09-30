@@ -3,8 +3,7 @@ local Base = require "Logic/GM/GMConfig/GMConfigBase"
 local GMConfig = _G.Class("GMConfigTest", Base)
 
 local function Register(self, Ctrl)
-    Base.Register(
-        self,
+    self.Super:Register(
         Ctrl,
         {
             {

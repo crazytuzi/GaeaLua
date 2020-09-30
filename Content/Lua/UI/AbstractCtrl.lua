@@ -74,7 +74,7 @@ end
 local function SetVisibility(self, bIsVisible)
     self.bIsVisible = bIsVisible or false
 
-    bIsVisible = (self.bIsVisible and _G.ESlateVisibility.Visible) or _G.ESlateVisibility.Collapsed
+    bIsVisible = (self.bIsVisible and _G.ESlateVisibility.SelfHitTestInvisible) or _G.ESlateVisibility.Collapsed
 
     self.View:SetVisibility(bIsVisible)
 end

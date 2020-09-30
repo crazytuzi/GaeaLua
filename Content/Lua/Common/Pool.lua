@@ -37,7 +37,7 @@ local function Push(self, Element)
         return
     end
 
-    if Element._class_type ~= self._class then
+    if Element.__class_type ~= self._class then
         _G.Logger.warn("Pool.Push => Element type is not match")
         return
     end
