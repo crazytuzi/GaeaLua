@@ -27,25 +27,25 @@ public:
     void ShutDown();
 
     UFUNCTION(BlueprintCallable, Category = "GaeaUI")
-    void ShowUI(FName UIName);
+    void ShowUI(const FString& UIName);
 
     UFUNCTION(BlueprintCallable, Category = "GaeaUI")
-    void HideUI(FName UIName);
+    void HideUI(const FString& UIName);
 
     UFUNCTION(BlueprintCallable, Category = "GaeaUI")
-    void RemoveUI(FName UIName);
+    void RemoveUI(const FString& UIName);
 
     UFUNCTION()
-    bool IsShowUI(FName UIName) const;
+    bool IsShowUI(const FString& UIName) const;
 
 private:
     UPROPERTY()
     UGaeaUIRoot* Root;
 
     UPROPERTY()
-    TMap<FName, UGaeaUICtrl*> UICtrlMap;
+    TMap<FString, UGaeaUICtrl*> UICtrlMap;
 
-    TMap<FName, const TSubclassOf<UUserWidget>> UIClassMap;
+    TMap<FString, const TSubclassOf<UUserWidget>> UIClassMap;
 
     static const char* RootName;
 
@@ -57,12 +57,12 @@ private:
 
     static const char* UILayer;
 
-    UGaeaUICtrl* NewUICtrl(const FName& UIName);
+    UGaeaUICtrl* NewUICtrl(const FString& UIName);
 
     UFUNCTION()
-    UGaeaUICtrl* GetUICtrl(const FName& UIName) const;
+    UGaeaUICtrl* GetUICtrl(const FString& UIName) const;
 
-    TSubclassOf<UUserWidget> GetUIClass(FName UIName);
+    TSubclassOf<UUserWidget> GetUIClass(const FString& UIName);
 
-    EGaeaUILayer GetLayer(FName UIName);
+    EGaeaUILayer GetLayer(const FString& UIName);
 };

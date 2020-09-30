@@ -116,7 +116,7 @@ bool UGaeaUIRoot::InitCanvasPanels()
 	return true;
 }
 
-bool UGaeaUIRoot::CreateCanvas(const EGaeaUILayer Layer, const FName LayerName)
+bool UGaeaUIRoot::CreateCanvas(const EGaeaUILayer Layer, const FString& LayerName)
 {
 	if (CanvasPanels.Contains(Layer))
 	{
@@ -136,7 +136,7 @@ bool UGaeaUIRoot::CreateCanvas(const EGaeaUILayer Layer, const FName LayerName)
 		return false;
 	}
 
-	auto CanvasPanel = WidgetTree->ConstructWidget<UCanvasPanel>(UCanvasPanel::StaticClass(), LayerName);
+	auto CanvasPanel = WidgetTree->ConstructWidget<UCanvasPanel>(UCanvasPanel::StaticClass(), *LayerName);
 
 	if (CanvasPanel == nullptr)
 	{

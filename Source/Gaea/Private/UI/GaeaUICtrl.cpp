@@ -23,7 +23,7 @@ void UGaeaUICtrl::OnRemove()
 	State = EGaeaUIState::Remove;
 }
 
-FName UGaeaUICtrl::GetUIName() const
+FString UGaeaUICtrl::GetUIName() const
 {
 	return Name;
 }
@@ -44,7 +44,7 @@ bool UGaeaUICtrl::IsShow() const
 	return (State == EGaeaUIState::Show);
 }
 
-UGaeaUICtrl* UGaeaUICtrl::NewUICtrl(UObject* Outer, const FName& UIName, UUserWidget* UserWidget)
+UGaeaUICtrl* UGaeaUICtrl::NewUICtrl(UObject* Outer, const FString& UIName, UUserWidget* UserWidget)
 {
 	if (Outer == nullptr)
 	{
@@ -52,23 +52,23 @@ UGaeaUICtrl* UGaeaUICtrl::NewUICtrl(UObject* Outer, const FName& UIName, UUserWi
 		return nullptr;
 	}
 
-	if (UIName.IsNone())
+	if (UIName.IsEmpty())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("UGaeaUICtrl::NewUICtrl => UIName is none"));
+		UE_LOG(LogTemp, Warning, TEXT("UGaeaUICtrl::NewUICtrl => UIName is empty"));
 		return nullptr;
 	}
 
 	if (UserWidget == nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("UGaeaUICtrl::NewUICtrl => UserWidget is none"));
+		UE_LOG(LogTemp, Warning, TEXT("UGaeaUICtrl::NewUICtrl => UserWidget is nullptr"));
 		return nullptr;
 	}
 
-	auto UICtrl = NewObject<UGaeaUICtrl>(Outer, UIName);
+	auto UICtrl = NewObject<UGaeaUICtrl>(Outer, *UIName);
 
 	if (UICtrl == nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("UGaeaUICtrl::NewUICtrl => UICtrl is none"));
+		UE_LOG(LogTemp, Warning, TEXT("UGaeaUICtrl::NewUICtrl => UICtrl is nullptr"));
 		return nullptr;
 	}
 
@@ -77,11 +77,11 @@ UGaeaUICtrl* UGaeaUICtrl::NewUICtrl(UObject* Outer, const FName& UIName, UUserWi
 	return UICtrl;
 }
 
-void UGaeaUICtrl::Init(const FName& UIName, UUserWidget* UserWidget)
+void UGaeaUICtrl::Init(const FString& UIName, UUserWidget* UserWidget)
 {
-	if (UIName.IsNone())
+	if (UIName.IsEmpty())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("UGaeaUICtrl::NewUICtrl => UIName is none"));
+		UE_LOG(LogTemp, Warning, TEXT("UGaeaUICtrl::NewUICtrl => UIName is empty"));
 		return;
 	}
 

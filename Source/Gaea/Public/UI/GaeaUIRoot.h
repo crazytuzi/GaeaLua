@@ -45,7 +45,7 @@ private:
 
 	bool InitCanvasPanels();
 
-	bool CreateCanvas(EGaeaUILayer Layer, FName LayerName);
+	bool CreateCanvas(EGaeaUILayer Layer, const FString& LayerName);
 
 	static uint32 GetZOrderByLayer(EGaeaUILayer Layer);
 };

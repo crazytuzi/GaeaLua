@@ -9,10 +9,10 @@
 
 enum class EGaeaUIState
 {
-	None,
-	Show,
-	Hide,
-	Remove
+    None,
+    Show,
+    Hide,
+    Remove
 };
 
 /**
@@ -21,33 +21,33 @@ enum class EGaeaUIState
 UCLASS()
 class GAEA_API UGaeaUICtrl : public UObject
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
 public:
-	UGaeaUICtrl();
+    UGaeaUICtrl();
 
-	void OnShow();
+    void OnShow();
 
-	void OnHide();
+    void OnHide();
 
-	void OnRemove();
+    void OnRemove();
 
-	FName GetUIName() const;
+    FString GetUIName() const;
 
-	UFUNCTION()
-	UUserWidget* GetWidget() const;
+    UFUNCTION()
+    UUserWidget* GetWidget() const;
 
-	bool IsShow() const;
+    bool IsShow() const;
 
-	static UGaeaUICtrl* NewUICtrl(UObject* Outer, const FName& UIName, UUserWidget* UserWidget);
+    static UGaeaUICtrl* NewUICtrl(UObject* Outer, const FString& UIName, UUserWidget* UserWidget);
 
 private:
-	FName Name;
+    FString Name;
 
-	UPROPERTY()
-	UUserWidget* Widget;
+    UPROPERTY()
+    UUserWidget* Widget;
 
-	EGaeaUIState State;
+    EGaeaUIState State;
 
-	void Init(const FName& UIName, UUserWidget* UserWidget);
+    void Init(const FString& UIName, UUserWidget* UserWidget);
 };

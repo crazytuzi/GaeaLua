@@ -56,7 +56,7 @@ void UGaeaUISubsystem::ShutDown()
         return;
     }
 
-    TArray<FName> Keys;
+    TArray<FString> Keys;
 
     UICtrlMap.GetKeys(Keys);
 
@@ -74,7 +74,7 @@ void UGaeaUISubsystem::ShutDown()
     Root = nullptr;
 }
 
-void UGaeaUISubsystem::ShowUI(const FName UIName)
+void UGaeaUISubsystem::ShowUI(const FString& UIName)
 {
     if (Root == nullptr)
     {
@@ -82,9 +82,9 @@ void UGaeaUISubsystem::ShowUI(const FName UIName)
         return;
     }
 
-    if (UIName.IsNone())
+    if (UIName.IsEmpty())
     {
-        UE_LOG(LogTemp, Warning, TEXT("UGaeaUISubsystem::ShowUI => UIName is none"));
+        UE_LOG(LogTemp, Warning, TEXT("UGaeaUISubsystem::ShowUI => UIName is empty"));
         return;
     }
 
@@ -106,15 +106,15 @@ void UGaeaUISubsystem::ShowUI(const FName UIName)
     UICtrlMap.Add(UIName, UICtrl);
 
     UGaeaFunctionLibrary::GetGlobalDispatcher(this)->
-        Dispatch(EGaeaEvent::EVENT_UI_ON_INIT, UIName.ToString());
+        Dispatch(EGaeaEvent::EVENT_UI_ON_INIT, UIName);
 }
 
-void UGaeaUISubsystem::HideUI(const FName UIName)
+void UGaeaUISubsystem::HideUI(const FString& UIName)
 {
     // @TODO
 }
 
-void UGaeaUISubsystem::RemoveUI(const FName UIName)
+void UGaeaUISubsystem::RemoveUI(const FString& UIName)
 {
     if (Root == nullptr)
     {
@@ -122,9 +122,9 @@ void UGaeaUISubsystem::RemoveUI(const FName UIName)
         return;
     }
 
-    if (UIName.IsNone())
+    if (UIName.IsEmpty())
     {
-        UE_LOG(LogTemp, Warning, TEXT("UGaeaUISubsystem::RemoveUI => UIName is none"));
+        UE_LOG(LogTemp, Warning, TEXT("UGaeaUISubsystem::RemoveUI => UIName is empty"));
         return;
     }
 
@@ -140,7 +140,7 @@ void UGaeaUISubsystem::RemoveUI(const FName UIName)
 
     if (Widget != nullptr)
     {
-        UGaeaFunctionLibrary::GetGlobalDispatcher(this)->Dispatch(EGaeaEvent::EVENT_UI_ON_DISPOSE, UIName.ToString());
+        UGaeaFunctionLibrary::GetGlobalDispatcher(this)->Dispatch(EGaeaEvent::EVENT_UI_ON_DISPOSE, UIName);
 
         Widget->RemoveFromParent();
 
@@ -155,11 +155,11 @@ void UGaeaUISubsystem::RemoveUI(const FName UIName)
     UICtrlMap.Remove(UIName);
 }
 
-bool UGaeaUISubsystem::IsShowUI(const FName UIName) const
+bool UGaeaUISubsystem::IsShowUI(const FString& UIName) const
 {
-    if (UIName.IsNone())
+    if (UIName.IsEmpty())
     {
-        UE_LOG(LogTemp, Warning, TEXT("UGaeaUISubsystem::IsShowingUI => UIName is none"));
+        UE_LOG(LogTemp, Warning, TEXT("UGaeaUISubsystem::IsShowingUI => UIName is empty"));
         return false;
     }
 
@@ -168,7 +168,7 @@ bool UGaeaUISubsystem::IsShowUI(const FName UIName) const
     return (UICtrl != nullptr && UICtrl->IsShow());
 }
 
-UGaeaUICtrl* UGaeaUISubsystem::NewUICtrl(const FName& UIName)
+UGaeaUICtrl* UGaeaUISubsystem::NewUICtrl(const FString& UIName)
 {
     if (Root == nullptr)
     {
@@ -203,21 +203,21 @@ UGaeaUICtrl* UGaeaUISubsystem::NewUICtrl(const FName& UIName)
     return UICtrl;
 }
 
-UGaeaUICtrl* UGaeaUISubsystem::GetUICtrl(const FName& UIName) const
+UGaeaUICtrl* UGaeaUISubsystem::GetUICtrl(const FString& UIName) const
 {
-    if (UIName.IsNone())
+    if (UIName.IsEmpty())
     {
-        UE_LOG(LogTemp, Warning, TEXT("UGaeaUISubsystem::GetUICtrl => UIName is none"));
+        UE_LOG(LogTemp, Warning, TEXT("UGaeaUISubsystem::GetUICtrl => UIName is empty"));
         return nullptr;
     }
     return UICtrlMap.FindRef(UIName);
 }
 
-TSubclassOf<UUserWidget> UGaeaUISubsystem::GetUIClass(const FName UIName)
+TSubclassOf<UUserWidget> UGaeaUISubsystem::GetUIClass(const FString& UIName)
 {
-    if (UIName.IsNone())
+    if (UIName.IsEmpty())
     {
-        UE_LOG(LogTemp, Warning, TEXT("UGaeaUISubsystem::GetUIClass => UIName is none"));
+        UE_LOG(LogTemp, Warning, TEXT("UGaeaUISubsystem::GetUIClass => UIName is empty"));
         return nullptr;
     }
 
@@ -228,9 +228,9 @@ TSubclassOf<UUserWidget> UGaeaUISubsystem::GetUIClass(const FName UIName)
         return WidgetClass;
     }
 
-    const auto UIFullName = UINamePrefix + UIName.ToString();
+    const auto UIFullName = UINamePrefix + UIName;
 
-    const auto UIFullPath = FPaths::ProjectContentDir() + UIPath + UIName.ToString() + "/" + UIFullName
+    const auto UIFullPath = FPaths::ProjectContentDir() + UIPath + UIName + "/" + UIFullName
         + ".uasset";
 
     auto& PlatformFile = FPlatformFileManager::Get().GetPlatformFile();
@@ -241,7 +241,7 @@ TSubclassOf<UUserWidget> UGaeaUISubsystem::GetUIClass(const FName UIName)
         return nullptr;
     }
 
-    const auto UI_BP_FullPath = FString("/Game/") + UIPath + UIName.ToString() + "/" + UIFullName + "." + UIFullName +
+    const auto UI_BP_FullPath = FString("/Game/") + UIPath + UIName + "/" + UIFullName + "." + UIFullName +
         "_C";
 
     WidgetClass = LoadClass<UUserWidget>(nullptr, *UI_BP_FullPath);
@@ -254,7 +254,7 @@ TSubclassOf<UUserWidget> UGaeaUISubsystem::GetUIClass(const FName UIName)
     return WidgetClass;
 }
 
-EGaeaUILayer UGaeaUISubsystem::GetLayer(const FName UIName)
+EGaeaUILayer UGaeaUISubsystem::GetLayer(const FString& UIName)
 {
     const auto LuaSubsystem = UGaeaFunctionLibrary::GetSubsystem<UGaeaLuaSubsystem>(this);
 
@@ -264,7 +264,7 @@ EGaeaUILayer UGaeaUISubsystem::GetLayer(const FName UIName)
         return EGaeaUILayer::Common;
     }
 
-    const auto Config = UGaeaLuaSubsystem::Config + FString(".") + UIConfig + "." + UIName.ToString() + "." + UILayer;
+    const auto Config = UGaeaLuaSubsystem::Config + FString(".") + UIConfig + "." + UIName + "." + UILayer;
 
     auto const Layer = LuaSubsystem->GetVar(TCHAR_TO_ANSI(*Config));
 
