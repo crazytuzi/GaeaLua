@@ -47,7 +47,7 @@ function _G.DeepCopy(Object)
         lookup_table[PObject] = new_table
 
         for index, value in pairs(PObject) do
-            new_table[_copy(index)] = _copy[value]
+            new_table[_copy(index)] = _copy(value)
         end
 
         return setmetatable(new_table, getmetatable(PObject))
