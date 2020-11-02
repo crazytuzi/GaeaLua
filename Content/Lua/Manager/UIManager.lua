@@ -8,7 +8,14 @@ local function GetCtrl(UIName)
         return nil
     end
 
-    return _Ctrls[UIName]
+    local Ctrl = _Ctrls[UIName]
+
+    if Ctrl == nil or Ctrl.Ctrl == nil then
+        _G.Logger.warn("UIManager:GetCtrl --> Ctrl is nil")
+        return nil
+    end
+
+    return Ctrl.Ctrl
 end
 
 local function Register(Ctrl)
@@ -22,33 +29,35 @@ local function Register(Ctrl)
         return
     end
 
-    _Ctrls[Ctrl.uiName] = Ctrl
+    _Ctrls[Ctrl.uiName] = {Ctrl = Ctrl, Param = nil}
 end
 
 local function OnUIInit(self, UIName)
-    local Ctrl = GetCtrl(UIName)
+    local Ctrl = _Ctrls[UIName]
 
-    if Ctrl == nil then
+    if Ctrl == nil or Ctrl.Ctrl == nil then
         return
     end
 
     local UICtrl = self._uiManager:GetUICtrl(UIName)
 
     if _G.IsValid(UICtrl) then
-        Ctrl:Init(UICtrl)
+        Ctrl.Ctrl:Init(UICtrl, table.unpack(Ctrl.Param))
     else
         _G.Logger.warn("UIManager:OnUIInit => UICtrl is not valid UIName " .. UIName)
     end
 end
 
 local function OnUIDispose(UIName)
-    local Ctrl = GetCtrl(UIName)
+    local Ctrl = _Ctrls[UIName]
 
-    if Ctrl == nil then
+    if Ctrl == nil or Ctrl.Ctrl == nil then
         return
     end
 
-    Ctrl:Delete()
+    Ctrl.Param = nil
+
+    Ctrl.Ctrl:Delete()
 end
 
 local function OnStartUp(self)
@@ -77,11 +86,20 @@ local function OnShutDown(self)
     self.OnUIDispose_Delegate = nil
 end
 
-local function Show(self, UIName)
+local function Show(self, UIName, ...)
     if _G.IsStringNullOrEmpty(UIName) then
         _G.Logger.warn("UIManager:Show => UIName is nil")
         return
     end
+
+    local Ctrl = _Ctrls[UIName]
+
+    if Ctrl == nil or Ctrl.Ctrl == nil then
+        _G.Logger.warn("UIManager:Show => Ctrl is nil")
+        return
+    end
+
+    Ctrl.Param = table.pack(...)
 
     if not _G.IsValid(self._uiManager) then
         _G.Logger.warn("UIManager:ShowUI => self._uiManager is nil")
@@ -125,5 +143,6 @@ UIManager.OnShutDown = OnShutDown
 UIManager.Show = Show
 UIManager.Remove = Remove
 UIManager.IsShowUI = IsShowUI
+UIManager.GetCtrl = GetCtrl
 
 return UIManager:GetInstance(UIManager)

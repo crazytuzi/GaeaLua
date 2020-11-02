@@ -20,7 +20,7 @@ local function __delete(self)
     self.bIsVisible = false
 end
 
-local function Init(self, Widget)
+local function Init(self, Widget, ...)
     if not Widget then
         _G.Logger.warn("AbstractCtrl:InitCtrl => Widget is not valid")
         return
@@ -34,7 +34,7 @@ local function Init(self, Widget)
 
     self:SetVisibility(true)
 
-    self:OnInit()
+    self:OnInit(...)
 
     self:InitEvent()
 

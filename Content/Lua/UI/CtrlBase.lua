@@ -14,7 +14,7 @@ local function __delete(self)
     self._subCtrls = {}
 end
 
-local function Init(self, UICtrl)
+local function Init(self, UICtrl, ...)
     if not _G.IsValid(UICtrl) then
         _G.Logger.warn("CtrlBase:InitCtrl => UICtrl is nil")
         return
@@ -24,7 +24,7 @@ local function Init(self, UICtrl)
 
     local Widget = UICtrl:GetWidget()
 
-    self.Super:Init(Widget)
+    self.Super:Init(Widget, ...)
 end
 
 local function RegisterSubCtrl(self, Widget, SubCtrlClass)

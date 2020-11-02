@@ -1,3 +1,5 @@
+local _unpack = table.unpack
+
 local function dump(tb, dump_metatable, max_level)
     local lookup_table = {}
 
@@ -55,4 +57,13 @@ local function dump(tb, dump_metatable, max_level)
     print(string.sub(_dump(tb, 0), 1, -2))
 end
 
+local function unpack(...)
+    if #{...} == 0 then
+        return nil
+    end
+
+    return _unpack(...)
+end
+
 table.dump = dump
+table.unpack = unpack
