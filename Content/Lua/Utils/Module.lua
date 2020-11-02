@@ -1,5 +1,6 @@
 require "Utils/LuaUtil"
 require "Utils/StringUtil"
 require "Utils/TableUtil"
+require "Utils/MathUtil"
 require "Utils/Class"
 _G.Singleton = require "Utils/Singleton"
