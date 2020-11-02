@@ -614,9 +614,17 @@ namespace NS_SLUA {
     
         #if ENGINE_MINOR_VERSION >= 23 && (PLATFORM_MAC || PLATFORM_IOS)
             FFrame *frame = (FFrame *)&NewStack;
+#if GAEA_LUA
+    	obj->CallRemoteFunction(func, params, NewStack.OutParms, frame);
+#else
             func->Invoke(obj, *frame, ReturnValueAddress);
+#endif
         #else
+#if GAEA_LUA
+    	obj->CallRemoteFunction(func, params, NewStack.OutParms, &NewStack);
+#else
             func->Invoke(obj, NewStack, ReturnValueAddress);
+#endif
         #endif
 	}
 
