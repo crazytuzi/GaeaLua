@@ -57,7 +57,7 @@ local function __delete(self)
     self:OnDispose()
 
     for _, value in pairs(self._widgetCache) do
-        if value and _G.IsCallable(value.IsA) and value:IsA(_G.UUserWidget) then
+        if value and type(value) == "table" and _G.IsCallable(value.IsA) and value:IsA(_G.UUserWidget) then
             value:Delete()
         end
     end

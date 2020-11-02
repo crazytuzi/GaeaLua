@@ -25,8 +25,11 @@ function _G.Class(classname, ...)
     class_type.__super = table.pack(...)
 
     class_type.IsA = function(BaseClass)
+        if class_type == BaseClass then
+            return true
+        end
         for _, v in ipairs(class_type.__super) do
-            if v == BaseClass or v.IsA(BaseClass) then
+            if v.IsA(BaseClass) then
                 return true
             end
         end
@@ -122,7 +125,10 @@ function _G.Class(classname, ...)
         setmetatable(
             obj,
             {
-                __index = __class[class_type]
+                __index = __class[class_type],
+                __gc = function(this)
+                    this:Delete()
+                end
             }
         )
 
@@ -215,7 +221,13 @@ function _G.Class(classname, ...)
 
         -- 注册一个delete方法
         obj.Delete = function(self)
-            _delete(self.__class_type)
+            self.bIsDeleted = self.bIsDeleted or false
+
+            if not self.bIsDeleted then
+                _delete(self.__class_type)
+
+                self.bIsDeleted = true
+            end
         end
 
         -- 注册一个IsA方法

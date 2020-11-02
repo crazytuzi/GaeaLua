@@ -8,7 +8,7 @@ end
 
 local function __delete(self)
     for _, SubCtrl in pairs(self._subCtrls) do
-        SubCtrl:OnDispose()
+        SubCtrl:Delete()
     end
 
     self._subCtrls = {}
@@ -21,6 +21,8 @@ local function Init(self, UICtrl, ...)
     end
 
     self._subCtrls = {}
+
+    self.bIsDeleted = false
 
     local Widget = UICtrl:GetWidget()
 
