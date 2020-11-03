@@ -32,6 +32,10 @@ local function Init(self, Widget, ...)
         self.View = Widget
     end
 
+    if _G.IsStringNullOrEmpty(self.uiName) then
+        self.uiName = _G.UKismetSystemLibrary.GetObjectName(self.View:GetRoot())
+    end
+
     self:SetVisibility(true)
 
     self:OnInit(...)
