@@ -25,6 +25,23 @@ local function Register(self, Ctrl)
 
                     print("End gc count = " .. c .. " kb")
                 end
+            },
+            {
+                "Classs",
+                function()
+                    table.sort(
+                        _G.Classs,
+                        function(a, b)
+                            if a.total == b.total then
+                                return a.count > b.count
+                            end
+
+                            return a.total > b.total
+                        end
+                    )
+
+                    _G.Logger.dump(_G.Classs)
+                end
             }
         }
     )

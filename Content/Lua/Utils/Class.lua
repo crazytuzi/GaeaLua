@@ -63,6 +63,10 @@ function _G.Class(classname, ...)
     end
 
     class_type.New = function(...)
+        _G.Classs[classname].total = _G.Classs[classname].total + 1
+
+        _G.Classs[classname].count = _G.Classs[classname].count + 1
+
         -- 生成一个类对象
         local obj = {}
 
@@ -224,6 +228,8 @@ function _G.Class(classname, ...)
             self.bIsDeleted = self.bIsDeleted or false
 
             if not self.bIsDeleted then
+                _G.Classs[classname].count = _G.Classs[classname].count - 1
+
                 _delete(self.__class_type)
 
                 self.bIsDeleted = true

@@ -36,6 +36,53 @@ local function ProtectGlobalTable()
 end
 
 local function InitGame()
+    local _require = require
+
+    _G.Classs = {}
+
+    setmetatable(
+        _G.Classs,
+        {
+            __index = function(t, k)
+                for _, value in pairs(t) do
+                    if value.name == k then
+                        return value
+                    end
+                end
+
+                table.insert(
+                    t,
+                    {
+                        name = k,
+                        total = 0,
+                        count = 0
+                    }
+                )
+
+                return t[#t]
+            end
+        }
+    )
+
+    _G.require = function(modname)
+        local mode = _require(modname)
+
+        if type(mode) == "table" then
+            if not rawget(_G.Classs, mode.__cname) then
+                table.insert(
+                    _G.Classs,
+                    {
+                        name = mode.__cname,
+                        total = 0,
+                        count = 0
+                    }
+                )
+            end
+        end
+
+        return mode
+    end
+
     require "Module"
 end
 
