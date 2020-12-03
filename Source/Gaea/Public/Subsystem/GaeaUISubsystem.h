@@ -18,9 +18,9 @@ class GAEA_API UGaeaUISubsystem : public UGameInstanceSubsystem
     GENERATED_BODY()
 
 public:
-    void Initialize(FSubsystemCollectionBase& Collection) override;
+    virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 
-    void Deinitialize() override;
+    virtual void Deinitialize() override;
 
     void StartUp();
 
@@ -45,6 +45,7 @@ private:
     UPROPERTY()
     TMap<FString, UGaeaUICtrl*> UICtrlMap;
 
+    UPROPERTY()
     TMap<FString, const TSubclassOf<UUserWidget>> UIClassMap;
 
     static const char* RootName;

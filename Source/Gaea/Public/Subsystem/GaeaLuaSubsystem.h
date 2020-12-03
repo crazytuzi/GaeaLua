@@ -16,9 +16,9 @@ class GAEA_API UGaeaLuaSubsystem : public UGameInstanceSubsystem
     GENERATED_BODY()
 
 public:
-    void Initialize(FSubsystemCollectionBase& Collection) override;
+    virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 
-    void Deinitialize() override;
+    virtual void Deinitialize() override;
 
     void StartUp();
 

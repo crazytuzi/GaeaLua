@@ -26,7 +26,7 @@ class GAEA_API UGaeaUIRoot : public UUserWidget
 	GENERATED_BODY()
 
 public:
-	bool Initialize() override;
+	virtual bool Initialize() override;
 
 	bool AddChildToRoot(EGaeaUILayer Layer, UUserWidget* Widget) const;
 
