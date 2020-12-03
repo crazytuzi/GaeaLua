@@ -10,7 +10,7 @@ local _progressingTimers = {}
 
 local TimerHandle = _G.Class("TimerHandle")
 
-local function __init(self, Fun, InRate, InbLoop, InFirstDelay, SelfTable)
+local function __init(self, Fun, InRate, InbLoop, InFirstDelay, SelfTable, ParamTable)
     self._Fun = Fun
 
     self._InRate = InRate
@@ -18,6 +18,8 @@ local function __init(self, Fun, InRate, InbLoop, InFirstDelay, SelfTable)
     self._InbLoop = InbLoop
 
     self._SelfTable = SelfTable
+
+    self._ParamTable = ParamTable
 
     if InFirstDelay > 0 then
         self._Time = _timeSeconds + InFirstDelay
@@ -46,9 +48,9 @@ local function __create(self)
             end,
             __call = function(this)
                 if this._SelfTable then
-                    xpcall(this._Fun, _G.CallBackError, this._SelfTable)
+                    xpcall(this._Fun, _G.CallBackError, this._SelfTable, this._ParamTable)
                 else
-                    xpcall(this._Fun, _G.CallBackError)
+                    xpcall(this._Fun, _G.CallBackError, this._ParamTable)
                 end
             end
         }
@@ -63,6 +65,8 @@ local function __delete(self)
     self._InbLoop = nil
 
     self._SelfTable = nil
+
+    self._ParamTable = nil
 
     self._Time = nil
 end
@@ -145,8 +149,8 @@ local function OnShutDown(self)
     end
 end
 
-local function SetTimer(Fun, InRate, InbLoop, InFirstDelay, SelfTable)
-    local InHandle = TimerHandle.New(Fun, InRate, InbLoop, InFirstDelay, SelfTable)
+local function SetTimer(Fun, InRate, InbLoop, InFirstDelay, SelfTable, ParamTable)
+    local InHandle = TimerHandle.New(Fun, InRate, InbLoop, InFirstDelay, SelfTable, ParamTable)
 
     if InFirstDelay > 0 then
         table.insert(_pendingTimers, InHandle)
