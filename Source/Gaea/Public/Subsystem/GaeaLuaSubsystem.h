@@ -13,53 +13,58 @@
 UCLASS()
 class GAEA_API UGaeaLuaSubsystem : public UGameInstanceSubsystem
 {
-    GENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-    virtual void Initialize(FSubsystemCollectionBase& Collection) override;
+	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 
-    virtual void Deinitialize() override;
+	virtual void Deinitialize() override;
 
-    void StartUp();
+	void StartUp();
 
-    void ShutDown();
+	void ShutDown();
 
-    slua::LuaVar GetVar(const char* Key);
+	slua::LuaVar GetVar(const char* Key);
 
-    static const char* Config;
+	static const char* Config;
 
-    template <typename ...ARGS>
-    slua::LuaVar Call(const char* Key, ARGS&& ...Args)
-    {
-        if (!HasReady())
-        {
-            UE_LOG(LogTemp, Error, TEXT("UGaeaLuaSubsystem::Call => State is not ready"));
+	template <typename ...ARGS>
+	slua::LuaVar Call(const char* Key, ARGS&& ...Args)
+	{
+		if (!HasReady())
+		{
+			UE_LOG(LogTemp, Error, TEXT("UGaeaLuaSubsystem::Call => State is not ready"));
 
-            return slua::LuaVar();
-        }
+			return slua::LuaVar();
+		}
 
-        return State.call(Key, Args...);
-    }
+		return State.call(Key, Args...);
+	}
 
-    FORCEINLINE bool HasReady() const
-    {
-        return bHasInit && bHasStart;
-    }
+	FORCEINLINE bool HasReady() const
+	{
+		return bHasInit && bHasStart;
+	}
 
 private:
-    bool bHasInit;
+	FDelegateHandle PreLoadMapDelegateHandle;
 
-    bool bHasStart;
+	void PreLoadMap(const FString& MapName) const;
 
-    NS_SLUA::LuaState State;
+private:
+	bool bHasInit;
 
-    static const char* MainFile;
+	bool bHasStart;
 
-    static const char* MainFunction;
+	NS_SLUA::LuaState State;
 
-    static const char* TickFunction;
+	static const char* MainFile;
 
-    void RegisterGlobalMethod();
+	static const char* MainFunction;
 
-    static void RegisterExtensionMethod();
+	static const char* TickFunction;
+
+	void RegisterGlobalMethod();
+
+	static void RegisterExtensionMethod();
 };

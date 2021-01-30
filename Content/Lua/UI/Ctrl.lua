@@ -2,8 +2,6 @@ local Ctrl = _G.Class("Ctrl", _G.CtrlBase)
 
 local function __init(self)
     self.uiName = string.split(self.__class_type.__cname, "Ctrl")[1]
-
-    _G.UIManager.Register(self)
 end
 
 local function __delete()
@@ -24,7 +22,7 @@ end
 
 local function Close(self)
     if not _G.IsStringNullOrEmpty(self.uiName) then
-        _G.UIManager:Remove(self.uiName)
+        _G.UIManager:Remove(_G.Config.UIConfig[self.uiName])
     end
 end
 

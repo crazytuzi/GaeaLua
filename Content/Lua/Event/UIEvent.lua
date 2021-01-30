@@ -21,6 +21,7 @@ return {
     -- EventBegin --
     EVENT_UI_ON_INIT,
     EVENT_UI_ON_DISPOSE,
-    EVENT_UI_TEST_EVENT
+    EVENT_UI_TEST_EVENT,
+    EVENT_PRE_LOAD_MAP
     -- EventEnd --
 }

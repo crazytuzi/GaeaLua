@@ -40,12 +40,6 @@ local function HideCtrl(self, CtrlClass, ...)
     end
 end
 
-local function Close(self)
-    if not _G.IsStringNullOrEmpty(self.uiName) then
-        _G.UIManager:Remove(self.uiName)
-    end
-end
-
 CtrlBase.__init = __init
 CtrlBase.__delete = __delete
 CtrlBase.Show = Show
@@ -53,6 +47,5 @@ CtrlBase.Hide = Hide
 CtrlBase.RegisterCtrl = RegisterCtrl
 CtrlBase.ShowCtrl = ShowCtrl
 CtrlBase.HideCtrl = HideCtrl
-CtrlBase.Close = Close
 
 return CtrlBase
