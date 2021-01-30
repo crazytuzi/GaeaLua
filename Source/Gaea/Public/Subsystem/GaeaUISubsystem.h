@@ -15,55 +15,62 @@
 UCLASS()
 class GAEA_API UGaeaUISubsystem : public UGameInstanceSubsystem
 {
-    GENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-    virtual void Initialize(FSubsystemCollectionBase& Collection) override;
+	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 
-    virtual void Deinitialize() override;
+	virtual void Deinitialize() override;
 
-    void StartUp();
+	void StartUp();
 
-    void ShutDown();
+	void ShutDown();
 
-    UFUNCTION(BlueprintCallable, Category = "GaeaUI")
-    void ShowUI(const FString& UIName);
+	void Show(const FString& UIName);
 
-    UFUNCTION(BlueprintCallable, Category = "GaeaUI")
-    void HideUI(const FString& UIName);
+	void Remove(const FString& UIName);
 
-    UFUNCTION(BlueprintCallable, Category = "GaeaUI")
-    void RemoveUI(const FString& UIName);
+	void Hide(const FString& UIName);
 
-    UFUNCTION()
-    bool IsShowUI(const FString& UIName) const;
+	UFUNCTION(BlueprintCallable, Category = "GaeaUI")
+	void ShowUI(const FString& UIName);
+
+	UFUNCTION(BlueprintCallable, Category = "GaeaUI")
+	void RemoveUI(const FString& UIName);
+
+	UFUNCTION()
+	bool IsShowUI(const FString& UIName) const;
 
 private:
-    UPROPERTY()
-    UGaeaUIRoot* Root;
+	UPROPERTY()
+	UGaeaUIRoot* Root;
 
-    UPROPERTY()
-    TMap<FString, UGaeaUICtrl*> UICtrlMap;
+	UPROPERTY()
+	TMap<FString, UGaeaUICtrl*> UICtrlMap;
 
-    UPROPERTY()
-    TMap<FString, const TSubclassOf<UUserWidget>> UIClassMap;
+	UPROPERTY()
+	TMap<FString, const TSubclassOf<UUserWidget>> UIClassMap;
 
-    static const char* RootName;
+	static const char* RootName;
 
-    static const char* UINamePrefix;
+	static const char* UINamePrefix;
 
-    static const char* UIPath;
+	static const char* UIPath;
 
-    static const char* UIConfig;
+	static const char* UIConfig;
 
-    static const char* UILayer;
+	static const char* UILayer;
 
-    UGaeaUICtrl* NewUICtrl(const FString& UIName);
+	static const char* IsCache;
 
-    UFUNCTION()
-    UGaeaUICtrl* GetUICtrl(const FString& UIName) const;
+	UGaeaUICtrl* NewUICtrl(const FString& UIName);
 
-    TSubclassOf<UUserWidget> GetUIClass(const FString& UIName);
+	UFUNCTION()
+	UGaeaUICtrl* GetUICtrl(const FString& UIName) const;
 
-    EGaeaUILayer GetLayer(const FString& UIName);
+	TSubclassOf<UUserWidget> GetUIClass(const FString& UIName);
+
+	EGaeaUILayer GetLayer(const FString& UIName);
+
+	bool GetIsCache(const FString& UIName);
 };

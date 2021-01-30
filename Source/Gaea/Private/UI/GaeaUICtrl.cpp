@@ -10,16 +10,43 @@ UGaeaUICtrl::UGaeaUICtrl()
 
 void UGaeaUICtrl::OnShow()
 {
+	if (Widget == nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("UGaeaUICtrl::OnShow => Widget is nullptr"));
+
+		return;
+	}
+
+	Widget->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+
 	State = EGaeaUIState::Show;
 }
 
 void UGaeaUICtrl::OnHide()
 {
+	if (Widget == nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("UGaeaUICtrl::OnHide => Widget is nullptr"));
+
+		return;
+	}
+
+	Widget->SetVisibility(ESlateVisibility::Collapsed);
+
 	State = EGaeaUIState::Hide;
 }
 
 void UGaeaUICtrl::OnRemove()
 {
+	if (Widget == nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("UGaeaUICtrl::OnRemove => Widget is nullptr"));
+
+		return;
+	}
+
+	Widget->RemoveFromParent();
+
 	State = EGaeaUIState::Remove;
 }
 
@@ -41,7 +68,7 @@ bool UGaeaUICtrl::IsShow() const
 		return false;
 	}
 
-	return (State == EGaeaUIState::Show);
+	return State == EGaeaUIState::Show;
 }
 
 UGaeaUICtrl* UGaeaUICtrl::NewUICtrl(UObject* Outer, const FString& UIName, UUserWidget* UserWidget)
