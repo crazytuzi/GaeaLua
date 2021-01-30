@@ -1,4 +1,4 @@
-local HUDCtrl = _G.Class("HUDCtrl", _G.CtrlBase)
+local HUDCtrl = _G.Class("HUDCtrl", _G.Ctrl)
 
 local function OnInit()
 end

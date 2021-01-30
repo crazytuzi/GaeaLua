@@ -1,4 +1,4 @@
-local TestCtrl = _G.Class("TestCtrl", _G.CtrlBase)
+local TestCtrl = _G.Class("TestCtrl", _G.Ctrl)
 
 local TestCtrl1 = require "Logic/Test/TestCtrl1"
 
@@ -9,11 +9,11 @@ local TestCtrl3 = require "Logic/Test/TestCtrl3"
 local TestPanelItem = require "Logic/Test/TestPanelItem"
 
 local function OnInit(self)
-    self:RegisterSubCtrl(self.View.UITest1, TestCtrl1)
+    self:RegisterCtrl(self.View.UITest1, TestCtrl1)
 
-    self:RegisterSubCtrl(self.View.UITest2, TestCtrl2)
+    self:RegisterCtrl(self.View.UITest2, TestCtrl2)
 
-    self:RegisterSubCtrl(self.View.UITest3, TestCtrl3)
+    self:RegisterCtrl(self.View.UITest3, TestCtrl3)
 end
 
 local function SendEvent()
@@ -21,7 +21,7 @@ local function SendEvent()
 end
 
 local function OnSubCtrlClick(self, SubCtrl)
-    self:Show(SubCtrl[1])
+    self:ShowCtrl(SubCtrl[1])
 end
 
 local function ReceiveEvent(Param)

@@ -1,52 +1,41 @@
 local CtrlBase = _G.Class("CtrlBase", _G.AbstractCtrl)
 
 local function __init(self)
-    self.uiName = string.split(self.__class_type.__cname, "Ctrl")[1]
-
-    _G.UIManager.Register(self)
+    self._Ctrls = {}
 end
 
 local function __delete(self)
-    for _, SubCtrl in pairs(self._subCtrls) do
-        SubCtrl:Delete()
+    for _, _Ctrl in pairs(self._Ctrls) do
+        _Ctrl:Delete()
     end
 
-    self._subCtrls = {}
+    self._Ctrl = {}
 end
 
-local function Init(self, UICtrl, ...)
-    if not _G.IsValid(UICtrl) then
-        _G.Logger.warn("CtrlBase:InitCtrl => UICtrl is nil")
-        return
-    end
-
-    self._subCtrls = {}
-
-    self.bIsDeleted = false
-
-    local Widget = UICtrl:GetWidget()
-
-    self.Super:Init(Widget, ...)
+local function Show()
 end
 
-local function RegisterSubCtrl(self, Widget, SubCtrlClass)
-    local SubCtrl = SubCtrlClass.New(Widget)
-
-    table.insert(self._subCtrls, 1, SubCtrl)
+local function Hide()
 end
 
-local function Show(self, SubCtrlClass, ...)
-    for _, SubCtrl in pairs(self._subCtrls) do
-        if SubCtrl.__class_type == SubCtrlClass and not SubCtrl:IsVisible() then
-            SubCtrl:Show(...)
+local function RegisterCtrl(self, Widget, CtrlClass)
+    local _Ctrl = CtrlClass.New(Widget)
+
+    table.insert(self._Ctrls, 1, _Ctrl)
+end
+
+local function ShowCtrl(self, CtrlClass, ...)
+    for _, _Ctrl in pairs(self._Ctrls) do
+        if _Ctrl.__class_type == CtrlClass and not _Ctrl:IsVisible() then
+            _Ctrl:Show(...)
         end
     end
 end
 
-local function Hide(self, SubCtrlClass, ...)
-    for _, SubCtrl in pairs(self._subCtrls) do
-        if SubCtrl.__class_type == SubCtrlClass and SubCtrl:IsVisible() then
-            SubCtrl:Hide(...)
+local function HideCtrl(self, CtrlClass, ...)
+    for _, _Ctrl in pairs(self._Ctrls) do
+        if _Ctrl.__class_type == CtrlClass and _Ctrl:IsVisible() then
+            _Ctrl:Hide(...)
         end
     end
 end
@@ -59,10 +48,11 @@ end
 
 CtrlBase.__init = __init
 CtrlBase.__delete = __delete
-CtrlBase.Init = Init
-CtrlBase.RegisterSubCtrl = RegisterSubCtrl
 CtrlBase.Show = Show
 CtrlBase.Hide = Hide
+CtrlBase.RegisterCtrl = RegisterCtrl
+CtrlBase.ShowCtrl = ShowCtrl
+CtrlBase.HideCtrl = HideCtrl
 CtrlBase.Close = Close
 
 return CtrlBase

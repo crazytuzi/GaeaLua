@@ -15,6 +15,8 @@ local function __delete(self)
 
     if self.View ~= nil then
         self.View:Delete()
+
+        self.View = nil
     end
 
     self.bIsVisible = false
@@ -27,7 +29,7 @@ local function Init(self, Widget, ...)
     end
 
     if _G.IsValid(Widget) and Widget:IsA(_G.UUserWidget) then
-        self.View = _G.ViewBase.New(Widget)
+        self.View = _G.View.New(Widget)
     else
         self.View = Widget
     end

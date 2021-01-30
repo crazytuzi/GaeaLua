@@ -1,7 +1,7 @@
-local ViewBase = _G.Class("ViewBase")
+local View = _G.Class("View")
 
 local function __index(t, k)
-    local value = ViewBase[k]
+    local value = View[k]
 
     if value then
         return value
@@ -10,7 +10,6 @@ local function __index(t, k)
     local CacheTable = rawget(t, "_widgetCache")
 
     if not CacheTable then
-        _G.Logger.warn("ViewBase.__index => CacheTable is not valid")
         return nil
     end
 
@@ -20,14 +19,13 @@ local function __index(t, k)
         local root = rawget(t, "_uiRoot")
 
         if not _G.IsValid(root) then
-            _G.Logger.warn("ViewBase.__index => uiRoot not valid")
             return nil
         end
 
         value = root:FindWidget(k .. "_lua")
 
         if _G.IsValid(value) and value:IsA(_G.UUserWidget) then
-            value = _G.ViewBase.New(value)
+            value = View.New(value)
         end
 
         CacheTable[k] = value
@@ -57,7 +55,7 @@ local function __delete(self)
     self:OnDispose()
 
     for _, value in pairs(self._widgetCache) do
-        if value and type(value) == "table" and _G.IsCallable(value.IsA) and value:IsA(ViewBase) then
+        if value and type(value) == "table" and _G.IsCallable(value.IsA) and value:IsA(View) then
             value:Delete()
         end
     end
@@ -103,15 +101,15 @@ local function IsValid(self)
     return _G.IsValid(self._uiRoot)
 end
 
-ViewBase.__init = __init
-ViewBase.__create = __create
-ViewBase.__delete = __delete
-ViewBase.OnInit = OnInit
-ViewBase.OnDispose = OnDispose
-ViewBase.FindWidget = FindWidget
-ViewBase.SetVisibility = SetVisibility
-ViewBase.RemoveFromParent = RemoveFromParent
-ViewBase.GetRoot = GetRoot
-ViewBase.IsValid = IsValid
+View.__init = __init
+View.__create = __create
+View.__delete = __delete
+View.OnInit = OnInit
+View.OnDispose = OnDispose
+View.FindWidget = FindWidget
+View.SetVisibility = SetVisibility
+View.RemoveFromParent = RemoveFromParent
+View.GetRoot = GetRoot
+View.IsValid = IsValid
 
-return ViewBase
+return View

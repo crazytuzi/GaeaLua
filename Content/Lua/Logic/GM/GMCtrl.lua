@@ -1,4 +1,4 @@
-local GMCtrl = _G.Class("GMCtrl", _G.CtrlBase)
+local GMCtrl = _G.Class("GMCtrl", _G.Ctrl)
 
 local GMItem = require "Logic/GM/GMItem"
 

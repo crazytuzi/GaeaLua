@@ -26,9 +26,13 @@ end
 
 function _G.SetWidgetVisibility(Widget, IsVisible)
     if _G.IsValid(Widget) then
-        IsVisible = IsVisible or false
+        if IsVisible == nil then
+            IsVisible = false
+        end
 
-        IsVisible = (IsVisible and _G.ESlateVisibility.Visible) or _G.ESlateVisibility.Collapsed
+        if IsVisible == true or IsVisible == false then
+            IsVisible = (IsVisible and _G.ESlateVisibility.Visible) or _G.ESlateVisibility.Collapsed
+        end
 
         local Visibility = Widget:GetVisibility()
 
