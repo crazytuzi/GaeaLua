@@ -106,4 +106,4 @@ TestCtrl.InitEvent = InitEvent
 TestCtrl.OnStart = OnStart
 TestCtrl.OnDispose = OnDispose
 
-return TestCtrl.New()
+return TestCtrl

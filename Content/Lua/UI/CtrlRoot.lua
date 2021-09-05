@@ -12,7 +12,7 @@ local function SetCtrl(self, UIName)
     local Ctrl = self._Ctrls[UIName]
 
     if not Ctrl then
-        Ctrl = require("Logic/" .. UIName .. "/" .. UIName .. "Ctrl")
+        Ctrl = require("Logic/" .. UIName .. "/" .. UIName .. "Ctrl").New()
 
         self._Ctrls[UIName] = {Ctrl = Ctrl, Param = nil}
     end

@@ -22,4 +22,4 @@ HUDCtrl.InitEvent = InitEvent
 HUDCtrl.OnStart = OnStart
 HUDCtrl.OnDispose = OnDispose
 
-return HUDCtrl.New()
+return HUDCtrl

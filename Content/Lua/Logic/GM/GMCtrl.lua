@@ -53,4 +53,4 @@ GMCtrl.InitEvent = InitEvent
 GMCtrl.OnStart = OnStart
 GMCtrl.OnDispose = OnDispose
 
-return GMCtrl.New()
+return GMCtrl
