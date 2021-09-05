@@ -26,20 +26,32 @@ public:
 
 	void ShutDown();
 
-	void Show(const FString& UIName);
-
-	void Remove(const FString& UIName);
-
-	void Hide(const FString& UIName);
-
 	UFUNCTION(BlueprintCallable, Category = "GaeaUI")
 	void ShowUI(const FString& UIName);
+
+	UFUNCTION(BlueprintCallable, Category = "GaeaUI")
+	void HideUI(const FString& UIName);
 
 	UFUNCTION(BlueprintCallable, Category = "GaeaUI")
 	void RemoveUI(const FString& UIName);
 
 	UFUNCTION()
 	bool IsShowUI(const FString& UIName) const;
+
+	UFUNCTION()
+	bool IsHideUI(const FString& UIName) const;
+
+	UFUNCTION()
+	bool IsCacheUI(const FString& UIName) const;
+
+protected:
+	void Show(const FString& UIName);
+
+	void Hide(const FString& UIName);
+
+	void Cache(const FString& UIName);
+
+	void Remove(const FString& UIName);
 
 private:
 	UPROPERTY()
@@ -51,13 +63,9 @@ private:
 	UPROPERTY()
 	TMap<FString, const TSubclassOf<UUserWidget>> UIClassMap;
 
-	static const char* RootName;
-
-	static const char* UINamePrefix;
+	static const char* UIConfig;
 
 	static const char* UIPath;
-
-	static const char* UIConfig;
 
 	static const char* UILayer;
 
@@ -69,6 +77,8 @@ private:
 	UGaeaUICtrl* GetUICtrl(const FString& UIName) const;
 
 	TSubclassOf<UUserWidget> GetUIClass(const FString& UIName);
+
+	FString GetUIPath(const FString& UIName);
 
 	EGaeaUILayer GetLayer(const FString& UIName);
 

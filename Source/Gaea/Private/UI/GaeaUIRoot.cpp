@@ -6,8 +6,6 @@
 #include "Components/CanvasPanel.h"
 #include "Components/CanvasPanelSlot.h"
 
-const char* UGaeaUIRoot::RootCanvasName = "GaeaUIRootCanvas";
-
 const char* UGaeaUIRoot::LayerNamePrefix = "GaeaUILayer_";
 
 const uint32 UGaeaUIRoot::ZOrderRatio = 10;
@@ -24,7 +22,7 @@ bool UGaeaUIRoot::Initialize()
 		return false;
 	}
 
-	RootCanvas = WidgetTree->ConstructWidget<UCanvasPanel>(UCanvasPanel::StaticClass(), RootCanvasName);
+	RootCanvas = WidgetTree->ConstructWidget<UCanvasPanel>(UCanvasPanel::StaticClass());
 
 	if (RootCanvas == nullptr)
 	{
@@ -67,7 +65,7 @@ bool UGaeaUIRoot::AddChildToRoot(const EGaeaUILayer Layer, UUserWidget* Widget) 
 		return false;
 	}
 
-	auto CanvasPanelSlot = CanvasPanel->AddChildToCanvas(Widget);
+	const auto CanvasPanelSlot = CanvasPanel->AddChildToCanvas(Widget);
 
 	if (CanvasPanelSlot == nullptr)
 	{

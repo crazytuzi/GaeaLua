@@ -30,8 +30,6 @@ public:
 
 	bool AddChildToRoot(EGaeaUILayer Layer, UUserWidget* Widget) const;
 
-	static const char* RootCanvasName;
-
 	static const char* LayerNamePrefix;
 
 	static const uint32 ZOrderRatio;
@@ -39,7 +37,7 @@ public:
 private:
 	UPROPERTY()
 	UCanvasPanel* RootCanvas;
-	
+
 	UPROPERTY()
 	TMap<EGaeaUILayer, UCanvasPanel*> CanvasPanels;
 

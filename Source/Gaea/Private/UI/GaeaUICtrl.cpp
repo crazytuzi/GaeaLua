@@ -36,6 +36,20 @@ void UGaeaUICtrl::OnHide()
 	State = EGaeaUIState::Hide;
 }
 
+void UGaeaUICtrl::OnCache()
+{
+	if (Widget == nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("UGaeaUICtrl::OnCache => Widget is nullptr"));
+
+		return;
+	}
+
+	Widget->SetVisibility(ESlateVisibility::Collapsed);
+
+	State = EGaeaUIState::Cache;
+}
+
 void UGaeaUICtrl::OnRemove()
 {
 	if (Widget == nullptr)
@@ -71,6 +85,28 @@ bool UGaeaUICtrl::IsShow() const
 	return State == EGaeaUIState::Show;
 }
 
+bool UGaeaUICtrl::IsHide() const
+{
+	if (Widget == nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("UGaeaUICtrl::IsHide => Widget is nullptr"));
+		return false;
+	}
+
+	return State == EGaeaUIState::Hide;
+}
+
+bool UGaeaUICtrl::IsCache() const
+{
+	if (Widget == nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("UGaeaUICtrl::IsCache => Widget is nullptr"));
+		return false;
+	}
+
+	return State == EGaeaUIState::Cache;
+}
+
 UGaeaUICtrl* UGaeaUICtrl::NewUICtrl(UObject* Outer, const FString& UIName, UUserWidget* UserWidget)
 {
 	if (Outer == nullptr)
@@ -91,7 +127,7 @@ UGaeaUICtrl* UGaeaUICtrl::NewUICtrl(UObject* Outer, const FString& UIName, UUser
 		return nullptr;
 	}
 
-	auto UICtrl = NewObject<UGaeaUICtrl>(Outer, *UIName);
+	auto UICtrl = NewObject<UGaeaUICtrl>(Outer);
 
 	if (UICtrl == nullptr)
 	{

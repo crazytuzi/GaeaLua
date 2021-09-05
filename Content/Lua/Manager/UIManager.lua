@@ -85,16 +85,32 @@ local function Show(self, UIConfig, ...)
     self.CtrlRoot:SetParam(UIConfig.Name, table.pack(...))
 
     if not _G.IsValid(self._uiManager) then
-        _G.Logger.warn("UIManager:ShowUI => self._uiManager is nil")
+        _G.Logger.warn("UIManager:Show => self._uiManager is nil")
         return
     end
 
     self._uiManager:ShowUI(UIConfig.Name)
 end
 
+local function Hide(self, UIConfig)
+    local Ctrl = GetCtrl(self, UIConfig)
+
+    if Ctrl == nil then
+        _G.Logger.warn("UIManager:Hide => Ctrl is nil")
+        return
+    end
+
+    if not _G.IsValid(self._uiManager) then
+        _G.Logger.warn("UIManager:Hide => self._uiManager is nil")
+        return
+    end
+
+    self._uiManager:HideUI(UIConfig.Name)
+end
+
 local function Remove(self, UIConfig)
     if not _G.IsValid(self._uiManager) then
-        _G.Logger.warn("UIManager:RemoveUI --> self._uiManager is nil")
+        _G.Logger.warn("UIManager:Remove --> self._uiManager is nil")
         return
     end
 
@@ -113,6 +129,7 @@ end
 UIManager.OnStartUp = OnStartUp
 UIManager.OnShutDown = OnShutDown
 UIManager.Show = Show
+UIManager.Hide = Hide
 UIManager.Remove = Remove
 UIManager.IsShowUI = IsShowUI
 UIManager.GetCtrl = GetCtrl
