@@ -24,6 +24,10 @@ local function __index(t, k)
 
         value = root:FindWidget(k .. "_lua")
 
+        if not value then
+            value = root[k]
+        end
+
         if _G.IsValid(value) and value:IsA(_G.UUserWidget) then
             value = View(value)
         end
