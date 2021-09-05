@@ -14,12 +14,14 @@ local function screen(message, duration, textcolor)
     _G.UKismetSystemLibrary.PrintString(_G.GetContextObject(), message, true, true, textcolor, duration)
 end
 
-local function warn(message)
+local function warn(message, level)
     if _G.IsStringNullOrEmpty(message) then
         message = "None"
     end
 
-    message = "Warning: " .. message .. "\n" .. debug.traceback()
+    level = level or 2
+
+    message = "Warning: " .. message .. "\n" .. debug.traceback(_, level)
 
     screen(message, 10, _G.FLinearColor(1.0, 0.0, 0.0, 1.0))
 end

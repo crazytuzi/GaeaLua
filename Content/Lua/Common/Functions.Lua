@@ -3,7 +3,7 @@ function _G.CallBackError(e)
         e = "None"
     end
 
-    _G.Logger.warn("CallBackError => " .. e .. "\n" .. debug.traceback())
+    _G.Logger.warn("CallBackError => " .. e .. "\n", 3)
 end
 
 function _G.IsValid(Object)
