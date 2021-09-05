@@ -16,4 +16,7 @@ class GAEA_API UGaeaCheatManager : public UCheatManager
 
 	UFUNCTION(Exec)
     void ShowGM() const;
+
+	UFUNCTION(Exec)
+	void Do(const FString& Str) const;
 };

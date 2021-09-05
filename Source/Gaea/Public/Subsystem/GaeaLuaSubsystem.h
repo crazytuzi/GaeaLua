@@ -26,6 +26,10 @@ public:
 
 	slua::LuaVar GetVar(const char* Key);
 
+	bool SetVar(const char* Key, const slua::LuaVar& Value);
+
+	void DoString(const char* Str);
+
 	static const char* Config;
 
 	template <typename ...ARGS>

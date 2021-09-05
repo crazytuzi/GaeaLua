@@ -77,6 +77,10 @@ local function InitGame()
                         count = 0
                     }
                 )
+
+                if type(mode.__register) == "function" then
+                    mode:__register()
+                end
             end
         end
 

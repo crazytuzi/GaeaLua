@@ -50,7 +50,10 @@ local function __create(self)
     setmetatable(
         self,
         {
-            __index = __index
+            __index = __index,
+            __tostring = function(this)
+                return string.split(_G.UKismetSystemLibrary.GetDisplayName(this:GetRoot()), "_lua")[1]
+            end
         }
     )
 end

@@ -17,7 +17,6 @@ local function OnSetData(self)
 end
 
 local function OnDispose(self)
-    _G.Logger.log("TestPanelItem.OnDispose =>" .. self.data._data.Text)
 end
 
 TestPanelItem.InitEvent = InitEvent

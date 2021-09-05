@@ -44,7 +44,7 @@ local function SetData(self, Data)
 
     local Index = 1
 
-    for _, v in ipairs(Data) do
+    for _, v in pairs(Data) do
         local Item = self._items[Index]
 
         if Item == nil then
@@ -70,7 +70,7 @@ local function SetData(self, Data)
         if Item:IsValid() then
             self._root:AddChild(Item:GetRoot())
 
-            Item:SetData(v)
+            Item:SetData(Index, v)
 
             Index = Index + 1
         end
@@ -102,15 +102,25 @@ local function __delete(self)
 
     self._pool:Empty()
 
+    self._pool = nil
+
     self._root = nil
 
     self._path = nil
 
+    self._param = nil
+
     self._items = {}
 end
 
+local function GetItems(self)
+    return self._items
+end
+
 PanelViewBase.__init = __init
+PanelViewBase.GetNewWidget = GetNewWidget
 PanelViewBase.SetData = SetData
+PanelViewBase.GetItems = GetItems
 PanelViewBase.__delete = __delete
 
 return PanelViewBase

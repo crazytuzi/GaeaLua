@@ -1,9 +1,16 @@
 local PanelItemBase = _G.Class("PanelItemBase", _G.AbstractCtrl, _G.PoolItem)
 
-local function SetItemData(self, Data)
+local function SetItemData(self, Index, Data)
+    self:OnPreSetData()
+
     self.data._data = Data
 
+    self.data.Index = Index
+
     self:OnSetData()
+end
+
+local function OnPreSetData()
 end
 
 local function OnSetData()
@@ -27,6 +34,7 @@ local function __delete(self)
     end
 end
 
+PanelItemBase.OnPreSetData = OnPreSetData
 PanelItemBase.SetData = SetItemData
 PanelItemBase.OnSetData = OnSetData
 PanelItemBase.Empty = Empty

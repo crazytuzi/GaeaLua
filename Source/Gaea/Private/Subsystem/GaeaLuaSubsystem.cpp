@@ -140,6 +140,30 @@ slua::LuaVar UGaeaLuaSubsystem::GetVar(const char* Key)
 	return State.get(Key);
 }
 
+bool UGaeaLuaSubsystem::SetVar(const char* Key, const slua::LuaVar& Value)
+{
+	if (!HasReady())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("UGaeaLuaSubsystem::SetVar => Lua has not been ready!"));
+
+		return false;
+	}
+
+	return State.set(Key, Value);
+}
+
+void UGaeaLuaSubsystem::DoString(const char* Str)
+{
+	if (!HasReady())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("UGaeaLuaSubsystem::DoString => Lua has not been ready!"));
+
+		return;
+	}
+
+	State.doString(Str);
+}
+
 void UGaeaLuaSubsystem::PreLoadMap(const FString& MapName) const
 {
 	UGaeaFunctionLibrary::GetGlobalDispatcher(this)->Dispatch(EGaeaEvent::EVENT_PRE_LOAD_MAP);
