@@ -39,7 +39,7 @@ local function OnPreLoadMap(self)
 end
 
 local function OnStartUp(self)
-    self.CtrlRoot = _G.CtrlRoot.New()
+    self.CtrlRoot = _G.CtrlRoot()
 
     self._uiManager =
         _G.UGaeaFunctionLibrary.GetGameInstanceSubsystem(_G.GetContextObject(), _G.import("GaeaUISubsystem"))

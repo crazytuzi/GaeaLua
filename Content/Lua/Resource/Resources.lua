@@ -6,7 +6,7 @@ end
 
 Resource.__init = __init
 
-local Resources = Resource.New()
+local Resources = Resource()
 
 function _G.GetResource(Path)
     local success, result = _G.xpcall(Path.CallBack, _G.CallBackError, Path.Path)
@@ -87,7 +87,7 @@ _ENV.GenerateResourceType = function(ResourceType, ClassType)
     if _G.IsCallable(ClassType) then
         Loader = ClassType
     else
-        Loader = ResourceLoader.New(ClassType)
+        Loader = ResourceLoader(ClassType)
 
         Loader:Init()
     end

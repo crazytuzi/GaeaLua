@@ -12,7 +12,7 @@ end
 
 local function GetInstance(self, ...)
     if rawget(self, "Instance") == nil then
-        rawset(self, "Instance", self.New(...))
+        rawset(self, "Instance", self(...))
     end
 
     assert(self.Instance ~= nil)

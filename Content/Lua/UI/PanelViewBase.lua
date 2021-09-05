@@ -17,7 +17,7 @@ local function __init(self, Root, ClassType, Path, Capacity)
 
     self._items = {}
 
-    self._pool = _G.Pool.New(ClassType, Capacity)
+    self._pool = _G.Pool(ClassType, Capacity)
 end
 
 local function GetNewWidget(self)

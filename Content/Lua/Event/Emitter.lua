@@ -52,7 +52,7 @@ local function Add(Event, Fun, SelfTable)
         return nil
     end
 
-    local Listener = EmitterListener.New(Fun, SelfTable)
+    local Listener = EmitterListener(Fun, SelfTable)
 
     if not _event[Event] then
         _event[Event] = {Listener}

@@ -29,7 +29,7 @@ local function Init(self, Widget, ...)
     end
 
     if _G.IsValid(Widget) and Widget:IsA(_G.UUserWidget) then
-        self.View = _G.View.New(Widget)
+        self.View = _G.View(Widget)
     else
         self.View = Widget
     end

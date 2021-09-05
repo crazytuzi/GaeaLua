@@ -1,27 +1,17 @@
 local assert = assert
 local setmetatable = setmetatable
 
--- 保存类类型的虚表
 local __class = {}
-
--- 自定义类型
-_G.ClassType = {
-    class = 1,
-    instance = 2
-}
 
 function _G.Class(classname, ...)
     assert(type(classname) == "string" and #classname > 0)
 
-    -- 生成一个类类型
     local class_type = {}
 
-    -- 在创建对象的时候自动调用
     class_type.__init = false
     class_type.__create = false
     class_type.__delete = false
     class_type.__cname = classname
-    class_type.__ctype = _G.ClassType.class
     class_type.__super = table.pack(...)
 
     class_type.IsA = function(BaseClass)
@@ -44,13 +34,39 @@ function _G.Class(classname, ...)
             class_type.Super,
             {
                 __index = function(_, k)
-                    for _, v in ipairs(class_type.__super) do
-                        if #v.__super == 0 then
-                            return __class[v][k]
+                    local file = string.match(debug.getinfo(3, "S")["short_src"], ".+/([^/]+)(%.%w+)$")
+
+                    local iclass
+
+                    if file == class_type.__cname then
+                        iclass = class_type
+                    else
+                        for _, v in ipairs(class_type.__super) do
+                            if v.__cname == file then
+                                iclass = v
+                            else
+                                for _, vv in ipairs(v.__super) do
+                                    if vv.__cname == file then
+                                        iclass = vv
+
+                                        break
+                                    end
+                                end
+                            end
+
+                            if iclass then
+                                break
+                            end
+                        end
+                    end
+
+                    for _, v in ipairs(iclass.__super) do
+                        if v[k] then
+                            return v[k]
                         else
                             for _, vv in ipairs(v.__super) do
-                                if __class[vv][k] then
-                                    return __class[vv][k]
+                                if vv[k] then
+                                    return vv[k]
                                 end
                             end
                         end
@@ -62,62 +78,44 @@ function _G.Class(classname, ...)
         )
     end
 
-    class_type.New = function(...)
+    local _new = function(...)
         _G.Classs[classname].total = _G.Classs[classname].total + 1
 
         _G.Classs[classname].count = _G.Classs[classname].count + 1
 
-        -- 生成一个类对象
-        local obj = {}
+        local object = {}
 
-        obj.__initing = true
-        obj.__class_type = class_type
-        obj.__ctype = _G.ClassType.instance
+        object.__class_type = class_type
 
-        obj.Super = {}
+        object.Super = {}
 
-        if obj.__class_type.__super.n > 0 then
+        if class_type.__super.n > 0 then
             setmetatable(
-                obj.Super,
+                object.Super,
                 {
                     __index = function(_, k)
-                        local value = nil
+                        local value = {class_type.Super[k]}
 
-                        if obj.__initing then
-                            for _, v in ipairs(class_type.__super) do
-                                if __class[v][k] then
-                                    value = {__class[v][k]}
+                        assert(#value > 0 and _G.IsCallable(value[1]))
 
-                                    break
-                                end
-                            end
-                        else
-                            value = {obj.__class_type.Super[k]}
-                        end
+                        setmetatable(
+                            value,
+                            {
+                                __call = function(_, ...)
+                                    local param = table.pack(...)
 
-                        if value and #value > 0 then
-                            setmetatable(
-                                value,
-                                {
-                                    __call = function(_, ...)
-                                        local param = table.pack(...)
-
-                                        if param[1] == obj.Super then
-                                            table.remove(param, 1)
-
-                                            local _, result =
-                                                xpcall(value[1], _G.CallBackError, obj, table.unpack(param))
-
-                                            return result
-                                        else
-                                            local _, result = xpcall(value[1], _G.CallBackError, ...)
-
-                                            return result
-                                        end
+                                    for i = 1, param.n do
+                                        param[i] = param[i + 1]
                                     end
-                                }
-                            )
-                        end
+
+                                    param.n = param.n - 1
+
+                                    local _, result = xpcall(value[1], _G.CallBackError, object, table.unpack(param))
+
+                                    return result
+                                end
+                            }
+                        )
 
                         return value
                     end
@@ -125,26 +123,26 @@ function _G.Class(classname, ...)
             )
         end
 
-        -- 在初始化之前注册基类方法
         setmetatable(
-            obj,
+            object,
             {
                 __index = __class[class_type],
                 __gc = function(this)
-                    this:Delete()
+                    if _G.IsCallable(this.Delete) then
+                        this:Delete()
+                    end
                 end
             }
         )
 
-        -- 调用初始化方法
         do
             local tb = {}
 
             local _init
 
-            _init = function(c, ...)
-                if c.__super then
-                    for _, v in ipairs(c.__super) do
+            _init = function(class, ...)
+                if class.__super then
+                    for _, v in ipairs(class.__super) do
                         if tb[v] == nil then
                             _init(v, ...)
 
@@ -153,8 +151,8 @@ function _G.Class(classname, ...)
                     end
                 end
 
-                if c.__init then
-                    c.__init(obj, ...)
+                if class.__init then
+                    class.__init(object, ...)
                 end
             end
 
@@ -168,9 +166,9 @@ function _G.Class(classname, ...)
 
             local _create
 
-            _create = function(c, ...)
-                if c.__super then
-                    for _, v in ipairs(c.__super) do
+            _create = function(class, ...)
+                if class.__super then
+                    for _, v in ipairs(class.__super) do
                         if tb[v] == nil then
                             _create(v, ...)
 
@@ -179,8 +177,8 @@ function _G.Class(classname, ...)
                     end
                 end
 
-                if c.__create then
-                    c.__create(obj, ...)
+                if class.__create then
+                    class.__create(object, ...)
                 end
             end
 
@@ -192,24 +190,24 @@ function _G.Class(classname, ...)
         local _delete
 
         _delete = function(class, tb)
-            local now = class
+            local iclass = class
 
             tb = tb or {}
 
-            while now do
-                if tb[now] then
+            while iclass do
+                if tb[iclass] then
                     break
                 end
 
-                if now.__delete then
-                    now.__delete(obj)
+                if iclass.__delete then
+                    iclass.__delete(object)
 
-                    tb[now] = true
+                    tb[iclass] = true
                 end
 
-                if now.__super then
-                    for i = #now.__super, 1, -1 do
-                        local v = now.__super[i]
+                if iclass.__super then
+                    for i = #iclass.__super, 1, -1 do
+                        local v = iclass.__super[i]
 
                         if v and tb[v] == nil then
                             _delete(v, tb)
@@ -219,12 +217,11 @@ function _G.Class(classname, ...)
                     end
                 end
 
-                now = now.__super
+                iclass = iclass.__super
             end
         end
 
-        -- 注册一个delete方法
-        obj.Delete = function(self)
+        object.Delete = function(self)
             self.bIsDeleted = self.bIsDeleted or false
 
             if not self.bIsDeleted then
@@ -236,14 +233,11 @@ function _G.Class(classname, ...)
             end
         end
 
-        -- 注册一个IsA方法
-        obj.IsA = function(self, ClassType)
+        object.IsA = function(self, ClassType)
             return self.__class_type.IsA(ClassType)
         end
 
-        obj.__initing = nil
-
-        return obj
+        return object
     end
 
     local vtbl = {}
@@ -256,6 +250,9 @@ function _G.Class(classname, ...)
             __index = vtbl,
             __newindex = function(_, k, v)
                 vtbl[k] = v
+            end,
+            __call = function(_, ...)
+                return _new(...)
             end
         }
     )
@@ -266,8 +263,8 @@ function _G.Class(classname, ...)
             {
                 __index = function(_, k)
                     for _, v in ipairs(class_type.__super) do
-                        if __class[v][k] then
-                            return __class[v][k]
+                        if v[k] then
+                            return v[k]
                         end
                     end
 

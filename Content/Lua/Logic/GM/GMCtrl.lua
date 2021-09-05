@@ -25,11 +25,11 @@ end
 local function OnInit(self)
     self.data.configs = {}
 
-    Common.New(self)
+    Common(self)
 
-    Test.New(self)
+    Test(self)
 
-    self.data.PanelView = _G.PanelViewBase.New(self.View.vb, GMItem, _G.Resources.UIGMItem, 15)
+    self.data.PanelView = _G.PanelViewBase(self.View.vb, GMItem, _G.Resources.UIGMItem, 15)
 end
 
 local function InitEvent(self)

@@ -19,7 +19,7 @@ local function Hide()
 end
 
 local function RegisterCtrl(self, Widget, CtrlClass)
-    local _Ctrl = CtrlClass.New(Widget)
+    local _Ctrl = CtrlClass(Widget)
 
     table.insert(self._Ctrls, 1, _Ctrl)
 end

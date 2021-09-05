@@ -87,7 +87,7 @@ local function Add(self, EventId, LuaFun, SelfTable, ParamTable)
         end
     end
 
-    local Info = LuaDispatcherWarp.New(LuaFun, SelfTable, ParamTable)
+    local Info = LuaDispatcherWarp(LuaFun, SelfTable, ParamTable)
 
     return _G.EventHelper.Add(Delegate, "callback", Info.DelegateTrigger, Info)
 end
@@ -163,4 +163,4 @@ LuaDispatcher.Add = Add
 LuaDispatcher.Remove = Remove
 LuaDispatcher.Dispatch = Dispatch
 
-return LuaDispatcher.New(_G.UGaeaFunctionLibrary.GetGlobalDispatcher(_G.GetContextObject()))
+return LuaDispatcher(_G.UGaeaFunctionLibrary.GetGlobalDispatcher(_G.GetContextObject()))

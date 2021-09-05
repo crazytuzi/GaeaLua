@@ -25,7 +25,7 @@ local function __index(t, k)
         value = root:FindWidget(k .. "_lua")
 
         if _G.IsValid(value) and value:IsA(_G.UUserWidget) then
-            value = View.New(value)
+            value = View(value)
         end
 
         CacheTable[k] = value

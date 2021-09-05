@@ -49,7 +49,7 @@ local function OnStart(self)
 
     self.View.btn_subctrl3:SetVisibility(_G.ESlateVisibility.Collapsed)
 
-    self.data.PanelView = _G.PanelViewBase.New(self.View.vb, TestPanelItem, _G.Resources.UIPanelItemBase, 10)
+    self.data.PanelView = _G.PanelViewBase(self.View.vb, TestPanelItem, _G.Resources.UIPanelItemBase, 10)
 
     self.data.PanelView:SetData {
         {

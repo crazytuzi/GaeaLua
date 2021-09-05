@@ -12,7 +12,7 @@ local function __init(self, ClassType, Capacity)
         Capacity = 10
     end
 
-    self._pool = _G.Queue.New(Capacity)
+    self._pool = _G.Queue(Capacity)
 
     self._class = ClassType
 
@@ -53,7 +53,7 @@ local function Pop(self, ...)
     local Element
 
     if IsEmpty(self) then
-        Element = self._class.New(...)
+        Element = self._class(...)
     else
         Element = self._pool:Peek()
 
