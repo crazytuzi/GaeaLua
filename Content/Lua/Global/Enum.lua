@@ -19,4 +19,10 @@ _G.EWidgetEvent = {
         OnUnhovered = "OnUnhovered"
     }
 }
+
+_G.EManagerMode = {
+    All = 0,
+    DedicatedServer = 1,
+    Clent = 2
+}
 -- Enums only used in Lua --

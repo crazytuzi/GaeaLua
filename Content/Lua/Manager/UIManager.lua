@@ -1,5 +1,9 @@
 local UIManager = _G.Class("UIManager", _G.ManagerBase)
 
+local function __create(self)
+    self._mode = _G.EManagerMode.Clent
+end
+
 local function GetCtrl(self, UIConfig)
     return self.CtrlRoot:GetCtrl(UIConfig.Name)
 end
@@ -126,6 +130,7 @@ local function IsShowUI(self, UIConfig)
     return self._uiManager:IsShowUI(UIConfig.Name)
 end
 
+UIManager.__create = __create
 UIManager.OnStartUp = OnStartUp
 UIManager.OnShutDown = OnShutDown
 UIManager.Show = Show

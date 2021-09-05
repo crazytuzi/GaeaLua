@@ -12,10 +12,12 @@ local function __delete(self)
     self._Ctrl = {}
 end
 
-local function Show()
+local function Show(self, Params)
+    self:OnShow(Params)
 end
 
-local function Hide()
+local function Hide(self, Params)
+    self:OnHide(Params)
 end
 
 local function RegisterCtrl(self, Widget, CtrlClass)
