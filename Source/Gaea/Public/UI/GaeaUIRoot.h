@@ -30,8 +30,6 @@ public:
 
 	bool AddChildToRoot(EGaeaUILayer Layer, UUserWidget* Widget) const;
 
-	static const char* LayerNamePrefix;
-
 	static const uint32 ZOrderRatio;
 
 private:
@@ -43,7 +41,7 @@ private:
 
 	bool InitCanvasPanels();
 
-	bool CreateCanvas(EGaeaUILayer Layer, const FString& LayerName);
+	bool CreateCanvas(EGaeaUILayer Layer);
 
 	static uint32 GetZOrderByLayer(EGaeaUILayer Layer);
 };

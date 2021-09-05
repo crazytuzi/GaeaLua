@@ -6,9 +6,7 @@
 #include "Components/CanvasPanel.h"
 #include "Components/CanvasPanelSlot.h"
 
-const char* UGaeaUIRoot::LayerNamePrefix = "GaeaUILayer_";
-
-const uint32 UGaeaUIRoot::ZOrderRatio = 10;
+constexpr uint32 UGaeaUIRoot::ZOrderRatio = 10;
 
 bool UGaeaUIRoot::Initialize()
 {
@@ -104,17 +102,13 @@ bool UGaeaUIRoot::InitCanvasPanels()
 
 	for (auto i = 0; i < LayerEnum->NumEnums(); ++i)
 	{
-		FString Name{LayerNamePrefix};
-
-		Name += LayerEnum->GetNameStringByIndex(i);
-
-		CreateCanvas(static_cast<EGaeaUILayer>(LayerEnum->GetValueByIndex(i)), *Name);
+		CreateCanvas(static_cast<EGaeaUILayer>(LayerEnum->GetValueByIndex(i)));
 	}
 
 	return true;
 }
 
-bool UGaeaUIRoot::CreateCanvas(const EGaeaUILayer Layer, const FString& LayerName)
+bool UGaeaUIRoot::CreateCanvas(const EGaeaUILayer Layer)
 {
 	if (CanvasPanels.Contains(Layer))
 	{
@@ -134,7 +128,7 @@ bool UGaeaUIRoot::CreateCanvas(const EGaeaUILayer Layer, const FString& LayerNam
 		return false;
 	}
 
-	auto CanvasPanel = WidgetTree->ConstructWidget<UCanvasPanel>(UCanvasPanel::StaticClass(), *LayerName);
+	const auto CanvasPanel = WidgetTree->ConstructWidget<UCanvasPanel>(UCanvasPanel::StaticClass());
 
 	if (CanvasPanel == nullptr)
 	{
