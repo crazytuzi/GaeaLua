@@ -1,6 +1,6 @@
 local PanelViewBase = _G.Class("PanelViewBase")
 
-local function __init(self, Root, ClassType, Path, Capacity)
+local function __init(self, Root, ClassType, Path, Capacity, Param)
     if not _G.IsValid(Root) then
         _G.Logger.warn("PanelViewBase.__init => Root is not valid")
         return
@@ -18,6 +18,8 @@ local function __init(self, Root, ClassType, Path, Capacity)
     self._items = {}
 
     self._pool = _G.Pool(ClassType, Capacity)
+
+    self._param = Param
 end
 
 local function GetNewWidget(self)
@@ -46,7 +48,7 @@ local function SetData(self, Data)
         local Item = self._items[Index]
 
         if Item == nil then
-            Item = self._pool:Pop()
+            Item = self._pool:Pop(table.unpack(self._param))
 
             if not Item:IsValid() then
                 Item:Empty()
@@ -59,12 +61,10 @@ local function SetData(self, Data)
             end
 
             if Item:IsValid() then
-                self._root:AddChild(Item:GetRoot())
+                table.insert(self._items, Item)
             else
                 _G.Logger.warn("PanelViewBase.SetData => Item root is nil")
             end
-
-            table.insert(self._items, Item)
         end
 
         if Item:IsValid() then
