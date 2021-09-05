@@ -27,6 +27,12 @@ local function Register(self, Ctrl)
                 end
             },
             {
+                "HotReload",
+                function()
+                    dofile("Test")
+                end
+            },
+            {
                 "Classs",
                 function()
                     table.sort(
