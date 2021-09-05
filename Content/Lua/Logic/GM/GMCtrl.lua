@@ -7,39 +7,51 @@ local Common = require "Logic/GM/GMConfig/GMConfigCommon"
 local Test = require "Logic/GM/GMConfig/GMConfigTest"
 
 local function Register(self, Name, Data)
-    table.insert(self.data.configs, {name = Name, data = Data, Ctrl = self})
+    table.insert(self.data.configs, {Name, Data})
 end
 
-local function Updata(self, config)
-    self.View.btn_back:SetVisibility((config and _G.ESlateVisibility.Visible) or _G.ESlateVisibility.Collapsed)
+local function Update(self)
+    self.View.btn_back:SetVisibility(
+        (self.data.Stack:Num() > 1 and _G.ESlateVisibility.Visible) or _G.ESlateVisibility.Collapsed
+    )
 
-    config = config or self.data.configs
+    local Top = self.data.Stack:Top()
 
-    self.data.PanelView:SetData(config)
+    self.data.PanelView:SetData(Top)
 end
 
-local function OnBackClick(self)
-    self:Updata()
+local function Forward(self, Next)
+    self.data.Stack:Push(Next)
+
+    Update(self)
+end
+
+local function Backward(self)
+    self.data.Stack:Pop()
+
+    Update(self)
 end
 
 local function OnInit(self)
+    self.data.Stack = _G.Stack()
+
     self.data.configs = {}
 
     Common(self)
 
     Test(self)
 
-    self.data.PanelView = _G.PanelViewBase(self.View.vb, GMItem, _G.Resources.UIGMItem, 15)
+    self.data.PanelView = _G.PanelViewBase(self.View.vb, GMItem, _G.Resources.UIGMItem, 15, {self})
 end
 
 local function InitEvent(self)
     self:RegisterEvent(self.View.btn_close, _G.EWidgetEvent.Button.OnClicked, self.Close, self)
 
-    self:RegisterEvent(self.View.btn_back, _G.EWidgetEvent.Button.OnClicked, OnBackClick, self)
+    self:RegisterEvent(self.View.btn_back, _G.EWidgetEvent.Button.OnClicked, Backward, self)
 end
 
 local function OnStart(self)
-    self:Updata()
+    Forward(self, self.data.configs)
 end
 
 local function OnDispose(self)
@@ -47,7 +59,8 @@ local function OnDispose(self)
 end
 
 GMCtrl.Register = Register
-GMCtrl.Updata = Updata
+GMCtrl.Forward = Forward
+GMCtrl.Backward = Backward
 GMCtrl.OnInit = OnInit
 GMCtrl.InitEvent = InitEvent
 GMCtrl.OnStart = OnStart

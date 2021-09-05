@@ -5,6 +5,7 @@ local GMConfig = _G.Class("GMConfigTest", Base)
 local function Register(self, Ctrl)
     self.Super:Register(
         Ctrl,
+        string.split(self.__class_type.__cname, "GMConfig")[2],
         {
             {
                 "Log",

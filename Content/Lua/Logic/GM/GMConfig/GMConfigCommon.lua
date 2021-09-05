@@ -5,6 +5,7 @@ local GMConfig = _G.Class("GMConfigCommon", Base)
 local function Register(self, Ctrl)
     self.Super:Register(
         Ctrl,
+        string.split(self.__class_type.__cname, "GMConfig")[2],
         {
             {
                 "Unreal GC",
@@ -48,6 +49,45 @@ local function Register(self, Ctrl)
 
                     _G.Logger.dump(_G.Classs)
                 end
+            },
+            {
+                "SecondMenu",
+                {
+                    {
+                        "First",
+                        function()
+                            print("First")
+                        end
+                    },
+                    {
+                        "Second",
+                        function()
+                            print("Second")
+                        end
+                    },
+                    {
+                        "ThirdMenu",
+                        {
+                            {
+                                "FourthMenu",
+                                {
+                                    {
+                                        "Fourth",
+                                        function()
+                                            print("Fourth")
+                                        end
+                                    }
+                                }
+                            },
+                            {
+                                "Third",
+                                function()
+                                    print("Third")
+                                end
+                            }
+                        }
+                    }
+                }
             }
         }
     )

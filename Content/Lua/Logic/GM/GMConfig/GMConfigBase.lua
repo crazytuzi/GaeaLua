@@ -1,7 +1,7 @@
 local GMConfigBase = _G.Class("GMConfigBase")
 
-local function Register(self, Ctrl, Config)
-    Ctrl:Register(string.split(self.__class_type.__cname, "GMConfig")[2], Config)
+local function Register(_, Ctrl, Name, Config)
+    Ctrl:Register(Name, Config)
 end
 
 local function __init(self, Ctrl)
