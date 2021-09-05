@@ -20,7 +20,7 @@ local function OnUIInit(self, UIName)
     local UICtrl = self._uiManager:GetUICtrl(UIName)
 
     if _G.IsValid(UICtrl) then
-        Ctrl:Init(UICtrl, CtrlParam)
+        xpcall(Ctrl.Init, _G.CallBackError, Ctrl, UICtrl, CtrlParam)
     else
         _G.Logger.warn("UIManager:OnUIInit => UICtrl is not valid UIName " .. UIName)
     end

@@ -7,9 +7,9 @@ local function __init(self)
 end
 
 local function __delete(self)
-    self:UnRegisterEvents()
+    xpcall(self.UnRegisterEvents, _G.CallBackError, self)
 
-    self:OnDispose()
+    xpcall(self.OnDispose, _G.CallBackError, self)
 
     self.data = {}
 
@@ -40,11 +40,11 @@ local function Init(self, Widget, ...)
 
     self:SetVisibility(true)
 
-    self:OnInit(...)
+    xpcall(self.OnInit, _G.CallBackError, self, ...)
 
-    self:InitEvent()
+    xpcall(self.InitEvent, _G.CallBackError, self)
 
-    self:OnStart()
+    xpcall(self.OnStart, _G.CallBackError, self)
 end
 
 local function OnInit()
