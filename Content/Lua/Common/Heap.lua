@@ -71,6 +71,18 @@ local function HeapPop(self)
     end
 end
 
+local function HeapRemoveAt(self, Index)
+    if Index > 0 and self:Num() >= Index then
+        table.remove(self._data, Index)
+
+        HeapSiftDown(self, 1)
+
+        return true
+    end
+
+    return false
+end
+
 local function Empty(self)
     self._data = {}
 
@@ -85,6 +97,16 @@ local function HeapTop(self)
     return nil
 end
 
+local function Find(self, Data)
+    for i = 1, self:Num() do
+        if self._data[i] == Data then
+            return i
+        end
+    end
+
+    return _G.INDEX_NONE
+end
+
 local function Num(self)
     return #self._data
 end
@@ -96,8 +118,10 @@ end
 Heap.__init = __init
 Heap.HeapPush = HeapPush
 Heap.HeapPop = HeapPop
+Heap.HeapRemoveAt = HeapRemoveAt
 Heap.Empty = Empty
 Heap.HeapTop = HeapTop
+Heap.Find = Find
 Heap.Num = Num
 Heap.IsEmpty = IsEmpty
 
