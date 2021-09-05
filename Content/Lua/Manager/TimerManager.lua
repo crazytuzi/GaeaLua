@@ -8,6 +8,10 @@ local _pauseTimers = {}
 
 local _progressingTimers = {}
 
+local _lock = false
+
+local _delayOperations = {}
+
 local TimerHandle = _G.Class("TimerHandle")
 
 local function __init(self, Fun, InRate, InbLoop, InFirstDelay, SelfTable, ParamTable)
@@ -76,6 +80,8 @@ TimerHandle.__create = __create
 TimerHandle.__delete = __delete
 
 local function Tick(DeltaTime)
+    _lock = true
+
     _timeSeconds = _timeSeconds + DeltaTime
 
     for i = #_pendingTimers, 1, -1 do
@@ -86,27 +92,39 @@ local function Tick(DeltaTime)
 
             table.remove(_pendingTimers, i)
 
-            table.insert(_progressingTimers, value)
+            _progressingTimers:HeapPush(value)
         else
             break
         end
     end
 
-    for i = #_progressingTimers, 1, -1 do
-        local value = _progressingTimers[i]
+    while true do
+        local value = _progressingTimers:HeapTop()
 
-        if value._Time <= _timeSeconds then
+        if value and value._Time <= _timeSeconds then
+            _progressingTimers:HeapPop()
+
             value()
 
             if value._InbLoop then
                 value._Time = value._Time + value._InRate
+
+                _progressingTimers:HeapPush(value)
             else
                 value:Delete()
-
-                table.remove(_progressingTimers, i)
             end
+        else
+            break
         end
     end
+
+    _lock = false
+
+    for _, Operation in pairs(_delayOperations) do
+        Operation()
+    end
+
+    _delayOperations = {}
 end
 
 local function OnStartUp(self)
@@ -116,7 +134,12 @@ local function OnStartUp(self)
 
     _pauseTimers = {}
 
-    _progressingTimers = {}
+    _progressingTimers =
+        _G.Heap(
+        function(a, b)
+            return a < b
+        end
+    )
 
     self.TickListener = _G.Emitter.Add(_G.EmitterEvent.Tick, Tick)
 end
@@ -130,8 +153,16 @@ local function OnShutDown(self)
         _pauseTimers[i]:Delete()
     end
 
-    for i = #_progressingTimers, 1, -1 do
-        _progressingTimers[i]:Delete()
+    while true do
+        local Value = _progressingTimers:HeapTop()
+
+        if Value then
+            _progressingTimers:HeapPop()
+
+            Value:Delete()
+        else
+            break
+        end
     end
 
     _timeSeconds = 0.0
@@ -139,6 +170,8 @@ local function OnShutDown(self)
     _pendingTimers = {}
 
     _pauseTimers = {}
+
+    _progressingTimers:Empty()
 
     _progressingTimers = {}
 
@@ -150,7 +183,18 @@ local function OnShutDown(self)
 end
 
 local function SetTimer(Fun, InRate, InbLoop, InFirstDelay, SelfTable, ParamTable)
-    local InHandle = TimerHandle.New(Fun, InRate, InbLoop, InFirstDelay, SelfTable, ParamTable)
+    local InHandle = TimerHandle(Fun, InRate, InbLoop, InFirstDelay, SelfTable, ParamTable)
+
+    if _lock then
+        table.insert(
+            _delayOperations,
+            function()
+                SetTimer(InRate, InbLoop, InFirstDelay, SelfTable, ParamTable)
+            end
+        )
+
+        return InHandle
+    end
 
     if InFirstDelay > 0 then
         table.insert(_pendingTimers, InHandle)
@@ -162,13 +206,24 @@ local function SetTimer(Fun, InRate, InbLoop, InFirstDelay, SelfTable, ParamTabl
             end
         )
     else
-        table.insert(_progressingTimers, InHandle)
+        _progressingTimers:HeapPush(InHandle)
     end
 
     return InHandle
 end
 
 local function PauseTimer(InHandle)
+    if _lock then
+        table.insert(
+            _delayOperations,
+            function()
+                PauseTimer(InHandle)
+            end
+        )
+
+        return true
+    end
+
     for i = #_pendingTimers, 1, -1 do
         if _pendingTimers[i] == InHandle then
             InHandle._Time = InHandle._Time - _timeSeconds + InHandle._InRate
@@ -181,29 +236,36 @@ local function PauseTimer(InHandle)
         end
     end
 
-    for i = #_progressingTimers, 1, -1 do
-        if _progressingTimers[i] == InHandle then
-            InHandle._Time = InHandle._Time - _timeSeconds
+    local Index = _progressingTimers:Find(InHandle)
 
-            table.remove(_progressingTimers, i)
+    if _progressingTimers:HeapRemoveAt(Index) then
+        table.insert(_pauseTimers, InHandle)
 
-            table.insert(_pauseTimers, InHandle)
-
-            return true
-        end
+        return true
     end
 
     return false
 end
 
 local function UnPauseTimer(InHandle)
+    if _lock then
+        table.insert(
+            _delayOperations,
+            function()
+                UnPauseTimer(InHandle)
+            end
+        )
+
+        return true
+    end
+
     for i = #_pauseTimers, 1, -1 do
         if _pauseTimers[i] == InHandle then
             InHandle._Time = InHandle._Time + _timeSeconds
 
             table.remove(_pauseTimers, i)
 
-            table.insert(_progressingTimers, InHandle)
+            _progressingTimers:HeapPush(InHandle)
 
             return true
         end
@@ -213,6 +275,17 @@ local function UnPauseTimer(InHandle)
 end
 
 local function ClearTimer(InHandle)
+    if _lock then
+        table.insert(
+            _delayOperations,
+            function()
+                ClearTimer(InHandle)
+            end
+        )
+
+        return true
+    end
+
     for i = #_pendingTimers, 1, -1 do
         if _pendingTimers[i] == InHandle then
             table.remove(_pendingTimers, i)
@@ -229,15 +302,9 @@ local function ClearTimer(InHandle)
         end
     end
 
-    for i = #_progressingTimers, 1, -1 do
-        if _progressingTimers[i] == InHandle then
-            table.remove(_progressingTimers, i)
+    local Index = _progressingTimers:Find(InHandle)
 
-            return true
-        end
-    end
-
-    return false
+    return _progressingTimers:HeapRemoveAt(Index)
 end
 
 local function IsTimerActive(InHandle)
@@ -247,13 +314,7 @@ local function IsTimerActive(InHandle)
         end
     end
 
-    for i = #_progressingTimers, 1, -1 do
-        if _progressingTimers[i] == InHandle then
-            return true
-        end
-    end
-
-    return false
+    return _progressingTimers:Find(InHandle) ~= _G.INDEX_NONE
 end
 
 local function IsTimerPaused(InHandle)
