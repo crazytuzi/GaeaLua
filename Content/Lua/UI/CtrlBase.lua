@@ -29,7 +29,7 @@ end
 local function GetCtrl(self, CtrlClass)
     if type(CtrlClass) == "table" and CtrlClass:IsA(CtrlBase) then
         for _, _Ctrl in pairs(self._Ctrls) do
-            if _Ctrl.__class_type == CtrlClass then
+            if _Ctrl:IsA(CtrlClass) then
                 return _Ctrl
             end
         end
@@ -47,7 +47,7 @@ end
 local function ShowCtrl(self, CtrlClass, ...)
     if type(CtrlClass) == "table" and CtrlClass:IsA(CtrlBase) then
         for _, _Ctrl in pairs(self._Ctrls) do
-            if _Ctrl.__class_type == CtrlClass and not _Ctrl:IsVisible() then
+            if _Ctrl:IsA(CtrlClass) and not _Ctrl:IsVisible() then
                 _Ctrl:Show(...)
 
                 return
@@ -67,7 +67,7 @@ end
 local function HideCtrl(self, CtrlClass, ...)
     if type(CtrlClass) == "table" and CtrlClass:IsA(CtrlBase) then
         for _, _Ctrl in pairs(self._Ctrls) do
-            if _Ctrl.__class_type == CtrlClass and _Ctrl:IsVisible() then
+            if _Ctrl:IsA(CtrlClass) and _Ctrl:IsVisible() then
                 _Ctrl:Hide(...)
 
                 return
@@ -87,7 +87,7 @@ end
 local function IsShowCtrl(self, CtrlClass)
     if type(CtrlClass) == "table" and CtrlClass:IsA(CtrlBase) then
         for _, _Ctrl in pairs(self._Ctrls) do
-            if _Ctrl.__class_type == CtrlClass and _Ctrl:IsVisible() then
+            if _Ctrl:IsA(CtrlClass) and _Ctrl:IsVisible() then
                 return true
             end
         end
