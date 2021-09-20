@@ -1,7 +1,7 @@
 local Ctrl = _G.Class("Ctrl", _G.CtrlBase)
 
-local function __init(self)
-    self.uiName = string.split(self.__class_type.__cname, "Ctrl")[1]
+local function __init(self, UIName)
+    self.uiName = UIName
 end
 
 local function __delete()
