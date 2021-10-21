@@ -1,9 +1,15 @@
-local ManagerBase = _G.Class("ManagerBase", _G.Singleton)
+local Class = require "Utils/Class"
 
-local function __init(self, Manager)
+local Singleton = require "Utils/Singleton"
+
+local ManagerCenter = require "Manager/ManagerCenter"
+
+local ManagerBase = Class("ManagerBase", Singleton)
+
+local function __register(self)
     self._mode = _G.EManagerMode.All
 
-    _G.ManagerCenter.Register(Manager)
+    ManagerCenter:Get().Register(self)
 end
 
 local function GetMode(self)
@@ -32,7 +38,7 @@ end
 local function OnShutDown()
 end
 
-ManagerBase.__init = __init
+ManagerBase.__register = __register
 ManagerBase.GetMode = GetMode
 ManagerBase.StartUp = StartUp
 ManagerBase.ShutDown = ShutDown

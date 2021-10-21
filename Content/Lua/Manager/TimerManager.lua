@@ -1,4 +1,8 @@
-local TimerManager = _G.Class("TimerManager", _G.ManagerBase)
+local Class = require "Utils/Class"
+
+local ManagerBase = require "Manager/ManagerBase"
+
+local TimerManager = Class("TimerManager", ManagerBase)
 
 local _timeSeconds = 0.0
 
@@ -12,7 +16,13 @@ local _lock = false
 
 local _delayOperations = {}
 
-local TimerHandle = _G.Class("TimerHandle")
+local Heap = require "Common/Heap"
+
+local EmitterEvent = require "Event/EmitterEvent"
+
+local Emitter = require "Event/Emitter"
+
+local TimerHandle = Class("TimerHandle")
 
 local function __init(self, Fun, InRate, InbLoop, InFirstDelay, SelfTable, ParamTable)
     self._Fun = Fun
@@ -135,13 +145,13 @@ local function OnStartUp(self)
     _pauseTimers = {}
 
     _progressingTimers =
-        _G.Heap(
+        Heap(
         function(a, b)
             return a < b
         end
     )
 
-    self.TickListener = _G.Emitter.Add(_G.EmitterEvent.Tick, Tick)
+    self.TickListener = Emitter.Add(EmitterEvent.Tick, Tick)
 end
 
 local function OnShutDown(self)
@@ -176,7 +186,7 @@ local function OnShutDown(self)
     _progressingTimers = {}
 
     if self.TickListener then
-        _G.Emitter.Remove(_G.EmitterEvent.Tick, self.TickListener)
+        Emitter.Remove(EmitterEvent.Tick, self.TickListener)
 
         self.TickListener = nil
     end
@@ -347,4 +357,4 @@ TimerManager.IsTimerActive = IsTimerActive
 TimerManager.IsTimerPaused = IsTimerPaused
 TimerManager.IsTimerPending = IsTimerPending
 
-return TimerManager:GetInstance(TimerManager)
+return TimerManager

@@ -1,4 +1,6 @@
-local Singleton = _G.Class("Singleton")
+local Class = require "Utils/Class"
+
+local Singleton = Class("Singleton")
 
 local function __init(self)
     assert(rawget(self.__class_type, "Instance") == nil, self.__class_type.__cname .. " to create singleton twice!")
@@ -10,9 +12,9 @@ local function __delete(self)
     rawset(self.__class_type, "Instance", nil)
 end
 
-local function GetInstance(self, ...)
+local function Get(self)
     if rawget(self, "Instance") == nil then
-        rawset(self, "Instance", self(...))
+        rawset(self, "Instance", self())
     end
 
     assert(self.Instance ~= nil)
@@ -22,6 +24,6 @@ end
 
 Singleton.__init = __init
 Singleton.__delete = __delete
-Singleton.GetInstance = GetInstance
+Singleton.Get = Get
 
 return Singleton

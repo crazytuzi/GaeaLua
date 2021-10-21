@@ -1,4 +1,8 @@
-local SubCtrl = _G.Class("SubCtrl", _G.CtrlBase)
+local Class = require "Utils/Class"
+
+local CtrlBase = require "UI/CtrlBase"
+
+local SubCtrl = Class("SubCtrl", CtrlBase)
 
 local function __init(self, _, uiName)
     self.uiName = uiName

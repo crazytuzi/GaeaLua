@@ -1,5 +1,9 @@
 require("LuaPanda").start("127.0.0.1", 8818)
 
+local EmitterEvent = require "Event/EmitterEvent"
+
+local Emitter = require "Event/Emitter"
+
 local _GameInstance = nil
 
 local function InitGameInstance(GameInstance)
@@ -93,7 +97,9 @@ end
 local function StartGame()
     ProtectGlobalTable()
 
-    _G.ManagerCenter.StartUp()
+    local ManagerCenter = require "Manager/ManagerCenter"
+
+    ManagerCenter:Get().StartUp()
 end
 
 function _G.main(GameInstance)
@@ -105,7 +111,7 @@ function _G.main(GameInstance)
 end
 
 function _G.Tick(DeltaTime)
-    _G.Emitter.Emit(_G.EmitterEvent.Tick, DeltaTime)
+    Emitter.Emit(EmitterEvent.Tick, DeltaTime)
 end
 
 function _G.GetContextObject()

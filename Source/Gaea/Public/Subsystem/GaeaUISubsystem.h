@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "LuaVar.h"
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "UI/GaeaUIRoot.h"
 #include "UI/GaeaUICtrl.h"
@@ -63,7 +64,7 @@ private:
 	UPROPERTY()
 	TMap<FString, const TSubclassOf<UUserWidget>> UIClassMap;
 
-	static const char* UIConfig;
+	static const char* UIConfigPath;
 
 	static const char* UIPath;
 
@@ -77,6 +78,8 @@ private:
 	UGaeaUICtrl* GetUICtrl(const FString& UIName) const;
 
 	TSubclassOf<UUserWidget> GetUIClass(const FString& UIName);
+
+	slua::LuaVar GetConfig(const FString& UIName);
 
 	FString GetUIPath(const FString& UIName);
 

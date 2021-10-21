@@ -1,8 +1,12 @@
-local Emitter = _G.Class("Emitter")
+local Class = require "Utils/Class"
+
+local Emitter = Class("Emitter")
 
 local _event = {}
 
-local EmitterListener = _G.Class("EmitterListener")
+local Logger = require "Logger/Logger"
+
+local EmitterListener = Class("EmitterListener")
 
 local function __init(self, Fun, SelfTable)
     self._Fun = Fun
@@ -48,7 +52,7 @@ EmitterListener.__delete = __delete
 
 local function Add(Event, Fun, SelfTable)
     if not _G.IsCallable(Fun) then
-        _G.Logger.warn("Emitter.Add => Fun is not callable")
+        Logger.warn("Emitter.Add => Fun is not callable")
         return nil
     end
 
@@ -75,7 +79,7 @@ end
 
 local function Remove(Event, Listener)
     if type(Listener) ~= "table" then
-        _G.Logger.warn("Emitter.Remove => Listener is not a table")
+        Logger.warn("Emitter.Remove => Listener is not a table")
         return
     end
 

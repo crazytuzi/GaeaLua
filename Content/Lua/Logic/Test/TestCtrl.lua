@@ -1,4 +1,8 @@
-local TestCtrl = _G.Class("TestCtrl", _G.Ctrl)
+local Class = require "Utils/Class"
+
+local Ctrl = require "UI/Ctrl"
+
+local TestCtrl = Class("TestCtrl", Ctrl)
 
 local TestCtrl1 = require "Logic/Test/TestCtrl1"
 
@@ -7,6 +11,14 @@ local TestCtrl2 = require "Logic/Test/TestCtrl2"
 local TestCtrl3 = require "Logic/Test/TestCtrl3"
 
 local TestPanelItem = require "Logic/Test/TestPanelItem"
+
+local Logger = require "Logger/Logger"
+
+local Resources = require "Resource/Resources"
+
+local Events = require "Event/EEvent"
+
+local PanelViewBase = require "UI/PanelViewBase"
 
 local function OnInit(self)
     self:RegisterCtrl(self.View.UITest1, TestCtrl1)
@@ -17,7 +29,7 @@ local function OnInit(self)
 end
 
 local function SendEvent()
-    _G.Dispatcher:Dispatch(_G.Events.EVENT_UI_TEST_EVENT, {_G.EEventParamType.EEventParamType_int32, 250})
+    _G.Dispatcher:Dispatch(Events.EVENT_UI_TEST_EVENT, {_G.EEventParamType.EEventParamType_int32, 250})
 end
 
 local function OnSubCtrlClick(self, SubCtrl)
@@ -25,7 +37,7 @@ local function OnSubCtrlClick(self, SubCtrl)
 end
 
 local function ReceiveEvent(Param)
-    _G.Logger.log("TestCtrl:ReceiveEvent => Param:" .. Param)
+    Logger.log("TestCtrl:ReceiveEvent => Param:" .. Param)
 end
 
 local function InitEvent(self)
@@ -39,7 +51,7 @@ local function InitEvent(self)
 
     self:RegisterEvent(self.View.btn_subctrl3, _G.EWidgetEvent.Button.OnClicked, OnSubCtrlClick, self, {TestCtrl3})
 
-    self:RegisterEvent(_G.Dispatcher, _G.Events.EVENT_UI_TEST_EVENT, ReceiveEvent)
+    self:RegisterEvent(_G.Dispatcher, Events.EVENT_UI_TEST_EVENT, ReceiveEvent)
 end
 
 local function OnStart(self)
@@ -49,50 +61,50 @@ local function OnStart(self)
 
     self.View.btn_subctrl3:SetVisibility(_G.ESlateVisibility.Collapsed)
 
-    self.data.PanelView = _G.PanelViewBase(self.View.vb, TestPanelItem, _G.Resources.UIPanelItemBase, 10)
+    self.data.PanelView = PanelViewBase(self.View.vb, TestPanelItem, Resources.UIPanelItemBase, 10)
 
     self.data.PanelView:SetData {
         {
             Text = "Test1",
-            Image = _G.Resources.YuigahamaYui
+            Image = Resources.YuigahamaYui
         },
         {
             Text = "Test2",
-            Image = _G.Resources.YukinoshitaYukino
+            Image = Resources.YukinoshitaYukino
         },
         {
             Text = "Test3",
-            Image = _G.Resources.YuigahamaYui
+            Image = Resources.YuigahamaYui
         }
     }
 
     self.data.PanelView:SetData {
         {
             Text = "Test4",
-            Image = _G.Resources.YuigahamaYui
+            Image = Resources.YuigahamaYui
         },
         {
             Text = "Test5",
-            Image = _G.Resources.YukinoshitaYukino
+            Image = Resources.YukinoshitaYukino
         },
         {
             Text = "Test6",
-            Image = _G.Resources.YuigahamaYui
+            Image = Resources.YuigahamaYui
         },
         {
             Text = "Test7",
-            Image = _G.Resources.YukinoshitaYukino
+            Image = Resources.YukinoshitaYukino
         }
     }
 
     self.data.PanelView:SetData {
         {
             Text = "Test8",
-            Image = _G.Resources.YuigahamaYui
+            Image = Resources.YuigahamaYui
         },
         {
             Text = "Test9",
-            Image = _G.Resources.YukinoshitaYukino
+            Image = Resources.YukinoshitaYukino
         }
     }
 end

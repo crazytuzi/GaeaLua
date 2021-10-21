@@ -1,4 +1,8 @@
-local GMItem = _G.Class("GMItem", _G.PanelItemBase)
+local Class = require "Utils/Class"
+
+local PanelItemBase = require "UI/PanelItemBase"
+
+local GMItem = Class("GMItem", PanelItemBase)
 
 local function __init(self, Ctrl)
     self.data.Ctrl = Ctrl

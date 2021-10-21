@@ -1,14 +1,8 @@
-local Resource = _G.Class("Resource")
+local Class = require "Utils/Class"
 
-local function __init(self)
-    self._data = {}
-end
+local Logger = require "Logger/Logger"
 
-Resource.__init = __init
-
-local Resources = Resource()
-
-function _G.GetResource(Path)
+local function GetResource(Path)
     local success, result = _G.xpcall(Path.CallBack, _G.CallBackError, Path.Path)
 
     if success then
@@ -17,6 +11,38 @@ function _G.GetResource(Path)
         return nil
     end
 end
+
+local Resources = Class("Resources")
+
+local function __register(self)
+    _G.setmetatable(
+        Resources,
+        {
+            __index = function(_, k)
+                local v = _G.rawget(self, k)
+
+                if v then
+                    return v
+                else
+                    v = _G.rawget(self, "data")
+
+                    if v then
+                        return v[k]
+                    end
+                end
+
+                return nil
+            end,
+            __newindex = function()
+                Logger.warn("Don't Set ResourcePath, config in Resources")
+            end
+        }
+    )
+end
+
+_G.rawset(Resources, "data", {})
+_G.rawset(Resources, "GetResource", GetResource)
+_G.rawset(Resources, "__register", __register)
 
 local _ENV = {
     _G = _ENV._G
@@ -37,34 +63,34 @@ _G.setmetatable(
     }
 )
 
-local ResourceLoader = _G.Class("ResourceLoader")
+local ResourceLoader = Class("ResourceLoader")
 
-local function __initLoader(self, ResourceClass)
+local function __init(self, ResourceClass)
     self.ResourceClass = ResourceClass
 end
 
 local function LoadObject(self, Path)
     if not self.ResourceClass then
-        _G.Logger.warn("ResourceLoader.LoadObject => self.ResourceClass is not valid")
+        Logger.warn("ResourceLoader.LoadObject => self.ResourceClass is not valid")
         return nil
     end
 
     local Object = _G.slua.loadObject(Path)
 
     if not _G.IsValid(Object) then
-        _G.Logger.warn("ResourceLoader.LoadObject => Object is not valid")
+        Logger.warn("ResourceLoader.LoadObject => Object is not valid")
         return nil
     end
 
     if not Object:IsA(self.ResourceClass) then
-        _G.Logger.warn("ResourceLoader.LoadObject => Object class is not match")
+        Logger.warn("ResourceLoader.LoadObject => Object class is not match")
         return nil
     end
 
     return Object
 end
 
-local function Init(self)
+local function __create(self)
     _G.setmetatable(
         self,
         {
@@ -73,12 +99,12 @@ local function Init(self)
     )
 end
 
-ResourceLoader.__init = __initLoader
-ResourceLoader.Init = Init
+ResourceLoader.__init = __init
+ResourceLoader.__create = __create
 
 _ENV.GenerateResourceType = function(ResourceType, ClassType)
     if _G.type(ResourceType) ~= "string" then
-        _G.Logger.warn("GenerateResourceType => ResourceType is already exist")
+        Logger.warn("GenerateResourceType => ResourceType is already exist")
         return
     end
 
@@ -88,8 +114,6 @@ _ENV.GenerateResourceType = function(ResourceType, ClassType)
         Loader = ClassType
     else
         Loader = ResourceLoader(ClassType)
-
-        Loader:Init()
     end
 
     local ResourceTable = {}
@@ -98,12 +122,12 @@ _ENV.GenerateResourceType = function(ResourceType, ClassType)
         ResourceTable,
         {
             __newindex = function(_, k, v)
-                if _G.rawget(Resources._data, k) then
-                    _G.Logger.warn("GenerateResourceType => key is already exist")
+                if _G.rawget(Resources.data, k) then
+                    Logger.warn("GenerateResourceType => key is already exist")
                     return
                 end
 
-                _G.rawset(Resources._data, k, {CallBack = Loader, Path = v})
+                _G.rawset(Resources.data, k, {CallBack = Loader, Path = v})
             end
         }
     )
@@ -112,6 +136,7 @@ _ENV.GenerateResourceType = function(ResourceType, ClassType)
 end
 
 -- Start for Type
+
 GenerateResourceType(UMG, _G.slua.loadUI)
 
 GenerateResourceType(Image, _G.import("Texture2D"))
@@ -127,17 +152,5 @@ Image.YuigahamaYui = "/Game/UI/Test/YuigahamaYui"
 Image.YukinoshitaYukino = "/Game/UI/Test/YukinoshitaYukino"
 
 -- Stop for Path
-
-_G.setmetatable(
-    Resources,
-    {
-        __index = function(t, k)
-            return _G.rawget(t._data, k)
-        end,
-        __newindex = function()
-            _G.Logger.warn("Don't Set ResourcePath, config in Resources")
-        end
-    }
-)
 
 return Resources

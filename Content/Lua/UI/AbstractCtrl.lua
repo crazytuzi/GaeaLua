@@ -1,4 +1,12 @@
-local AbstractCtrl = _G.Class("AbstractCtrl")
+local Class = require "Utils/Class"
+
+local AbstractCtrl = Class("AbstractCtrl")
+
+local Logger = require "Logger/Logger"
+
+local View = require "UI/View"
+
+local EventHelper = require "Event/EventHelper"
 
 local function __init(self)
     self.data = {}
@@ -24,12 +32,12 @@ end
 
 local function Init(self, Widget, ...)
     if not Widget then
-        _G.Logger.warn("AbstractCtrl:InitCtrl => Widget is not valid")
+        Logger.warn("AbstractCtrl:InitCtrl => Widget is not valid")
         return
     end
 
     if _G.IsValid(Widget) and Widget:IsA(_G.UUserWidget) then
-        self.View = _G.View(Widget)
+        self.View = View(Widget)
     else
         self.View = Widget
     end
@@ -66,7 +74,7 @@ local function IsVisible(self)
     end
 
     if self.View == nil or not self.View:IsValid() then
-        _G.Logger.warn("AbstractCtrl:IsVisible => View uiRoot is not valid")
+        Logger.warn("AbstractCtrl:IsVisible => View uiRoot is not valid")
         return false
     end
 
@@ -97,7 +105,7 @@ local function RegisterEvent(self, EventTarget, EventName, LuaFun, SelfTable, ..
             EventDelegate = EventTarget:Add(EventName, LuaFun, SelfTable)
         end
     else
-        EventDelegate = _G.EventHelper.Add(EventTarget, EventName, LuaFun, SelfTable, ...)
+        EventDelegate = EventHelper.Add(EventTarget, EventName, LuaFun, SelfTable, ...)
     end
 
     if EventDelegate == nil then
@@ -116,7 +124,7 @@ local function UnRegisterEvents(self)
                 Delegate.EventTarget:Remove(Delegate.EventName, Delegate.EventDelegate)
             end
         else
-            _G.EventHelper.Remove(Delegate.EventTarget, Delegate.EventName, Delegate.EventDelegate)
+            EventHelper.Remove(Delegate.EventTarget, Delegate.EventName, Delegate.EventDelegate)
         end
     end
 

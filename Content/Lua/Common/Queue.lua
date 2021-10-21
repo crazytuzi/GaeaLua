@@ -1,4 +1,8 @@
-local Queue = _G.Class("Queue")
+local Class = require "Utils/Class"
+
+local Logger = require "Logger/Logger"
+
+local Queue = Class("Queue")
 
 local function __init(self, Capacity)
     if Capacity == nil or Capacity <= 0 then
@@ -18,7 +22,7 @@ end
 
 local function Enqueue(self, Element)
     if Element == nil then
-        _G.Logger.warn("Queue:Push => Element is not valid")
+        Logger.warn("Queue:Push => Element is not valid")
         return
     end
 
@@ -34,7 +38,7 @@ local function Enqueue(self, Element)
         local tail = (self._tail + 1) % self._capacity
 
         if tail == (self._head + 1) % self._capacity then
-            _G.Logger.warn("Queue:Enqueue => Capacity is not enough")
+            Logger.warn("Queue:Enqueue => Capacity is not enough")
             return
         else
             self._tail = tail

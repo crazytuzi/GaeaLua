@@ -1,10 +1,20 @@
-local GMCtrl = _G.Class("GMCtrl", _G.Ctrl)
+local Class = require "Utils/Class"
+
+local Ctrl = require "UI/Ctrl"
+
+local GMCtrl = Class("GMCtrl", Ctrl)
 
 local GMItem = require "Logic/GM/GMItem"
 
 local Common = require "Logic/GM/GMConfig/GMConfigCommon"
 
 local Test = require "Logic/GM/GMConfig/GMConfigTest"
+
+local Stack = require "Common/Stack"
+
+local Resources = require "Resource/Resources"
+
+local PanelViewBase = require "UI/PanelViewBase"
 
 local function Register(self, Name, Data)
     table.insert(self.data.configs, {Name, Data})
@@ -33,7 +43,7 @@ local function Backward(self)
 end
 
 local function OnInit(self)
-    self.data.Stack = _G.Stack()
+    self.data.Stack = Stack()
 
     self.data.configs = {}
 
@@ -41,7 +51,7 @@ local function OnInit(self)
 
     Test(self)
 
-    self.data.PanelView = _G.PanelViewBase(self.View.vb, GMItem, _G.Resources.UIGMItem, 15, {self})
+    self.data.PanelView = PanelViewBase(self.View.vb, GMItem, Resources.UIGMItem, 15, {self})
 end
 
 local function InitEvent(self)

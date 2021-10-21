@@ -1,13 +1,23 @@
-local PanelViewBase = _G.Class("PanelViewBase")
+local Class = require "Utils/Class"
+
+local PanelItemBase = require "UI/PanelItemBase"
+
+local Logger = require "Logger/Logger"
+
+local Resources = require "Resource/Resources"
+
+local Pool = require "Common/Pool"
+
+local PanelViewBase = Class("PanelViewBase")
 
 local function __init(self, Root, ClassType, Path, Capacity, Param)
     if not _G.IsValid(Root) then
-        _G.Logger.warn("PanelViewBase.__init => Root is not valid")
+        Logger.warn("PanelViewBase.__init => Root is not valid")
         return
     end
 
-    if ClassType == nil or not ClassType.IsA(_G.PanelItemBase) then
-        _G.Logger.warn("PanelViewBase.__init => ClassType is not valid")
+    if ClassType == nil or not ClassType.IsA(PanelItemBase) then
+        Logger.warn("PanelViewBase.__init => ClassType is not valid")
         return
     end
 
@@ -17,7 +27,7 @@ local function __init(self, Root, ClassType, Path, Capacity, Param)
 
     self._items = {}
 
-    self._pool = _G.Pool(ClassType, Capacity)
+    self._pool = Pool(ClassType, Capacity)
 
     self._param = Param
 end
@@ -31,12 +41,12 @@ local function GetNewWidget(self)
         return nil
     end
 
-    return _G.GetResource(self._path)
+    return Resources.GetResource(self._path)
 end
 
 local function SetData(self, Data)
     if Data == nil then
-        _G.Logger.warn("PanelViewBase.SetData => Data is nil")
+        Logger.warn("PanelViewBase.SetData => Data is nil")
         return
     end
 
@@ -63,7 +73,7 @@ local function SetData(self, Data)
             if Item:IsValid() then
                 table.insert(self._items, Item)
             else
-                _G.Logger.warn("PanelViewBase.SetData => Item root is nil")
+                Logger.warn("PanelViewBase.SetData => Item root is nil")
             end
         end
 

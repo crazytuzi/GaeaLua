@@ -1,4 +1,6 @@
-local GMConfigBase = _G.Class("GMConfigBase")
+local Class = require "Utils/Class"
+
+local GMConfigBase = Class("GMConfigBase")
 
 local function Register(_, Ctrl, Name, Config)
     Ctrl:Register(Name, Config)

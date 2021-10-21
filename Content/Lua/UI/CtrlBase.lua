@@ -1,4 +1,8 @@
-local CtrlBase = _G.Class("CtrlBase", _G.AbstractCtrl)
+local Class = require "Utils/Class"
+
+local AbstractCtrl = require "UI/AbstractCtrl"
+
+local CtrlBase = Class("CtrlBase", AbstractCtrl)
 
 local function __init(self)
     self._Ctrls = {}

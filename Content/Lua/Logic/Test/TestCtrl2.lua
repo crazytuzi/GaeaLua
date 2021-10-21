@@ -1,29 +1,35 @@
-local Test2Ctrl = _G.Class("TestCtrl", _G.SubCtrlBase)
+local Class = require "Utils/Class"
+
+local SubCtrl = require "UI/SubCtrl"
+
+local Logger = require "Logger/Logger"
+
+local Test2Ctrl = Class("TestCtrl", SubCtrl)
 
 local function OnInit()
-    _G.Logger.log("Test2Ctrl => OnInit")
+    Logger.log("Test2Ctrl => OnInit")
 end
 
 local function InitEvent(self)
-    _G.Logger.log("Test2Ctrl => InitEvent")
+    Logger.log("Test2Ctrl => InitEvent")
 
     self:RegisterEvent(self.View.btn_close, _G.EWidgetEvent.Button.OnClicked, self.Hide, self)
 end
 
 local function OnStart()
-    _G.Logger.log("Test2Ctrl => OnStart")
+    Logger.log("Test2Ctrl => OnStart")
 end
 
 local function OnShow()
-    _G.Logger.log("Test2Ctrl => OnShow")
+    Logger.log("Test2Ctrl => OnShow")
 end
 
 local function OnHide()
-    _G.Logger.log("Test2Ctrl => OnHide")
+    Logger.log("Test2Ctrl => OnHide")
 end
 
 local function OnDispose()
-    _G.Logger.log("Test2Ctrl => OnDispose")
+    Logger.log("Test2Ctrl => OnDispose")
 end
 
 Test2Ctrl.OnInit = OnInit

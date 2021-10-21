@@ -1,4 +1,6 @@
-local ToggleBase = _G.Class("ToggleBase")
+local Class = require "Utils/Class"
+
+local ToggleBase = Class("ToggleBase")
 
 local function __init(self, Params)
     local Root, Object, Data = table.unpack(Params)

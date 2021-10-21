@@ -1,10 +1,16 @@
-local HUDCtrl = _G.Class("HUDCtrl", _G.Ctrl)
+local Class = require "Utils/Class"
+
+local Ctrl = require "UI/Ctrl"
+
+local UIConfig = require "Config/UIConfig"
+
+local HUDCtrl = Class("HUDCtrl", Ctrl)
 
 local function OnInit()
 end
 
 local function OnTestBtnClick()
-    _G.UIManager:Show(_G.Config.UIConfig.GM)
+    _G.UIManager:Get():Show(UIConfig.Test)
 end
 
 local function InitEvent(self)

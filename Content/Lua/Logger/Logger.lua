@@ -1,4 +1,6 @@
-local Logger = _G.Class("Logger")
+local Class = require "Utils/Class"
+
+local Logger = Class("Logger")
 
 local print = print
 

@@ -1,20 +1,32 @@
-local UIManager = _G.Class("UIManager", _G.ManagerBase)
+local Class = require "Utils/Class"
+
+local CtrlRoot = require "UI/CtrlRoot"
+
+local Logger = require "Logger/Logger"
+
+local ManagerBase = require "Manager/ManagerBase"
+
+local UIConfig = require "Config/UIConfig"
+
+local Events = require "Event/EEvent"
+
+local UIManager = Class("UIManager", ManagerBase)
 
 local function __create(self)
     self._mode = _G.EManagerMode.Clent
 end
 
-local function GetCtrl(self, UIConfig)
-    return self.CtrlRoot:GetCtrl(UIConfig.Name)
+local function GetCtrl(self, Config)
+    return self.CtrlRoot:GetCtrl(Config.Name)
 end
 
 local function OnUIInit(self, UIName)
-    local Ctrl = GetCtrl(self, _G.Config.UIConfig[UIName])
+    local Ctrl = GetCtrl(self, UIConfig[UIName])
 
     local CtrlParam = self.CtrlRoot:GetParam(UIName)
 
     if Ctrl == nil then
-        _G.Logger.warn("UIManager:OnUIInit --> Ctrl is nil")
+        Logger.warn("UIManager:OnUIInit --> Ctrl is nil")
     end
 
     local UICtrl = self._uiManager:GetUICtrl(UIName)
@@ -22,12 +34,12 @@ local function OnUIInit(self, UIName)
     if _G.IsValid(UICtrl) then
         xpcall(Ctrl.Init, _G.CallBackError, Ctrl, UICtrl, CtrlParam)
     else
-        _G.Logger.warn("UIManager:OnUIInit => UICtrl is not valid UIName " .. UIName)
+        Logger.warn("UIManager:OnUIInit => UICtrl is not valid UIName " .. UIName)
     end
 end
 
 local function OnUIDispose(self, UIName)
-    local Ctrl = GetCtrl(self, _G.Config.UIConfig[UIName])
+    local Ctrl = GetCtrl(self, UIConfig[UIName])
 
     if Ctrl == nil then
         return
@@ -43,21 +55,21 @@ local function OnPreLoadMap(self)
 end
 
 local function OnStartUp(self)
-    self.CtrlRoot = _G.CtrlRoot()
+    self.CtrlRoot = CtrlRoot()
 
     self._uiManager =
         _G.UGaeaFunctionLibrary.GetGameInstanceSubsystem(_G.GetContextObject(), _G.import("GaeaUISubsystem"))
 
     if not _G.IsValid(self._uiManager) then
-        _G.Logger.warn("UIManager:OnStartUp => uiMgr is not valid")
+        Logger.warn("UIManager:OnStartUp => uiMgr is not valid")
         return
     end
 
-    self.OnUIInit_Delegate = _G.Dispatcher:Add(_G.Events.EVENT_UI_ON_INIT, OnUIInit, self)
+    self.OnUIInit_Delegate = _G.Dispatcher:Add(Events.EVENT_UI_ON_INIT, OnUIInit, self)
 
-    self.OnUIDispose_Delegate = _G.Dispatcher:Add(_G.Events.EVENT_UI_ON_DISPOSE, OnUIDispose, self)
+    self.OnUIDispose_Delegate = _G.Dispatcher:Add(Events.EVENT_UI_ON_DISPOSE, OnUIDispose, self)
 
-    self.OnPreLoadMap_Delegate = _G.Dispatcher:Add(_G.Events.EVENT_PRE_LOAD_MAP, OnPreLoadMap, self)
+    self.OnPreLoadMap_Delegate = _G.Dispatcher:Add(Events.EVENT_PRE_LOAD_MAP, OnPreLoadMap, self)
 end
 
 local function OnShutDown(self)
@@ -65,69 +77,69 @@ local function OnShutDown(self)
 
     self.CtrlRoot = nil
 
-    _G.Dispatcher:Remove(_G.Events.EVENT_UI_ON_INIT, self.OnUIInit_Delegate)
+    _G.Dispatcher:Remove(Events.EVENT_UI_ON_INIT, self.OnUIInit_Delegate)
 
     self.OnUIInit_Delegate = nil
 
-    _G.Dispatcher:Remove(_G.Events.EVENT_UI_ON_DISPOSE, self.OnUIDispose_Delegate)
+    _G.Dispatcher:Remove(Events.EVENT_UI_ON_DISPOSE, self.OnUIDispose_Delegate)
 
     self.OnUIDispose_Delegate = nil
 
-    _G.Dispatcher:Remove(_G.Events.EVENT_PRE_LOAD_MAP, self.OnPreLoadMap_Delegate)
+    _G.Dispatcher:Remove(Events.EVENT_PRE_LOAD_MAP, self.OnPreLoadMap_Delegate)
 
     self.OnPreLoadMap_Delegate = nil
 end
 
-local function Show(self, UIConfig, ...)
-    local Ctrl = GetCtrl(self, UIConfig)
+local function Show(self, Config, ...)
+    local Ctrl = GetCtrl(self, Config)
 
     if Ctrl == nil then
-        _G.Logger.warn("UIManager:Show => Ctrl is nil")
+        Logger.warn("UIManager:Show => Ctrl is nil")
         return
     end
 
-    self.CtrlRoot:SetParam(UIConfig.Name, table.pack(...))
+    self.CtrlRoot:SetParam(Config.Name, table.pack(...))
 
     if not _G.IsValid(self._uiManager) then
-        _G.Logger.warn("UIManager:Show => self._uiManager is nil")
+        Logger.warn("UIManager:Show => self._uiManager is nil")
         return
     end
 
-    self._uiManager:ShowUI(UIConfig.Name)
+    self._uiManager:ShowUI(Config.Name)
 end
 
-local function Hide(self, UIConfig)
-    local Ctrl = GetCtrl(self, UIConfig)
+local function Hide(self, Config)
+    local Ctrl = GetCtrl(self, Config)
 
     if Ctrl == nil then
-        _G.Logger.warn("UIManager:Hide => Ctrl is nil")
+        Logger.warn("UIManager:Hide => Ctrl is nil")
         return
     end
 
     if not _G.IsValid(self._uiManager) then
-        _G.Logger.warn("UIManager:Hide => self._uiManager is nil")
+        Logger.warn("UIManager:Hide => self._uiManager is nil")
         return
     end
 
-    self._uiManager:HideUI(UIConfig.Name)
+    self._uiManager:HideUI(Config.Name)
 end
 
-local function Remove(self, UIConfig)
+local function Remove(self, Config)
     if not _G.IsValid(self._uiManager) then
-        _G.Logger.warn("UIManager:Remove --> self._uiManager is nil")
+        Logger.warn("UIManager:Remove --> self._uiManager is nil")
         return
     end
 
-    self._uiManager:RemoveUI(UIConfig.Name)
+    self._uiManager:RemoveUI(Config.Name)
 end
 
-local function IsShowUI(self, UIConfig)
+local function IsShowUI(self, Config)
     if not _G.IsValid(self._uiManager) then
-        _G.Logger.warn("UIManager:IsShowUI => self._uiManager is nil")
+        Logger.warn("UIManager:IsShowUI => self._uiManager is nil")
         return
     end
 
-    return self._uiManager:IsShowUI(UIConfig.Name)
+    return self._uiManager:IsShowUI(Config.Name)
 end
 
 UIManager.__create = __create
@@ -139,4 +151,4 @@ UIManager.Remove = Remove
 UIManager.IsShowUI = IsShowUI
 UIManager.GetCtrl = GetCtrl
 
-return UIManager:GetInstance(UIManager)
+return UIManager

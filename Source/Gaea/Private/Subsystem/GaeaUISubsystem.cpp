@@ -9,13 +9,13 @@
 #include "Subsystem/GaeaEventSubsystem.h"
 #include "Subsystem/GaeaLuaSubsystem.h"
 
-const char* UGaeaUISubsystem::UIConfig = "UIConfig";
-
 const char* UGaeaUISubsystem::UIPath = "UIPath";
 
 const char* UGaeaUISubsystem::UILayer = "UILayer";
 
 const char* UGaeaUISubsystem::IsCache = "bIsCache";
+
+const char* UGaeaUISubsystem::UIConfigPath = "Config/UIConfig";
 
 void UGaeaUISubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
@@ -335,23 +335,50 @@ TSubclassOf<UUserWidget> UGaeaUISubsystem::GetUIClass(const FString& UIName)
 	return WidgetClass;
 }
 
-FString UGaeaUISubsystem::GetUIPath(const FString& UIName)
+slua::LuaVar UGaeaUISubsystem::GetConfig(const FString& UIName)
 {
 	const auto LuaSubsystem = UGaeaFunctionLibrary::GetSubsystem<UGaeaLuaSubsystem>(this);
 
 	if (LuaSubsystem == nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("UGaeaUISubsystem::GetUIPath => LuaSubsystem is nullptr"));
+		UE_LOG(LogTemp, Warning, TEXT("UGaeaUISubsystem::GetConfig => LuaSubsystem is nullptr"));
+		return slua::LuaVar();
+	}
+
+	const auto& UIConfigTable = LuaSubsystem->Require(UIConfigPath);
+
+	if (!UIConfigTable.isTable())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("UGaeaUISubsystem::GetConfig => UIConfigTable is not valid"));
+		return slua::LuaVar();
+	}
+
+	const auto& ConfigTable = UIConfigTable.getFromTable<slua::LuaVar>(UIName);
+
+	if (!ConfigTable.isTable())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("UGaeaUISubsystem::GetUIPath => ConfigTable is not valid"));
+		return slua::LuaVar();
+	}
+
+	return ConfigTable;
+}
+
+FString UGaeaUISubsystem::GetUIPath(const FString& UIName)
+{
+	const auto& ConfigTable = GetConfig(UIName);
+
+	if (!ConfigTable.isTable())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("UGaeaUISubsystem::GetUIPath => ConfigTable is not valid"));
 		return FString();
 	}
 
-	const auto& Config = UGaeaLuaSubsystem::Config + FString(".") + UIConfig + "." + UIName + "." + UIPath;
+	const auto& PathString = ConfigTable.getFromTable<slua::LuaVar>(UIPath);
 
-	auto const& Path = LuaSubsystem->GetVar(TCHAR_TO_ANSI(*Config));
-
-	if (Path.isString())
+	if (PathString.isString())
 	{
-		return Path.asString();
+		return PathString.asString();
 	}
 
 	return FString();;
@@ -359,21 +386,19 @@ FString UGaeaUISubsystem::GetUIPath(const FString& UIName)
 
 EGaeaUILayer UGaeaUISubsystem::GetLayer(const FString& UIName)
 {
-	const auto LuaSubsystem = UGaeaFunctionLibrary::GetSubsystem<UGaeaLuaSubsystem>(this);
+	const auto& ConfigTable = GetConfig(UIName);
 
-	if (LuaSubsystem == nullptr)
+	if (!ConfigTable.isTable())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("UGaeaUISubsystem::GetLayer => LuaSubsystem is nullptr"));
+		UE_LOG(LogTemp, Warning, TEXT("UGaeaUISubsystem::GetLayer => ConfigTable is not valid"));
 		return EGaeaUILayer::Common;
 	}
 
-	const auto& Config = UGaeaLuaSubsystem::Config + FString(".") + UIConfig + "." + UIName + "." + UILayer;
+	const auto& LayerInt = ConfigTable.getFromTable<slua::LuaVar>(UILayer);
 
-	auto const& Layer = LuaSubsystem->GetVar(TCHAR_TO_ANSI(*Config));
-
-	if (Layer.isInt())
+	if (LayerInt.isInt())
 	{
-		return static_cast<EGaeaUILayer>(Layer.asInt());
+		return static_cast<EGaeaUILayer>(LayerInt.asInt());
 	}
 
 	return EGaeaUILayer::Common;
@@ -381,21 +406,19 @@ EGaeaUILayer UGaeaUISubsystem::GetLayer(const FString& UIName)
 
 bool UGaeaUISubsystem::GetIsCache(const FString& UIName)
 {
-	const auto LuaSubsystem = UGaeaFunctionLibrary::GetSubsystem<UGaeaLuaSubsystem>(this);
+	const auto& ConfigTable = GetConfig(UIName);
 
-	if (LuaSubsystem == nullptr)
+	if (!ConfigTable.isTable())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("UGaeaUISubsystem::GetIsCache => LuaSubsystem is nullptr"));
+		UE_LOG(LogTemp, Warning, TEXT("UGaeaUISubsystem::GetIsCache => ConfigTable is not valid"));
 		return false;
 	}
 
-	const auto& Config = UGaeaLuaSubsystem::Config + FString(".") + UIConfig + "." + UIName + "." + IsCache;
+	const auto& IsCacheBool = ConfigTable.getFromTable<slua::LuaVar>(IsCache);
 
-	auto const& bIsCache = LuaSubsystem->GetVar(TCHAR_TO_ANSI(*Config));
-
-	if (bIsCache.isBool())
+	if (IsCacheBool.isBool())
 	{
-		return bIsCache.asBool();
+		return IsCacheBool.asBool();
 	}
 
 	return false;

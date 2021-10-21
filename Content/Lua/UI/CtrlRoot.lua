@@ -1,4 +1,8 @@
-local CtrlRoot = _G.Class("CtrlRoot")
+local Class = require "Utils/Class"
+
+local UIConfig = require "Config/UIConfig"
+
+local CtrlRoot = Class("CtrlRoot")
 
 local function __init(self)
     self._Ctrls = {}
@@ -12,7 +16,7 @@ local function SetCtrl(self, UIName)
     local Ctrl = self._Ctrls[UIName]
 
     if not Ctrl then
-        Ctrl = require(_G.Config.UIConfig[UIName].CtrlPath)(UIName)
+        Ctrl = require(UIConfig[UIName].CtrlPath)(UIName)
 
         self._Ctrls[UIName] = {Ctrl = Ctrl, Param = nil}
     end

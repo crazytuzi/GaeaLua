@@ -1,9 +1,11 @@
+local Logger = require "Logger/Logger"
+
 function _G.CallBackError(e)
     if _G.IsStringNullOrEmpty(e) then
         e = "None"
     end
 
-    _G.Logger.warn("CallBackError => " .. e .. "\n", 3)
+    Logger.warn("CallBackError => " .. e .. "\n", 3)
 end
 
 function _G.IsValid(Object)
@@ -20,7 +22,7 @@ function _G.SetCanvasSlotPosition(Slot, Position)
     if _G.IsValid(CanvasSlot) then
         CanvasSlot:SetPosition(Position)
     else
-        _G.Logger.warn("SetCanvasSlotPosition => CanvasSlot is not valid")
+        Logger.warn("SetCanvasSlotPosition => CanvasSlot is not valid")
     end
 end
 
@@ -40,7 +42,7 @@ function _G.SetWidgetVisibility(Widget, IsVisible)
             Widget:SetVisibility(IsVisible)
         end
     else
-        _G.Logger.warn("SetWidgetVisibility => Widget is not valid")
+        Logger.warn("SetWidgetVisibility => Widget is not valid")
     end
 end
 

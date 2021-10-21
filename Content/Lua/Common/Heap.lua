@@ -1,8 +1,12 @@
-local Heap = _G.Class("Heap")
+local Class = require "Utils/Class"
+
+local Logger = require "Logger/Logger"
+
+local Heap = Class("Heap")
 
 local function __init(self, Cmp)
     if not _G.IsCallable(Cmp) then
-        _G.Logger.warn("Heap.__init => Cmp is not callable")
+        Logger.warn("Heap.__init => Cmp is not callable")
         return
     end
 

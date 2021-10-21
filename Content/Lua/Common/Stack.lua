@@ -1,4 +1,8 @@
-local Stack = _G.Class("Stack")
+local Class = require "Utils/Class"
+
+local Logger = require "Logger/Logger"
+
+local Stack = Class("Stack")
 
 local function __init(self)
     self._data = {}
@@ -6,7 +10,7 @@ end
 
 local function Push(self, Element)
     if Element == nil then
-        _G.Logger.warn("Stack:Push => Element is not valid")
+        Logger.warn("Stack:Push => Element is not valid")
         return
     end
 

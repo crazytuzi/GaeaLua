@@ -1,10 +1,16 @@
-local Pool = _G.Class("Pool")
+local Class = require "Utils/Class"
 
-local PoolItem = _G.Class("PoolItem")
+local Pool = Class("Pool")
+
+local Logger = require "Logger/Logger"
+
+local Queue = require "Common/Queue"
+
+local PoolItem = require "Common/PoolItem"
 
 local function __init(self, ClassType, Capacity)
     if ClassType == nil or not ClassType.IsA(PoolItem) then
-        _G.Logger.warn("Pool.__init => ClassType is not valid")
+        Logger.warn("Pool.__init => ClassType is not valid")
         return
     end
 
@@ -12,7 +18,7 @@ local function __init(self, ClassType, Capacity)
         Capacity = 10
     end
 
-    self._pool = _G.Queue(Capacity)
+    self._pool = Queue(Capacity)
 
     self._class = ClassType
 
@@ -33,17 +39,17 @@ end
 
 local function Push(self, Element)
     if Element == nil then
-        _G.Logger.warn("Pool.Push => Element is not valid")
+        Logger.warn("Pool.Push => Element is not valid")
         return
     end
 
     if not Element:IsA(self._class) then
-        _G.Logger.warn("Pool.Push => Element type is not match")
+        Logger.warn("Pool.Push => Element type is not match")
         return
     end
 
     if IsFull(self) then
-        _G.Logger.warn("Pool.Push => Pool is already full")
+        Logger.warn("Pool.Push => Pool is already full")
     else
         self._pool:Enqueue(Element)
     end
@@ -78,4 +84,4 @@ Pool.Push = Push
 Pool.Pop = Pop
 Pool.Empty = Empty
 
-return table.pack(Pool, PoolItem)
+return Pool

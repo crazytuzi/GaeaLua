@@ -1,4 +1,10 @@
-local PanelItemBase = _G.Class("PanelItemBase", _G.AbstractCtrl, _G.PoolItem)
+local Class = require "Utils/Class"
+
+local AbstractCtrl = require "UI/AbstractCtrl"
+
+local PoolItem = require "Common/PoolItem"
+
+local PanelItemBase = Class("PanelItemBase", AbstractCtrl, PoolItem)
 
 local function SetItemData(self, Index, Data)
     self:OnPreSetData()

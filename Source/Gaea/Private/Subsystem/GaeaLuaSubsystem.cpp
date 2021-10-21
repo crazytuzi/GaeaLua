@@ -164,6 +164,17 @@ void UGaeaLuaSubsystem::DoString(const char* Str)
 	State.doString(Str);
 }
 
+slua::LuaVar UGaeaLuaSubsystem::Require(const char* Path)
+{
+	if (!HasReady())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("UGaeaLuaSubsystem::Require => Lua has not been ready!"));
+		return slua::LuaVar();
+	}
+
+	return State.call("require", Path);
+}
+
 void UGaeaLuaSubsystem::PreLoadMap(const FString& MapName) const
 {
 	UGaeaFunctionLibrary::GetGlobalDispatcher(this)->Dispatch(EGaeaEvent::EVENT_PRE_LOAD_MAP);

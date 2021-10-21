@@ -30,6 +30,8 @@ public:
 
 	void DoString(const char* Str);
 
+	slua::LuaVar Require(const char* Path);
+
 	static const char* Config;
 
 	template <typename ...ARGS>

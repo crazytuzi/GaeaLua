@@ -1,4 +1,6 @@
-local View = _G.Class("View")
+local Class = require "Utils/Class"
+
+local View = Class("View")
 
 local function __index(t, k)
     local value = View[k]

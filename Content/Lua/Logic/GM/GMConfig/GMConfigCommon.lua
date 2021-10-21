@@ -1,6 +1,10 @@
+local Class = require "Utils/Class"
+
 local Base = require "Logic/GM/GMConfig/GMConfigBase"
 
-local GMConfig = _G.Class("GMConfigCommon", Base)
+local Logger = require "Logger/Logger"
+
+local GMConfig = Class("GMConfigCommon", Base)
 
 local function Register(self, Ctrl)
     self.Super:Register(
@@ -47,7 +51,7 @@ local function Register(self, Ctrl)
                         end
                     )
 
-                    _G.Logger.dump(_G.Classs)
+                    Logger.dump(_G.Classs)
                 end
             },
             {

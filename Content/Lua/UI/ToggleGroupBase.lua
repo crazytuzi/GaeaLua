@@ -1,10 +1,14 @@
-local ToggleGroupBase = _G.Class("ToggleGroupBase")
+local Class = require "Utils/Class"
+
+local ToggleGroupBase = Class("ToggleGroupBase")
 
 local UButton = _G.import("Button")
 
 local UImage = _G.import("Image")
 
 local UCheckBox = _G.import("CheckBox")
+
+local EventHelper = require "Event/EventHelper"
 
 local function __init(self, Params)
     local MinOn, MaxOn = table.unpack(Params)
@@ -149,7 +153,7 @@ local function RegisterToggle(self, Toggle)
         end
     end
 
-    local Delegate = _G.EventHelper.Add(Object, EventName, Fun, self, Toggle)
+    local Delegate = EventHelper.Add(Object, EventName, Fun, self, Toggle)
 
     table.insert(self._delegates, {Object = Object, EventName = EventName, Delegate = Delegate})
 
@@ -176,7 +180,7 @@ end
 
 local function __delete(self)
     for _, value in pairs(self._delegates) do
-        _G.EventHelper.Remove(value.Object, value.EventName, value.Delegate)
+        EventHelper.Remove(value.Object, value.EventName, value.Delegate)
     end
 
     self._delegates = {}

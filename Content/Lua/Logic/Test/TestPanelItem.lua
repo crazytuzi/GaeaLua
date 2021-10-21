@@ -1,7 +1,15 @@
-local TestPanelItem = _G.Class("TestPanelItem", _G.PanelItemBase)
+local Class = require "Utils/Class"
+
+local PanelItemBase = require "UI/PanelItemBase"
+
+local Logger = require "Logger/Logger"
+
+local TestPanelItem = Class("TestPanelItem", PanelItemBase)
+
+local Resources = require "Resource/Resources"
 
 local function OnClick(self)
-    _G.Logger.dump(self.data)
+    Logger.dump(self.data)
 end
 
 local function InitEvent(self)
@@ -11,7 +19,7 @@ end
 local function OnSetData(self)
     self.View.text:SetText(self.data._data.Text)
 
-    local Image = _G.GetResource(self.data._data.Image)
+    local Image = Resources.GetResource(self.data._data.Image)
 
     self.View.img:SetBrushFromTexture(Image, false)
 end
