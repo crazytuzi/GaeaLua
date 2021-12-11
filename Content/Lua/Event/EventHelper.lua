@@ -1,5 +1,7 @@
 local Class = require "Utils/Class"
 
+local DelegateWrap = require "Event/DelegateWrap"
+
 local Logger = require "Logger/Logger"
 
 local EventHelper = Class("EventHelper")
@@ -37,7 +39,7 @@ local function Add(UObject, EventName, LuaFun, SelfTable, ParamTable)
         return nil
     end
 
-    return Event:Add(LuaFun, SelfTable, ParamTable)
+    return Event:Add(DelegateWrap(LuaFun, SelfTable, ParamTable))
 end
 
 local function Remove(UObject, EventName, LuaDelegate)

@@ -122,10 +122,8 @@ end
 local function UnRegisterEvents(self)
     for _, Delegate in ipairs(self._eventDelegates) do
         if Delegate.EventTarget then
-            if type(Delegate.EventTarget) == "table" then
-                if Delegate.EventTarget == _G.Dispatcher then
-                    Delegate.EventTarget:Remove(Delegate.EventName, Delegate.EventDelegate)
-                end
+            if Delegate.EventTarget == _G.Dispatcher then
+                Delegate.EventTarget:Remove(Delegate.EventName, Delegate.EventDelegate)
             else
                 EventHelper.Remove(Delegate.EventTarget, Delegate.EventName, Delegate.EventDelegate)
             end

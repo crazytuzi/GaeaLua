@@ -14,19 +14,28 @@
 #include "LuaObject.h"
 #include "LuaVar.h"
 #include "LuaDelegate.h"
+#if GAEA_LUA
+#include "LuaState.h"
+#endif
 
 ULuaDelegate::ULuaDelegate(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
+#if GAEA_LUA
+	,luatable(nullptr)
+#else
     ,luafunction(nullptr)
+#endif
     ,ufunction(nullptr)
 {
 }
 
 ULuaDelegate::~ULuaDelegate() {
-    SafeDelete(luafunction);
 #if GAEA_LUA
-	SafeDelete(LuaSelf);
-	SafeDelete(LuaParam);
+	SafeDelete(luatable);
+	
+	ufunction = nullptr;
+#else
+    SafeDelete(luafunction);
 #endif
 }
 
@@ -36,26 +45,38 @@ void ULuaDelegate::EventTrigger()
 }
 
 void ULuaDelegate::ProcessEvent( UFunction* f, void* Parms ) {
-    ensure(luafunction!=nullptr && ufunction!=nullptr);
 #if GAEA_LUA
-	NS_SLUA::LuaVar* SelfTab = (LuaSelf && LuaSelf->isTable() ? LuaSelf : nullptr);
-	NS_SLUA::LuaVar* ParamTab = (LuaParam && LuaParam->isTable() ? LuaParam : nullptr);
-	luafunction->callByUFunction(ufunction, reinterpret_cast<uint8*>(Parms), SelfTab, nullptr, ParamTab);
+	ensure(luatable!=nullptr && ufunction!=nullptr);
+	luatable->callByUFunction(ufunction,reinterpret_cast<uint8*>(Parms));
 #else
-    luafunction->callByUFunction(ufunction,reinterpret_cast<uint8*>(Parms));
+	ensure(luafunction!=nullptr && ufunction!=nullptr);
+	luafunction->callByUFunction(ufunction,reinterpret_cast<uint8*>(Parms));
 #endif
 }
 
 void ULuaDelegate::bindFunction(NS_SLUA::lua_State* L,int p,UFunction* ufunc) {
-    luaL_checktype(L,p,LUA_TFUNCTION);
+#if GAEA_LUA
+	luaL_checktype(L,p,LUA_TTABLE);
+#else
+	luaL_checktype(L,p,LUA_TFUNCTION);
+#endif
     ensure(ufunc);
-    luafunction = new NS_SLUA::LuaVar(L,p,NS_SLUA::LuaVar::LV_FUNCTION);
+#if GAEA_LUA
+    luatable = new NS_SLUA::LuaVar(L,p,NS_SLUA::LuaVar::LV_TABLE);
+#else
+	luafunction = new NS_SLUA::LuaVar(L,p,NS_SLUA::LuaVar::LV_FUNCTION);
+#endif
     ufunction = ufunc;
 }
 
 void ULuaDelegate::bindFunction(NS_SLUA::lua_State* L,int p) {
-    luaL_checktype(L,p,LUA_TFUNCTION);
-    luafunction = new NS_SLUA::LuaVar(L,p,NS_SLUA::LuaVar::LV_FUNCTION);
+#if GAEA_LUA
+	luaL_checktype(L,p,LUA_TTABLE);
+	luatable = new NS_SLUA::LuaVar(L,p,NS_SLUA::LuaVar::LV_TABLE);
+#else
+	luaL_checktype(L,p,LUA_TFUNCTION);
+	luafunction = new NS_SLUA::LuaVar(L,p,NS_SLUA::LuaVar::LV_FUNCTION);
+#endif
 }
 
 void ULuaDelegate::bindFunction(UFunction *ufunc) {
@@ -63,28 +84,13 @@ void ULuaDelegate::bindFunction(UFunction *ufunc) {
     ufunction = ufunc;
 }
 
-#if GAEA_LUA
-void ULuaDelegate::bindFunctionWithParam(NS_SLUA::lua_State* L, UFunction* func)
-{
-	ensure(func);
-
-	static auto P_Func = 2, P_SelfTab = 3, P_Param = 4;
-
-	luaL_checktype(L, P_Func, LUA_TFUNCTION);
-
-	luafunction = new NS_SLUA::LuaVar(L, P_Func, NS_SLUA::LuaVar::LV_FUNCTION);
-
-	LuaSelf = new NS_SLUA::LuaVar(L, P_SelfTab);
-
-	LuaParam = new NS_SLUA::LuaVar(L, P_Param);
-
-	ufunction = func;
-}
-#endif
-
 void ULuaDelegate::dispose()
 {
+#if GAEA_LUA
+	SafeDelete(luatable);
+#else
 	SafeDelete(luafunction);
+#endif
 	ufunction = nullptr;
 }
 namespace NS_SLUA {
@@ -117,11 +123,7 @@ namespace NS_SLUA {
 #if WITH_EDITOR
 		obj->setPropName(UD->pName);
 #endif
-#if GAEA_LUA
-    	obj->bindFunctionWithParam(L, UD->ufunc);
-#else
         obj->bindFunction(L,2,UD->ufunc);
-#endif
 
         // add event listener
         FScriptDelegate Delegate;
@@ -227,11 +229,7 @@ namespace NS_SLUA {
 #if WITH_EDITOR
 		obj->setPropName(UD->pName);
 #endif
-#ifdef GAEA_LUA
-    	obj->bindFunctionWithParam(L, UD->ufunc);
-#else
 		obj->bindFunction(L, 2, UD->ufunc);
-#endif
 
 		UD->delegate->BindUFunction(obj, TEXT("EventTrigger"));
 

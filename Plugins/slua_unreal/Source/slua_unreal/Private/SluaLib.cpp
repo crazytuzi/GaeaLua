@@ -154,7 +154,11 @@ namespace NS_SLUA {
     }
 
     int SluaUtil::createDelegate(lua_State* L) {
-        luaL_checktype(L,1,LUA_TFUNCTION);
+#if GAEA_LUA
+    	luaL_checktype(L, 1, LUA_TTABLE);
+#else
+    	luaL_checktype(L, 1, LUA_TFUNCTION);
+#endif
         auto obj = NewObject<ULuaDelegate>((UObject*)GetTransientPackage(),ULuaDelegate::StaticClass());
         obj->bindFunction(L,1);
         return LuaObject::push(L,obj);

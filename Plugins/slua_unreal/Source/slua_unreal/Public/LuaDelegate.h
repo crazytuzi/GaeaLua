@@ -35,9 +35,6 @@ public:
     void bindFunction(NS_SLUA::lua_State *L, int p, UFunction *func);
     void bindFunction(NS_SLUA::lua_State *L, int p);
     void bindFunction(UFunction *func);
-#if GAEA_LUA
-	void bindFunctionWithParam(NS_SLUA::lua_State *L, UFunction *func);
-#endif
 	void dispose();
 
 #if WITH_EDITOR
@@ -52,10 +49,10 @@ public:
 
 private:
 #if GAEA_LUA
-	NS_SLUA::LuaVar* LuaSelf;
-	NS_SLUA::LuaVar* LuaParam;
-#endif
+	NS_SLUA::LuaVar* luatable;
+#else
     NS_SLUA::LuaVar* luafunction;
+#endif
     UFunction* ufunction;
 #if WITH_EDITOR
 	FString pName;
@@ -77,9 +74,9 @@ namespace NS_SLUA {
 
 	template<typename R, typename ...ARGS>
 	struct LuaDelegateWrapT {
-		TBaseDelegate<R, ARGS...>& delegate;
+		TDelegate<R(ARGS...)>& delegate;
 
-		LuaDelegateWrapT(TBaseDelegate<R, ARGS...>& d) :delegate(d) {}
+		LuaDelegateWrapT(TDelegate<R(ARGS...)>& d) :delegate(d) {}
 	};
 
 
@@ -99,7 +96,7 @@ namespace NS_SLUA {
 		static int push(lua_State* L, FScriptDelegate* delegate, UFunction* ufunc, FString pName);
 
 		template<class R, class ...ARGS>
-		static int push(lua_State* L, TBaseDelegate<R, ARGS...>& delegate) {
+		static int push(lua_State* L, TDelegate<R(ARGS...)>& delegate) {
 			using T = LuaDelegateWrapT<R, ARGS...>;
 			auto wrapobj = new T(delegate);
  			return LuaObject::pushType<T*>(L, wrapobj,
@@ -163,7 +160,7 @@ namespace NS_SLUA {
 	};
 
 	template<class R, class ...ARGS>
-	int LuaObject::push(lua_State* L, TBaseDelegate<R, ARGS...>& delegate) {
+	int LuaObject::push(lua_State* L, TDelegate<R(ARGS...)>& delegate) {
 		return LuaDelegate::push(L,delegate);
 	}
 }

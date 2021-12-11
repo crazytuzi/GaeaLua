@@ -95,7 +95,7 @@ local function Add(self, EventId, LuaFun, SelfTable, ParamTable)
 
     local Info = LuaDispatcherWarp(LuaFun, SelfTable, ParamTable)
 
-    return EventHelper.Add(Delegate, "callback", Info.DelegateTrigger, Info)
+    return EventHelper.Add(Delegate, "callback", Info.DelegateTrigger, nil, Info)
 end
 
 local function Remove(self, EventId, LuaDelegate)
