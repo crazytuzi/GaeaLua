@@ -1,3 +1,5 @@
+local package = package
+
 local Class = require "Utils/Class"
 
 local UIConfig = require "Config/UIConfig"
@@ -28,6 +30,12 @@ local function GetCtrl(self, UIName)
     return self._Ctrls[UIName].Ctrl
 end
 
+local function RemoveCtrl(self, UIName)
+    self._Ctrls[UIName] = nil
+
+    package.loaded[UIConfig[UIName].CtrlPath] = nil
+end
+
 local function SetParam(self, UIName, Param)
     SetCtrl(self, UIName)
 
@@ -43,6 +51,7 @@ end
 CtrlRoot.__init = __init
 CtrlRoot.__delete = __delete
 CtrlRoot.GetCtrl = GetCtrl
+CtrlRoot.RemoveCtrl = RemoveCtrl
 CtrlRoot.SetParam = SetParam
 CtrlRoot.GetParam = GetParam
 

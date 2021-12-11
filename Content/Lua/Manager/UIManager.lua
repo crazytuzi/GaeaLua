@@ -47,7 +47,7 @@ local function OnUIDispose(self, UIName)
 
     Ctrl:Delete()
 
-    self.CtrlRoot:SetParam(UIName)
+    self.CtrlRoot:RemoveCtrl(UIName)
 end
 
 local function OnPreLoadMap(self)

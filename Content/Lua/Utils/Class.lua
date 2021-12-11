@@ -1,5 +1,12 @@
 local assert = assert
+
 local setmetatable = setmetatable
+
+local string = string
+
+local debug = debug
+
+local type = type
 
 local __class = {}
 
@@ -17,14 +24,19 @@ setmetatable(
             class_type.__create = false
             class_type.__delete = false
             class_type.__cname = classname
+            class_type.__path =
+                string.match(
+                debug.getinfo(2, "S")["source"],
+                "[^(?:Lua)]+//Lua/([^.]+).lua"
+            )
             class_type.__super = table.pack(...)
 
-            class_type.IsA = function(BaseClass)
-                if class_type == BaseClass then
+            class_type.IsA = function(Base)
+                if class_type == Base then
                     return true
                 end
                 for _, v in ipairs(class_type.__super) do
-                    if v.IsA(BaseClass) then
+                    if v.IsA(Base) then
                         return true
                     end
                 end
@@ -43,35 +55,39 @@ setmetatable(
 
                             local iclass
 
-                            if file == class_type.__cname then
-                                iclass = class_type
-                            else
-                                for _, v in ipairs(class_type.__super) do
-                                    if v.__cname == file then
-                                        iclass = v
-                                    else
-                                        for _, vv in ipairs(v.__super) do
-                                            if vv.__cname == file then
-                                                iclass = vv
+                            local Queue = {class_type}
 
-                                                break
-                                            end
-                                        end
-                                    end
+                            while #Queue > 0 do
+                                local cclass = table.remove(Queue, 1)
 
-                                    if iclass then
-                                        break
+                                if file == cclass.__cname then
+                                    iclass = cclass
+
+                                    break
+                                else
+                                    for _, v in ipairs(cclass.__super) do
+                                        table.insert(Queue, v)
                                     end
                                 end
                             end
 
-                            for _, v in ipairs(iclass.__super) do
-                                if v[k] then
-                                    return v[k]
-                                else
-                                    for _, vv in ipairs(v.__super) do
-                                        if vv[k] then
-                                            return vv[k]
+                            if iclass then
+                                Queue = {}
+
+                                for _, v in ipairs(iclass.__super) do
+                                    table.insert(Queue, v)
+                                end
+
+                                while #Queue > 0 do
+                                    local _class = table.remove(Queue, 1)
+
+                                    local value = _class[k]
+
+                                    if value then
+                                        return value
+                                    else
+                                        for _, v in ipairs(_class.__super) do
+                                            table.insert(Queue, v)
                                         end
                                     end
                                 end
@@ -92,6 +108,8 @@ setmetatable(
 
                 object.__class_type = class_type
 
+                object.bIsDeleted = false
+
                 object.Super = {}
 
                 if class_type.__super.n > 0 then
@@ -106,17 +124,16 @@ setmetatable(
                                 setmetatable(
                                     value,
                                     {
-                                        __call = function(_, ...)
+                                        __call = function(_, _, ...)
                                             local param = table.pack(...)
 
-                                            for i = 1, param.n do
-                                                param[i] = param[i + 1]
-                                            end
-
-                                            param.n = param.n - 1
-
                                             local _, result =
-                                                xpcall(value[1], _G.CallBackError, object, table.unpack(param))
+                                                xpcall(
+                                                value[1],
+                                                _G.CallBackError,
+                                                object,
+                                                table.unpack(param)
+                                            )
 
                                             return result
                                         end
@@ -227,20 +244,20 @@ setmetatable(
                     end
                 end
 
-                object.Delete = function(self)
-                    self.bIsDeleted = self.bIsDeleted or false
+                object.Delete = function(this)
+                    this.bIsDeleted = this.bIsDeleted or false
 
-                    if not self.bIsDeleted then
+                    if not this.bIsDeleted then
                         _G.Classs[classname].count = _G.Classs[classname].count - 1
 
-                        _delete(self.__class_type)
+                        _delete(this.__class_type)
 
-                        self.bIsDeleted = true
+                        this.bIsDeleted = true
                     end
                 end
 
-                object.IsA = function(self, ClassType)
-                    return self.__class_type.IsA(ClassType)
+                object.IsA = function(this, ClassType)
+                    return this.__class_type.IsA(ClassType)
                 end
 
                 return object

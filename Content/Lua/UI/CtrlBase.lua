@@ -6,6 +6,8 @@ local CtrlBase = Class("CtrlBase", AbstractCtrl)
 
 local function __init(self)
     self._Ctrls = {}
+
+    self._Packages = {}
 end
 
 local function __delete(self)
@@ -14,6 +16,12 @@ local function __delete(self)
     end
 
     self._Ctrl = {}
+
+    for _, CtrlClass in pairs(self._Packages) do
+        package.loaded[CtrlClass.__path] = nil
+    end
+
+    self._Packages = {}
 end
 
 local function Show(self, Params)
@@ -25,6 +33,8 @@ local function Hide(self, Params)
 end
 
 local function RegisterCtrl(self, Widget, CtrlClass)
+    table.insert(self._Packages, CtrlClass)
+    
     local _Ctrl = CtrlClass(Widget)
 
     table.insert(self._Ctrls, 1, _Ctrl)
