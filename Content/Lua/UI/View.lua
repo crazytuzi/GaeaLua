@@ -49,15 +49,13 @@ local function __init(self, Widget)
 end
 
 local function __create(self)
-    setmetatable(
-        self,
-        {
-            __index = __index,
-            __tostring = function(this)
-                return string.split(_G.UKismetSystemLibrary.GetDisplayName(this:GetRoot()), "_lua")[1]
-            end
-        }
-    )
+    local mt = getmetatable(self)
+
+    mt.__index = __index
+
+    mt.__tostring = function(this)
+        return string.split(_G.UKismetSystemLibrary.GetDisplayName(this:GetRoot()), "_lua")[1]
+    end
 end
 
 local function __delete(self)

@@ -15,29 +15,27 @@ end
 local Resources = Class("Resources")
 
 local function __register(self)
-    _G.setmetatable(
-        Resources,
-        {
-            __index = function(_, k)
-                local v = _G.rawget(self, k)
+    local mt = getmetatable(self)
 
-                if v then
-                    return v
-                else
-                    v = _G.rawget(self, "data")
+    mt.__index = function(_, k)
+        local v = _G.rawget(self, k)
 
-                    if v then
-                        return v[k]
-                    end
-                end
+        if v then
+            return v
+        else
+            v = _G.rawget(self, "data")
 
-                return nil
-            end,
-            __newindex = function()
-                Logger.warn("Don't Set ResourcePath, config in Resources")
+            if v then
+                return v[k]
             end
-        }
-    )
+        end
+
+        return nil
+    end
+
+    mt.__newindex = function()
+        Logger.warn("Don't Set ResourcePath, config in Resources")
+    end
 end
 
 _G.rawset(Resources, "data", {})
@@ -91,12 +89,9 @@ local function LoadObject(self, Path)
 end
 
 local function __create(self)
-    _G.setmetatable(
-        self,
-        {
-            __call = LoadObject
-        }
-    )
+    local mt = getmetatable(self)
+    
+    mt.__call = LoadObject
 end
 
 ResourceLoader.__init = __init

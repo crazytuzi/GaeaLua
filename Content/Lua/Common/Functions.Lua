@@ -16,16 +16,6 @@ function _G.IsValid(Object)
     return _G.slua.isValid(Object)
 end
 
-function _G.SetCanvasSlotPosition(Slot, Position)
-    local CanvasSlot = _G.UWidgetLayoutLibrary.SlotAsCanvasSlot(Slot)
-
-    if _G.IsValid(CanvasSlot) then
-        CanvasSlot:SetPosition(Position)
-    else
-        Logger.warn("SetCanvasSlotPosition => CanvasSlot is not valid")
-    end
-end
-
 function _G.SetWidgetVisibility(Widget, IsVisible)
     if _G.IsValid(Widget) then
         if IsVisible == nil then

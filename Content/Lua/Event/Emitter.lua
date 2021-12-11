@@ -15,29 +15,27 @@ local function __init(self, Fun, SelfTable)
 end
 
 local function __create(self)
-    setmetatable(
-        self,
-        {
-            __eq = function(this, other)
-                if this._Fun ~= other._Fun then
-                    return false
-                end
+    local mt = getmetatable(self)
 
-                if this._SelfTable == nil or this._SelfTable == other._SelfTable then
-                    return true
-                end
+    mt.__eq = function(this, other)
+        if this._Fun ~= other._Fun then
+            return false
+        end
 
-                return false
-            end,
-            __call = function(this, ...)
-                if this._SelfTable then
-                    xpcall(this._Fun, _G.CallBackError, this._SelfTable, ...)
-                else
-                    xpcall(this._Fun, _G.CallBackError, ...)
-                end
-            end
-        }
-    )
+        if this._SelfTable == nil or this._SelfTable == other._SelfTable then
+            return true
+        end
+
+        return false
+    end
+
+    mt.__call = function(this, ...)
+        if this._SelfTable then
+            xpcall(this._Fun, _G.CallBackError, this._SelfTable, ...)
+        else
+            xpcall(this._Fun, _G.CallBackError, ...)
+        end
+    end
 end
 
 local function __delete(self)
