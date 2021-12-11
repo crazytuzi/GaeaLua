@@ -45,6 +45,8 @@ local function __init(self, Widget)
 
     self._widgetCache = {}
 
+    setmetatable(self._widgetCache, {__mode = "v"})
+
     self:OnInit()
 end
 

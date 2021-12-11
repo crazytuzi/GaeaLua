@@ -114,17 +114,21 @@ local function RegisterEvent(self, EventTarget, EventName, LuaFun, SelfTable, ..
 
     local Info = {EventTarget = EventTarget, EventName = EventName, EventDelegate = EventDelegate}
 
+    setmetatable(Info, {__mode = "v"})
+
     table.insert(self._eventDelegates, Info)
 end
 
 local function UnRegisterEvents(self)
     for _, Delegate in ipairs(self._eventDelegates) do
-        if type(Delegate.EventTarget) == "table" then
-            if Delegate.EventTarget == _G.Dispatcher then
-                Delegate.EventTarget:Remove(Delegate.EventName, Delegate.EventDelegate)
+        if Delegate.EventTarget then
+            if type(Delegate.EventTarget) == "table" then
+                if Delegate.EventTarget == _G.Dispatcher then
+                    Delegate.EventTarget:Remove(Delegate.EventName, Delegate.EventDelegate)
+                end
+            else
+                EventHelper.Remove(Delegate.EventTarget, Delegate.EventName, Delegate.EventDelegate)
             end
-        else
-            EventHelper.Remove(Delegate.EventTarget, Delegate.EventName, Delegate.EventDelegate)
         end
     end
 
