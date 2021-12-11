@@ -20,6 +20,28 @@ local function __init(self, Capacity)
     self._capacity = Capacity
 end
 
+local function __create(self)
+    local mt = getmetatable(self)
+
+    mt.__pairs = function(this)
+        local function iter(t, i)
+            if i >= t._size then
+                return nil
+            end
+
+            i = i + 1
+
+            local v = t._data[(i + self._head) % self._capacity]
+
+            if v then
+                return i, v
+            end
+        end
+
+        return iter, this, 0
+    end
+end
+
 local function Enqueue(self, Element)
     if Element == nil then
         Logger.warn("Queue:Push => Element is not valid")
@@ -75,7 +97,7 @@ local function Peek(self)
         return nil
     end
 
-    return self._data[self._head + 1]
+    return self._data[(self._head + 1) % self._capacity]
 end
 
 local function Num(self)
@@ -87,6 +109,7 @@ local function IsEmpty(self)
 end
 
 Queue.__init = __init
+Queue.__create = __create
 Queue.Enqueue = Enqueue
 Queue.Dequeue = Dequeue
 Queue.Empty = Empty
